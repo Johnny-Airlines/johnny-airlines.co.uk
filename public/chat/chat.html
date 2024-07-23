@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <link rel="stylesheet" href="../maincss.css">
+        <link rel="stylesheet" href="chat.css">
+        <script src=
+"https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js">
+    </script>
+        <title>Johnny Airlines Chat</title>
+    </head>
+    <body>
+        <div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI"></a></div>
+        <div class="title" style="font-size: 125px">Johnny Airlines Chat</div>
+        <div id="chat">
+            <!-- messages will display here -->
+            <ul id="messages"></ul>
+
+            <!-- form to send message -->
+            <div class="footer">
+            <input id="message-input" type="text"/>
+            <button id="message-btn">Send</button>
+            </div>
+        </div>
+        <h1 id="username" style="display: none;"></h1>
+        <!-- scripts -->
+        
+        
+        
+        
+        <!--<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>-->
+        <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+        <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
+        <script src="../fConfig.js" type="module"></script>
+        <script>const firebaseConfig = {
+  apiKey: "AIzaSyDEr38pIOpNXbqxC0OG2vlhSr-yGXyWnQw",
+  authDomain: "johnny-airlines-b02a8.firebaseapp.com",
+  projectId: "johnny-airlines-b02a8",
+  storageBucket: "johnny-airlines-b02a8.appspot.com",
+  messagingSenderId: "129767102004",
+  appId: "1:129767102004:web:35c8b0b6b728970a0ddc61",
+  measurementId: "G-N9369YGKL8"
+};
+    firebase.initializeApp(firebaseConfig)
+    </script>
+        <script src="chat.js"></script>
+        
+    </body>
+</html>

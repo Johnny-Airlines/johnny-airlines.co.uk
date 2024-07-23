@@ -1,0 +1,69 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Johnny Airlines Calculator</title>
+	<link rel="stylesheet" href="calculator.css">
+	<link rel="stylesheet" href="../maincss.css">
+	<script src=https://cdnjs.cloudflare.com/ajax/libs/mathjs/3.3.0/math.min.js></script>
+</head>
+<body>
+	<div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI"></a></div>
+	<div class="grid">
+		<div class="display">
+			<input type="text" id="input" placeholder="Enter Numbers Here">
+		</div>
+		<div class="eql">
+			<button onclick="calc()" id="calc">=</button>
+		</div>
+		<div class="del">
+			<button style="font-size: 26px;" onclick="del()">⌫</button>
+		</div>
+		<div class="clr">
+			<button onclick="clr()">C</button>
+		</div>
+		<div class="add">
+			<button onclick="display('+')">+</button>
+		</div>
+		<div class="sub">
+			<button onclick="display('-')">-</button>
+		</div>
+		<div class="mul">
+			<button onclick="display('×')">×</button>
+		</div>
+		<div class="div">
+			<button onclick="display('÷')">÷</button>
+		</div>
+		<div class="btn0">
+			<button onclick="display('0')">0</button>
+		</div>
+		<div class="btn1">
+			<button onclick="display('1')">1</button>
+		</div>
+		<div class="btn2">
+			<button onclick="display('2')">2</button>
+		</div>
+		<div class="btn3">
+			<button onclick="display('3')">3</button>
+		</div>
+		<div class="btn4">
+			<button onclick="display('4')">4</button>
+		</div>
+		<div class="btn5">
+			<button onclick="display('5')">5</button>
+		</div>
+		<div class="btn6">
+			<button onclick="display('6')">6</button>
+		</div>
+		<div class="btn7">
+			<button onclick="display('7')">7</button>
+		</div>
+		<div class="btn8">
+			<button onclick="display('8')">8</button>
+		</div>
+		<div class="btn9">
+			<button onclick="display('9')">9</button>
+		</div>
+	</div>
+	<script src="calculator.js"></script>
+</body>
+</html>

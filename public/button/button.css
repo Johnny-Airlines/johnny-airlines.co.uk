@@ -1,0 +1,19 @@
+#mechanical-button {
+    background-image: url("bUnclicked.png");
+    background-repeat: no-repeat;
+    background-size: cover;
+    background-color:transparent;
+    margin:auto;
+    display:block;
+    height: 400px;
+    width: 400px;
+    border: none;
+    text-align: center;
+    text-decoration: none;
+    position: relative;
+    transition: 0s;
+}
+
+#mechanical-button:active {
+    background-image: url("bClicked.png");
+}
