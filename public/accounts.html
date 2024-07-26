@@ -94,7 +94,7 @@
     </style>
 </head>
 <body>
-    <div class="logo"><a href="https://johnny-airlines.co.uk"><img src="LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
+    <div class="logo"><a href="/"><img src="LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
     <form action="" id="loginForm" autocomplete="on">
         <h1></h1>
         <div class="radio">
@@ -119,7 +119,7 @@
                 // Signed in 
                 var user = userCredential.user;
                 console.info("Success");
-                location.replace("https://johnny-airlines.co.uk/profile/")
+                location.replace("/profile/")
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -134,7 +134,7 @@
                 // Signed in 
                 var user = userCredential.user;
                 console.info("Success");
-                location.replace("https://johnny-airlines.co.uk/profile/")
+                location.replace("/profile/")
             })
             .catch((error) => {
                 var errorCode = error.code;
