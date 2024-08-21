@@ -27,7 +27,7 @@ firebase.auth().onAuthStateChanged((user) => {
         const fetchTicket = db.ref("tickets/" + uid);
         startGame(displayName, email, uid, photoURL);
     } else {
-        window.location.href = "./accounts.html";
+        window.location.href = "../accounts.html";
     }
 });
 
