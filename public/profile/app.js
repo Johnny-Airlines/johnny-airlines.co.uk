@@ -33,7 +33,7 @@ firebase.auth().onAuthStateChanged((user) => {
         let photoURL = user.photoURL;
         if (!photoURL){
             user.updateProfile({
-                photoURL: 'https://johnny-airlines.co.uk/Plane.png'
+                photoURL: './Plane.png'
             }).then(() => {
                 console.log('User profile picture updated to default image');
             }).catch(error => {
@@ -83,7 +83,7 @@ firebase.auth().onAuthStateChanged((user) => {
 
 function signOut() {
     firebase.auth().signOut().then(() => {
-        location.replace("https://johnny-airlines.co.uk/accounts.html")
+        location.replace("./accounts.html")
     }).catch((error) => {
         console.log(error);
     });
