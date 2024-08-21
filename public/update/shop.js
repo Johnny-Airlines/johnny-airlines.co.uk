@@ -1,4 +1,5 @@
 firebase.auth().onAuthStateChanged((user) => {
+
     if (user) {
         loadShop();
     } else {
@@ -10,22 +11,54 @@ var ownedPlanes;
 
 const titleDict = {
     "Plane":"Default plane",
-    "green":"Green"
+    "Blue":"Blue",
+	"Brown":"Brown",
+	"Dark pink":"Dark pink",
+	"Green":"Green",
+	"Grey":"Grey,
+	"Pink":"Pink",
+	"Red":"Red",
+	"White":"White",
+	"Yellow":"Yellow"
 }
 
 const descDict = {
-    "Plane":"The default plane",
-    "green":"A green plane"
+    "Plane":"The default plane.",
+    "Blue":"A blue plane.",
+	"Brown":"A brown plane.",
+	"Dark pink":"A dark pink plane.",
+	"Green":"A green plane.",
+	"Grey":"A grey plane.",
+	"Pink":"A pink plane.",
+	"Red":"A red plane.",
+	"White":"A white plane.",
+	"Yellow":"A yellow plane."
 }
 
 const buttonDict = {
     "Plane":"Owned",
-    "green":"Buy"
+    "Blue":"Buy",
+	"Brown":"Buy",
+	"Dark pink":"Buy",
+	"Green":"Buy",
+	"Grey":"Buy",
+	"Pink":"Buy",
+	"Red":"Buy",
+	"White":"Buy",
+	"Yellow":"Buy"
 }
 
 const costDict = {
     "Plane":0,
-    "green":25 
+    "Blue":25,
+	"Brown":25,
+	"Dark pink":25,
+	"Green":25,
+	"Grey":25,
+	"Pink":25,
+	"Red":25,
+	"White":25,
+	"Yellow":25
 }
 
 function loadShop() {
@@ -46,7 +79,7 @@ function hoverOverShopItem(item) {
     shopItemImg.src = `https://johnny-airlines.co.uk/${item}.png`
     shopItemTitle.textContent = titleDict[item]
     shopItemDesc.textContent = descDict[item]
-    shopBuyButton.textContent = buttonDict[item]
+	shopBuyButton.textContent = buttonDict[item]
     if (buttonDict[item] == "Buy") {
         shopBuyButton.textContent = "Buy: " + costDict["green"]
     } 
