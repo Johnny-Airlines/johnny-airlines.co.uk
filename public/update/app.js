@@ -26,7 +26,7 @@ firebase.auth().onAuthStateChanged((user) => {
         const photoURL = user.photoURL;
         startGame(displayName, email, uid, photoURL);
     } else {
-        window.location.href = "https://johnny-airlines.co.uk/accounts.html";
+        window.location.href = "./accounts.html";
     }
 });
 
