@@ -1,0 +1,7 @@
+User-agent: *
+Disallow: /devPages.html
+Disallow: /update/x9dJJ8VfRJCuO2QleeFkkSsXf2AXetZA.html
+Disallow: /PIwjdTJ7RkV4lpOJddr8UEpaxlMXhy9s/
+Disallow: /oSxUbJZBJ9SanS0mRIUv2KYu7Swa94M2/
+Disallow: /F4u37AnZUSkJElrQakYdQID0vqyDKLVa/
+Disallow: /D6ylbgG1fjIbAwvgsPDH1zHaVQqhXVtx/

@@ -1,5 +1,4 @@
 firebase.auth().onAuthStateChanged((user) => {
-
     if (user) {
         loadShop();
     } else {
@@ -60,6 +59,9 @@ const costDict = {
 	"White":25,
 	"Yellow":25
 }
+
+const planes = document.getElementById("Planes");
+planes.addEventListener("mouseover",hoverOverShopItem,false);
 
 function loadShop() {
     db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
