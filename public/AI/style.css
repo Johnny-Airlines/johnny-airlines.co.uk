@@ -56,7 +56,13 @@ button {
 }
 
 #chat {
-    width: 50%;
-    border-right: 3px solid green;
+    width: calc(50% - 3px);
     float: left;
+    /*! width: 50%; */
+}
+
+.img_generator {
+    float: right;
+    border-left: 6px solid green;
+    width: calc(50% - 3px);
 }
