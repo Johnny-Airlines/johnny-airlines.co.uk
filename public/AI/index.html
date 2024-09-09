@@ -7,6 +7,9 @@
 	<meta name="keywords" content="Johnny Airlines, Johnny, Airlines, AI">
 	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8719412072312909"
     crossorigin="anonymous"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
 </head>
 <body>
 	<div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
@@ -14,10 +17,7 @@
 	<div id="chat">
 		<h1 style="text-align: center;">Chatbot</h1>
 		<ul id="messages">
-			<li class="recieve">Hi how may I assist you today?</li>
-			<li class="sent">Write some simple python code</li>
-			<li class="recieve">Some simple python code could be '''print("hello world")'''</li>
-			<li class="sent">Thank you</li>
+			<li class="recieve">Hi, Johnny AI Assistant here to help!</li>
 		</ul>
 		<div class="footer">
 			<input id="msg-input-txt" type="text">
@@ -33,4 +33,5 @@
 		</div>
 	</div>
 	<script src="app.js"></script>
+	<script src="chatbot.js" type="module"></script>
 </html>
