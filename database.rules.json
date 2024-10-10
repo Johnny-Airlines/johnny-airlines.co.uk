@@ -47,6 +47,14 @@
     "bullets": {
         ".read":"true",
         ".write":"true"
-    }
+    },
+	"chatPrompts": {
+		".read":"true",
+		".write":"true"
+	},
+	"imgPrompts": {
+		".read":"true",
+		".write":"true"
+	}
   }
 }
