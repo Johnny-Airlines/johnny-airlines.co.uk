@@ -1,15 +1,14 @@
 //Firebse Initialize
 const firebaseConfig = {
-    apiKey: "AIzaSyDEr38pIOpNXbqxC0OG2vlhSr-yGXyWnQw",
-    authDomain: "johnny-airlines-b02a8.firebaseapp.com",
-    projectId: "johnny-airlines-b02a8",
-    storageBucket: "johnny-airlines-b02a8.appspot.com",
-    messagingSenderId: "129767102004",
-    appId: "1:129767102004:web:35c8b0b6b728970a0ddc61",
-    measurementId: "G-N9369YGKL8",
+    apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
+    authDomain: "johnnyairlinescouk.firebaseapp.com",
+    projectId: "johnnyairlinescouk",
+    storageBucket: "johnnyairlinescouk.firebasestorage.app",
+    messagingSenderId: "682303797708",
+    appId: "1:682303797708:web:9d33dce60f9c16c8fe0569",
+    measurementId: "G-V3TKRXKCV6"
 };
 firebase.initializeApp(firebaseConfig);
-
 //Databse refrences
 const db = firebase.database();
 const playersRef = db.ref("players");
