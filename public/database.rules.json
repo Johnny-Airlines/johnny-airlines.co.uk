@@ -1,0 +1,63 @@
+{
+
+  "rules": {
+
+    // For requests to access the 'messages' node...
+
+    "messages": {
+
+        // For each message, allow a read operation if <condition>. In this
+
+        // case, we specify our condition as "true", so read access is always granted.
+
+        ".read": "true",
+
+        // For read-only behavior, we specify that for write operations, our
+
+        // condition is false.
+
+        ".write": "true"
+
+
+    },
+      "adminMsgs": {
+
+        // For each message, allow a read operation if <condition>. In this
+
+        // case, we specify our condition as "true", so read access is always granted.
+
+        ".read": "true",
+
+        // For read-only behavior, we specify that for write operations, our
+
+        // condition is false.
+
+        ".write": "true"
+
+
+    },
+    ".write": false,
+    "ubps": {
+      ".read":"true",
+      ".write":"true"
+    },
+    "banana": {
+      ".read":"true",
+      ".write":"true"
+    },
+    "clicks": {
+      ".read":"true",
+      ".write":"true"
+    },
+    "bugs":{
+      ".read":"true",
+      ".write":"true"
+    },
+    "users":{
+      ".read":"true",
+      ".write":"true"
+    }
+
+  }
+
+}

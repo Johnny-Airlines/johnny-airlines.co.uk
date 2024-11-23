@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Welcome</title>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
+    <link rel="stylesheet" href="../maincss.css">
+    <link rel="stylesheet" href="./style.css">
+</head>
+<body>
+    <!-- The surrounding HTML is left untouched by FirebaseUI.
+    Your app may use that space for branding, controls and other customizations.-->
+    <img src="" alt="Profile Picture" id="pfp">
+    <h1 id="username"></h1>
+    <h1 id="disname"></h1>
+    <div class="ticket-type">
+        <img src="/Ticket.png" alt="Airplane icon">
+        <span>:</span>
+        <span id="tickets"></span>
+    </div>
+    <button onclick="window.location.replace('/update/')">PLANE</button>
+    <button onclick="signOut()">Sign out</button>
+    <script src="./app.js"></script>
+</body>
+</html>

@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Banana Clicker</title>
+    <link rel="stylesheet" href="../../maincss.css">
+    <link rel="stylesheet" href="banana clicker.css">
+    <meta name="keywords" content="Johnny Airlines, Johnny, Airlines, Banana, Clicker, Banana Clicker, Town,Ynnhoj, Town of Ynnhoj">
+</head>
+<body>
+    <div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI"></a></div>
+    <div class="title" style="font-size:75px;">Banana Clicker</div>
+    <div style="width:288.4px; margin:auto;" >
+        <p id="score" class="score">0</p>
+        <p class="bps"><span id="bps"></span> b/s</p>
+        <img class="banana" src="banana.png" onclick="bClick()" id="banana">
+    </div>
+    <grid-container>
+        <grid-item onclick="buyUpgrade('Cursor')">
+			<img style="float:left;" src="Cursor.png"></img>
+			<p>Cost: <span id="costCursor"></span>
+			Owned: <span id="Cursor"></span><br>
+            Each cursor produces 0.1b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Worker')">
+			<img style="float:left;" src="Worker.png"></img>
+			<p>Cost: <span id="costWorker"></span>
+			Owned: <span id="Worker"></span><br>
+            Each worker produces 1b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Plantation')">
+			<img style="float:left;" src="Plantation.png"></img>
+			<p>Cost: <span id="costPlantation"></span>
+			Owned: <span id="Plantation"></span><br>
+            Each plantation produces 8b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Mine')">
+			<img style="float:left;" src="Mine.png"></img>
+			<p>Cost: <span id="costMine"></span>
+			Owned: <span id="Mine"></span><br>
+            Each mine produces 47b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Factory')">
+			<img style="float:left;" src="Factory.png"></img>
+			<p>Cost: <span id="costFactory"></span>
+			Owned: <span id="Factory"></span><br>
+            Each factory produces 260b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Country')">
+			<img style="float:left;" src="banRepublic.jpg"></img>
+			<p>Cost: <span id="costCountry"></span>
+			Owned: <span id="Country"></span><br>
+            Each country produces 1400b/s</p>
+        </grid-item>
+		<grid-item onclick="buyUpgrade('Planet')">
+			<img style="float:left;" src="banPlanet.jpg"></img>
+			<p>Cost: <span id="costPlanet"></span>
+			Owned: <span id="Planet"></span><br>
+            Each planet produces 7800b/s</p>
+        </grid-item>
+    </grid-container>
+    <p>!BIG UPDATE COMING SOON!</p>
+    <p>Credit to Majd for idea inspiration</p>
+    <script src="banana clicker.js"></script>
+</body>
+</html>

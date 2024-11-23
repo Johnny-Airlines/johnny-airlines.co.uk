@@ -1,0 +1,54 @@
+.grid {
+	display: grid;
+	width:50%;
+	column-gap:5px;
+	row-gap: 5px;
+	margin:auto;
+	grid-template-areas: 
+		'display display display eql'
+		'btn1 btn2 btn3 add'
+		'btn4 btn5 btn6 sub'
+		'btn7 btn8 btn9 mul'
+		'clr btn0 del div'
+	;
+}
+.display { grid-area:display; }
+.eql { grid-area:eql; }
+.del { grid-area:del; }
+.clr { grid-area:clr; }
+.add { grid-area:add; }
+.sub { grid-area:sub; }
+.mul { grid-area:mul; }
+.div { grid-area:div; }
+.btn0 {grid-area:btn0; }
+.btn1 { grid-area:btn1; }
+.btn2 { grid-area:btn2; }
+.btn3 { grid-area:btn3; }
+.btn4 { grid-area:btn4; }
+.btn5 { grid-area:btn5; }
+.btn6 { grid-area:btn6; }
+.btn7 { grid-area:btn7; }
+.btn8 { grid-area:btn8; }
+.btn9 { grid-area:btn9; }
+button { 
+	object-fit:contain;
+	width:100%;
+	font-size: 30px;
+	background-color: white;
+	color: blue;
+	cursor: pointer;
+	transition-duration: 0.5s;
+}
+button:hover {
+	background-color:blue;
+	color:white;
+	border-radius:8px;
+}
+input {
+	object-fit:cover;
+	width:99.5%;
+	height:99%;
+	font-size:25px;
+	padding:0px;
+	color: blue;
+}
