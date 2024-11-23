@@ -1,7 +1,60 @@
 {
-  /* Visit https://firebase.google.com/docs/database/security to learn more about security rules. */
   "rules": {
-    ".read": false,
-    ".write": false
+    "messages": {
+        ".read": "true",
+        ".write": "true"
+    },
+    "uMessages": {
+        ".read": "true",
+        ".write": "true"
+    },
+    "adminMsgs": {
+        ".read": "true",
+        ".write": "true"
+    },
+    "ubps": {
+        ".read":"true",
+        ".write":"true"
+    },
+    "banana": {
+        ".read":"true",
+        ".write":"true"
+    },
+    "clicks": {
+        ".read":"true",
+        ".write":"true"
+    },
+    "bugs":{
+        ".read":"true",
+        ".write":"true"
+    },
+    "users":{
+        ".read":"true",
+        ".write":"true"
+    },
+    "players":{
+        ".read":"true",
+        ".write":"true"
+    },
+    "bombs": {
+        ".read":"true",
+        ".write":"true"
+    },
+    "challenges": {
+        ".read":"true",
+        ".write":"true"
+    },
+    "bullets": {
+        ".read":"true",
+        ".write":"true"
+    },
+	"chatPrompts": {
+		".read":"true",
+		".write":"true"
+	},
+	"imgPrompts": {
+		".read":"true",
+		".write":"true"
+	}
   }
 }

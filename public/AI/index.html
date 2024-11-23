@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<title>Johnny AI</title>
+	<link rel="stylesheet" href="../maincss.css">
+	<link rel="stylesheet" href="./style.css">
+	<meta name="keywords" content="Johnny Airlines, Johnny, Airlines, AI">
+	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8719412072312909"
+    crossorigin="anonymous"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+</head>
+<body>
+	<div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
+	<div class="title">Johnny AI</div>
+	<div id="chat">
+		<h1 style="text-align: center;">Chatbot</h1>
+		<ul id="messages">
+			<li class="recieve">Hi, Johnny AI Assistant here to help!</li>
+		</ul>
+		<div class="footer">
+			<input id="msg-input-txt" type="text">
+			<button id="msg-btn-txt">Send</button>
+		</div>
+	</div>
+	<div class="img_generator">
+		<h1 style="text-align: center;">Image generator</h1>
+		<img src="../LOGO.png" style="margin:auto;display:block;width:512px" id="image">
+		<div class="footer">
+			<input id="msg-input-img" type="text">
+			<button id="msg-btn-img">Generate Image</button>
+		</div>
+	</div>
+	<script src="app.js"></script>
+	<script src="chatbot.js" type="module"></script>
+</html>

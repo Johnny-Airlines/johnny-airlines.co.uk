@@ -1,0 +1,95 @@
+canvas  {
+	height:101vh;
+	width: 101vw;
+	padding: 0;
+	margin: -10px;
+	position: absolute;
+	image-rendering: pixelated;
+}
+body {
+	overflow: hidden;
+}
+html {
+	background-color: #013ff1;
+}
+.map {
+	position: absolute;
+	width: 100vw;
+	height: 100vh;
+	background-image: url("bg.png");
+	background-size: contain;
+	background-repeat: no-repeat;
+}
+
+.overlay {
+  height: 0%;
+  width: 0%;
+  display: none;
+  position: fixed;
+  z-index: 1;
+  top: 50%;
+  left: 50%;
+  transform:translate(-50%,-50%);
+  background-color: rgb(0,0,0);
+  background-color: rgba(0,0,0, 0.9);
+  transition: 0.5s;
+  overflow-x: hidden;
+  overflow-y: hidden;
+  display: block;
+}
+
+.overlay-content {
+  position: relative;
+  width: 100%;
+  margin: 5%;
+}
+
+.overlay a {
+  padding: 8px;
+  text-decoration: none;
+  font-size: 36px;
+  color: #818181;
+  display: block;
+  transition: 0.3s;
+}
+
+.overlay a:hover, .overlay a:focus {
+  color: #f1f1f1;
+}
+
+.overlay .closebtn {
+  position: absolute;
+  top: 20px;
+  right: 45px;
+  font-size: 60px;
+}
+
+.tablink {
+  background-color: #555;
+  color: white;
+  float: left;
+  border: none;
+  outline: none;
+  cursor: pointer;
+  padding: 14px 16px;
+  font-size: 17px;
+  width: 25%;
+}
+
+.tablink:hover {
+  background-color: #777;
+}
+
+/* Style the tab content */
+.tabcontent {
+  color: white;
+  display: none;
+  padding: 50px;
+  float: left;
+  width: 80%;
+  height: 100%;
+}
+
+#Profile {background-color:red;}
+#Shop {background-color:green;}
+#Info {background-color:blue;}
