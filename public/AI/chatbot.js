@@ -1,15 +1,15 @@
 import { HfInference } from "https://cdn.jsdelivr.net/npm/@huggingface/inference@2.8.0/+esm" 
 
 const firebaseConfig = {
-    apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
-    authDomain: "johnnyairlinescouk.firebaseapp.com",
-    projectId: "johnnyairlinescouk",
-    storageBucket: "johnnyairlinescouk.firebasestorage.app",
-    messagingSenderId: "682303797708",
-    appId: "1:682303797708:web:9d33dce60f9c16c8fe0569",
-    measurementId: "G-V3TKRXKCV6"
+  apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
+  authDomain: "johnnyairlinescouk.firebaseapp.com",
+  databaseURL: "https://johnnyairlinescouk-default-rtdb.europe-west1.firebasedatabase.app",
+  projectId: "johnnyairlinescouk",
+  storageBucket: "johnnyairlinescouk.firebasestorage.app",
+  messagingSenderId: "682303797708",
+  appId: "1:682303797708:web:9d33dce60f9c16c8fe0569",
+  measurementId: "G-V3TKRXKCV6"
 };
-
 const db = firebase.database();
 
 const inference = new HfInference("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");
