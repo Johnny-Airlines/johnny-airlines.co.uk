@@ -29,11 +29,11 @@ chessboardhtml.addEventListener("click", (evt) => {
 		}
 	}
 	else if (selectedPiece != false && isValidMove(selectedPiece,selectedPieceLocation,id)) {
-		board[parseInt(id.charAt(1))][parseInt(id.charAt(0))] = selectedPiece;
-		board[parseInt(selectedPieceLocation.charAt(1))][parseInt(selectedPieceLocation.charAt(0))] = "";
 		for (const move of validMoves(selectedPiece,selectedPieceLocation)) {
 			document.getElementById(move).style = ""
 		}
+		board[parseInt(id.charAt(1))][parseInt(id.charAt(0))] = selectedPiece;
+		board[parseInt(selectedPieceLocation.charAt(1))][parseInt(selectedPieceLocation.charAt(0))] = "";	
 		document.getElementById(id).style = "";
 		selectedPiece = false;
 		if (turn == "W") {
@@ -47,6 +47,9 @@ chessboardhtml.addEventListener("click", (evt) => {
 		updateBoard();
 	}
 	else if (selectedPiece != false && !isValidMove(selectedPiece,selectedPieceLocation,id)) {
+		for (const move of validMoves(selectedPiece,selectedPieceLocation)) {
+			document.getElementById(move).style = ""
+		}
 		selectedPiece = false;
 	}
 });
@@ -137,11 +140,11 @@ function validMoves(piece,origin) {
 		if (x != 7) {
 			xOffset = 1;
 			while (board[y][x+xOffset] == "") {
-				moves.push("" + (x+xOffset)+ ""+y)
-				xOffset += 1;
 				if (x+xOffset == 7) {
 					break;
 				}
+				moves.push("" + (x+xOffset)+ ""+y)
+				xOffset += 1;
 			}
 			if (board[y][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+y);
@@ -150,11 +153,11 @@ function validMoves(piece,origin) {
 		if (x != 0) {
 			xOffset = -1;
 			while (board[y][x+xOffset] == "") {
-				moves.push("" + (x+xOffset)+ ""+y)
-				xOffset -= 1;
 				if (x+xOffset == 0) {
 					break;
 				}
+				moves.push("" + (x+xOffset)+ ""+y)
+				xOffset -= 1;
 			}
 			if (board[y][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+y);
@@ -163,11 +166,11 @@ function validMoves(piece,origin) {
 		if (y != 7) {
 			yOffset = 1;
 			while (board[y+yOffset][x] == "") {
-				moves.push("" + x+ ""+(y+yOffset))
-				yOffset += 1;
 				if (y+yOffset == 7) {
 					break;
 				}
+				moves.push("" + x+ ""+(y+yOffset))
+				yOffset += 1;
 			}
 			if (board[y+yOffset][x].charAt(0) != piece.charAt(0)){
 				moves.push(""+x+""+(y+yOffset));
@@ -176,11 +179,11 @@ function validMoves(piece,origin) {
 		if (y != 0) {
 			yOffset = -1;
 			while (board[y+yOffset][x] == "") {
-				moves.push("" + x+ ""+(y+yOffset))
-				yOffset -= 1;
 				if (y+yOffset == 0) {
 					break;
 				}
+				moves.push("" + x+ ""+(y+yOffset))
+				yOffset -= 1;
 			}
 			if (board[y+yOffset][x].charAt(0) != piece.charAt(0)){
 				moves.push(""+x+""+(y+yOffset));
@@ -192,12 +195,12 @@ function validMoves(piece,origin) {
 			xOffset = 1;
 			yOffset = -1;
 			while (board[y+yOffset][x+xOffset] == "") {
-				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
-				xOffset += 1;
-				yOffset -= 1;
 				if (x+xOffset == 7 || y+yOffset == 0) {
 					break;
 				}
+				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
+				xOffset += 1;
+				yOffset -= 1;
 			}
 			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
@@ -207,12 +210,12 @@ function validMoves(piece,origin) {
 			xOffset = -1;
 			yOffset = -1;
 			while (board[y+yOffset][x+xOffset] == "") {
+				if (x+xOffset==0||y+yOffset==0) {
+					break;
+				}
 				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
 				xOffset -= 1;
 				yOffset -= 1;
-				if (x+xOffset == 0 || y+yOffset == 0) {
-					break;
-				}
 			}
 			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
@@ -222,12 +225,12 @@ function validMoves(piece,origin) {
 			xOffset = 1;
 			yOffset = 1;
 			while (board[y+yOffset][x+xOffset] == "") {
-				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
-				xOffset += 1;
-				yOffset += 1;
 				if (x+xOffset == 7 || y+yOffset == 7) {
 					break;
 				}
+				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
+				xOffset += 1;
+				yOffset += 1;
 			}
 			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
@@ -237,12 +240,12 @@ function validMoves(piece,origin) {
 			xOffset = -1;
 			yOffset = 1;
 			while (board[y+yOffset][x+xOffset] == "") {
-				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
-				xOffset -= 1;
-				yOffset += 1;
 				if (x+xOffset == 0 || y+yOffset == 7) {
 					break;
 				}
+				moves.push("" + (x+xOffset)+ ""+(y+yOffset))
+				xOffset -= 1;
+				yOffset += 1;
 			}
 			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
