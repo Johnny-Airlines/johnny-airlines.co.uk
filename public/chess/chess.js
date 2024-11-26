@@ -12,6 +12,28 @@ var board = [
 var selectedPiece = false;
 var selectedPieceLocation;
 var turn = "W";
+var playingBot = true;
+if (playingBot) {
+	stockfish({fen:fen()}).then((data)=>{
+		console.log(data.move)
+		conversionArray = ["a","b","c","d","e","f","g","h"]
+		x1 = conversionArray.indexOf(data.move.charAt(0));
+		y1 = 8-parseInt(data.move.charAt(1));
+		x2 = conversionArray.indexOf(data.move.charAt(2));
+		y2 = 8-parseInt(data.move.charAt(3));
+		board[y2][x2] = board[y1][x1];
+		board[y1][x1] = "";
+		updateBoard();
+		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+	})
+	.catch((e)=> {
+		console.log(e)
+		alert("Stockfish broke for some reason, now its ur turn.");
+	});
+	turn = "B";
+	document.getElementById("turnTxt").innerHTML = "Black";
+}
+
 chessboardhtml.addEventListener("click", (evt) => {
 	console.log("Id: " + evt.target.id + " Piece: " + board[parseInt(evt.target.id.charAt(1))][parseInt(evt.target.id.charAt(0))])
 	id = evt.target.id;
@@ -38,11 +60,37 @@ chessboardhtml.addEventListener("click", (evt) => {
 		selectedPiece = false;
 		if (turn == "W") {
 			turn = "B";
+			if (isKingInCheck("B")) {
+				console.log("BLACK CHECK")
+			}
 			document.getElementById("turnTxt").innerHTML = "Black";
 		}
 		else {
 			turn = "W";
+			if (isKingInCheck("W")) {
+				console.log("WHITE CHECK")
+			}
 			document.getElementById("turnTxt").innerHTML = "White";
+			if (playingBot) {
+				stockfish({fen:fen()}).then((data)=>{
+					console.log(data.move)
+					conversionArray = ["a","b","c","d","e","f","g","h"]
+					x1 = conversionArray.indexOf(data.move.charAt(0));
+					y1 = 8-parseInt(data.move.charAt(1));
+					x2 = conversionArray.indexOf(data.move.charAt(2));
+					y2 = 8-parseInt(data.move.charAt(3));
+					board[y2][x2] = board[y1][x1];
+					board[y1][x1] = "";
+					updateBoard();
+					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+				})
+				.catch((e)=> {
+					console.log(e)
+					alert("Stockfish broke for some reason, now its ur turn.");
+				});
+				turn = "B";
+				document.getElementById("turnTxt").innerHTML = "Black";
+			}
 		}
 		updateBoard();
 	}
@@ -94,12 +142,14 @@ function isValidMove(piece, origin, destination) {
 	return validMoves(piece,origin).includes(destination);
 }
 
-function validMoves(piece,origin) {
+function pseudoValidMoves(piece,origin) {
 	moves = []
 	x = parseInt(origin.charAt(0))
 	y = parseInt(origin.charAt(1))
-	if (piece.charAt(1) == "p") {
-		if (piece.charAt(0) == "W") {
+	pieceColour = piece.charAt(0)
+	pieceType = piece.charAt(1)	
+	if (pieceType == "p") {
+		if (pieceColour == "W") {
 			if (board[y-1][x] == "") {
 				moves.push(""+x+""+(y-1));
 			}
@@ -117,7 +167,7 @@ function validMoves(piece,origin) {
 				}
 			}
 		}
-		if (piece.charAt(0) == "B") {
+		if (pieceColour == "B") {
 			if (board[y+1][x] == ""){
 				moves.push(""+x+""+(y+1));
 			}
@@ -136,7 +186,60 @@ function validMoves(piece,origin) {
 			}
 		}
 	}
-	if (piece.charAt(1) == "r" || piece.charAt(1) == "q") {
+	if (pieceType == "k") {
+		xOffset = 0;
+		yOffset = -1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 1;
+		yOffset = -1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 1;
+		yOffset = 0;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 1;
+		yOffset = 1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 0;
+		yOffset = 1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -1;
+		yOffset = 1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -1;
+		yOffset = 0;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -1;
+		yOffset = -1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+
+	}
+	if (pieceType == "n") {
+		xOffset = 1;
+		yOffset = -2;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 2;
+		yOffset = -1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 2;
+		yOffset = 1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = 1;
+		yOffset = 2;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -1;
+		yOffset = 2;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -2;
+		yOffset = 1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -2;
+		yOffset = -1;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+		xOffset = -1;
+		yOffset = -2;
+		if (x+xOffset >= 0 && y+yOffset >= 0 && x+xOffset <= 7 && y+yOffset <= 7 && pieceColour != board[y+yOffset][x+xOffset].charAt(0)) moves.push(""+(x+xOffset)+""+(y+yOffset));
+	}
+	if (pieceType == "r" || pieceType == "q") {
 		if (x != 7) {
 			xOffset = 1;
 			while (board[y][x+xOffset] == "") {
@@ -146,7 +249,7 @@ function validMoves(piece,origin) {
 				moves.push("" + (x+xOffset)+ ""+y)
 				xOffset += 1;
 			}
-			if (board[y][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+y);
 			}
 		}
@@ -159,7 +262,7 @@ function validMoves(piece,origin) {
 				moves.push("" + (x+xOffset)+ ""+y)
 				xOffset -= 1;
 			}
-			if (board[y][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+y);
 			}
 		}
@@ -172,7 +275,7 @@ function validMoves(piece,origin) {
 				moves.push("" + x+ ""+(y+yOffset))
 				yOffset += 1;
 			}
-			if (board[y+yOffset][x].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x].charAt(0) != pieceColour){
 				moves.push(""+x+""+(y+yOffset));
 			}
 		}
@@ -185,12 +288,12 @@ function validMoves(piece,origin) {
 				moves.push("" + x+ ""+(y+yOffset))
 				yOffset -= 1;
 			}
-			if (board[y+yOffset][x].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x].charAt(0) != pieceColour){
 				moves.push(""+x+""+(y+yOffset));
 			}
 		}
 	}
-	if (piece.charAt(1) == "b" || piece.charAt(1) == "q") {
+	if (pieceType == "b" || pieceType == "q") {
 		if (x != 7 && y != 0 ) {
 			xOffset = 1;
 			yOffset = -1;
@@ -202,7 +305,7 @@ function validMoves(piece,origin) {
 				xOffset += 1;
 				yOffset -= 1;
 			}
-			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
 			}
 		}
@@ -217,7 +320,7 @@ function validMoves(piece,origin) {
 				xOffset -= 1;
 				yOffset -= 1;
 			}
-			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
 			}
 		}
@@ -232,7 +335,7 @@ function validMoves(piece,origin) {
 				xOffset += 1;
 				yOffset += 1;
 			}
-			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
 			}
 		}
@@ -247,10 +350,87 @@ function validMoves(piece,origin) {
 				xOffset -= 1;
 				yOffset += 1;
 			}
-			if (board[y+yOffset][x+xOffset].charAt(0) != piece.charAt(0)){
+			if (board[y+yOffset][x+xOffset].charAt(0) != pieceColour){
 				moves.push(""+(x+xOffset)+""+(y+yOffset));
 			}
 		}
 	}
 	return moves;
+}
+
+function validMoves(piece,origin) {
+	movesToTest = pseudoValidMoves(piece,origin);
+	vMoves = [];
+	oldBoard = JSON.parse(JSON.stringify(board))
+	for ( const testingMove of movesToTest) {
+		board[testingMove.charAt(1)][testingMove.charAt(0)]=piece;
+		board[origin.charAt(1)][origin.charAt(0)]="";
+		if (!isKingInCheck(piece.charAt(0))) {
+			vMoves.push(testingMove);
+		}
+		board = JSON.parse(JSON.stringify(oldBoard))
+	}
+	return vMoves;
+}
+
+function isKingInCheck(king) {
+	if (king == "W") otherColour = "B"
+	if (king == "B") otherColour = "W"
+	for (i=0;i<8;i++) {
+		for (j=0;j<8;j++) {
+			if (board[j][i].charAt(0)==otherColour){
+				for (const move of pseudoValidMoves(board[j][i],""+i+""+j)) {
+					if (board[move.charAt(1)][move.charAt(0)] == (king + "" + "k")) {
+						return true;
+					}
+				}
+			}
+		}
+	}
+	return false;
+}
+
+function fen() {
+	fenString = "";
+	counter = 0;
+	for(i=0;i<8;i++) {
+		for(j=0;j<8;j++) {
+			if (board[i][j].charAt(0)=="W") {
+				if (counter != 0) {
+					fenString = fenString.concat(counter);
+				}
+				counter = 0;
+				fenString = fenString.concat(board[i][j].charAt(1).toUpperCase());
+			}
+			else if (board[i][j].charAt(0)=="") {
+				counter++;
+			}
+			else {
+				if (counter != 0) {
+					fenString = fenString.concat(counter);
+				}
+				counter = 0;
+				fenString = fenString.concat(board[i][j].charAt(1).toLowerCase());
+			}
+		}
+		if (counter != 0) {
+			fenString = fenString.concat(counter);
+		}
+		counter = 0;
+		fenString = fenString.concat("/");
+	}
+	fenString = fenString.substring(0,fenString.length-1);
+	fenString = fenString.concat(" "+turn.toLowerCase() + " " + "KQkq" + " " + "-" + " " + "0" + " " + "1")
+	return fenString;
+}
+
+async function stockfish(data = {}) {
+    const response = await fetch("https://chess-api.com/v1", {
+        method: "POST",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(data),
+    });
+    return response.json();
 }
