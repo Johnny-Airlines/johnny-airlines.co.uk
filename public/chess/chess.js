@@ -50,7 +50,9 @@ chessboardhtml.addEventListener("click", (evt) => {
 			}
 			document.getElementById("turnTxt").innerHTML = "White";
 		}
-		console.log(postChessApi({fen:fen()}));
+		postChessApi({fen:fen()}).then((resp)=>{
+			alert(resp.json())
+		});
 		updateBoard();
 	}
 	else if (selectedPiece != false && !isValidMove(selectedPiece,selectedPieceLocation,id)) {
@@ -384,12 +386,17 @@ function fen() {
 }
 
 async function postChessApi(data = {}) {
-    const response = await fetch("https://chess-api.com/v1", {
+    const response = fetch("https://chess-api.com/v1", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
-    });
-    return response.json();
+    }).then((resp)=>resp.json());
+	const resp = async () => {
+		const a = await response;
+		alert(JSON.stringify(a))
+	}
+	resp()
+	return response.json();
 }
