@@ -12,6 +12,28 @@ var board = [
 var selectedPiece = false;
 var selectedPieceLocation;
 var turn = "W";
+var playingBot = true;
+if (playingBot) {
+	stockfish({fen:fen()}).then((data)=>{
+		console.log(data.move)
+		conversionArray = ["a","b","c","d","e","f","g","h"]
+		x1 = conversionArray.indexOf(data.move.charAt(0));
+		y1 = 8-parseInt(data.move.charAt(1));
+		x2 = conversionArray.indexOf(data.move.charAt(2));
+		y2 = 8-parseInt(data.move.charAt(3));
+		board[y2][x2] = board[y1][x1];
+		board[y1][x1] = "";
+		updateBoard();
+		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+	})
+	.catch((e)=> {
+		console.log(e)
+		alert("Stockfish broke for some reason, now its ur turn.");
+	});
+	turn = "B";
+	document.getElementById("turnTxt").innerHTML = "Black";
+}
+
 chessboardhtml.addEventListener("click", (evt) => {
 	console.log("Id: " + evt.target.id + " Piece: " + board[parseInt(evt.target.id.charAt(1))][parseInt(evt.target.id.charAt(0))])
 	id = evt.target.id;
@@ -49,10 +71,27 @@ chessboardhtml.addEventListener("click", (evt) => {
 				console.log("WHITE CHECK")
 			}
 			document.getElementById("turnTxt").innerHTML = "White";
+			if (playingBot) {
+				stockfish({fen:fen()}).then((data)=>{
+					console.log(data.move)
+					conversionArray = ["a","b","c","d","e","f","g","h"]
+					x1 = conversionArray.indexOf(data.move.charAt(0));
+					y1 = 8-parseInt(data.move.charAt(1));
+					x2 = conversionArray.indexOf(data.move.charAt(2));
+					y2 = 8-parseInt(data.move.charAt(3));
+					board[y2][x2] = board[y1][x1];
+					board[y1][x1] = "";
+					updateBoard();
+					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+				})
+				.catch((e)=> {
+					console.log(e)
+					alert("Stockfish broke for some reason, now its ur turn.");
+				});
+				turn = "B";
+				document.getElementById("turnTxt").innerHTML = "Black";
+			}
 		}
-		postChessApi({fen:fen()}).then((resp)=>{
-			alert(resp.json())
-		});
 		updateBoard();
 	}
 	else if (selectedPiece != false && !isValidMove(selectedPiece,selectedPieceLocation,id)) {
@@ -385,18 +424,13 @@ function fen() {
 	return fenString;
 }
 
-async function postChessApi(data = {}) {
-    const response = fetch("https://chess-api.com/v1", {
+async function stockfish(data = {}) {
+    const response = await fetch("https://chess-api.com/v1", {
         method: "POST",
         headers: {
             "Content-Type": "application/json"
         },
         body: JSON.stringify(data),
-    }).then((resp)=>resp.json());
-	const resp = async () => {
-		const a = await response;
-		alert(JSON.stringify(a))
-	}
-	resp()
-	return response.json();
+    });
+    return response.json();
 }
