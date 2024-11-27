@@ -12,10 +12,10 @@ var board = [
 var selectedPiece = false;
 var selectedPieceLocation;
 var turn = "W";
-var whiteKingCastle = true;
-var whiteQueenCastle = true;
-var blackKingCastle = true;
-var blackQueenCastle = true;
+var whiteKingCastle = false;
+var whiteQueenCastle = false;
+var blackKingCastle = false;
+var blackQueenCastle = false;
 var playingBot = true;
 if (playingBot) {
 	stockfish({fen:fen()}).then((data)=>{
@@ -425,7 +425,7 @@ function fen() {
 		fenString = fenString.concat("/");
 	}
 	fenString = fenString.substring(0,fenString.length-1);
-	fenString = fenString.concat(" "+turn.toLowerCase() + " " + (whiteKingCastle ? "K" : "") + (whiteQueenCastle ? "Q" : "") + (blackKingCastle ? "k" : "") + (blackQueenCastle ? "q" : "") + " " + "-" + " " + "0" + " " + "1")
+	fenString = fenString.concat(" "+turn.toLowerCase() + " " + (whiteKingCastle ? "K" : "") + (whiteQueenCastle ? "Q" : "") + (blackKingCastle ? "k" : "") + (blackQueenCastle ? "q" : "") + (!whiteKingCastle&&!whiteQueenCastle&&!blackKingCastle&&!blackQueenCastle ? "-" : "") + " " + "-" + " " + "0" + " " + "1")
 	return fenString;
 }
 
