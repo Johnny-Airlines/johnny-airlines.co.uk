@@ -457,6 +457,12 @@ function stockfishPlays() {
 				board[7][5] = "Wr";
 				board[7][7] = "";
 			}
+			if (data.move == "e8g8") {
+				blackQueenCastle = false;
+				blackKingCastle = false;
+				board[0][5] = "Br";
+				board[0][7] = "";
+			}
 			updateBoard();
 			console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
 			if (turn == "W") {
