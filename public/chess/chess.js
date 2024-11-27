@@ -453,6 +453,7 @@ function stockfishPlays() {
 			board[y1][x1] = "";
 			if (data.move == "e1g1") {
 				whiteKingCastle = false;
+				whiteQueenCastle = false;
 				board[7][5] = "Wr";
 				board[7][7] = "";
 			}
