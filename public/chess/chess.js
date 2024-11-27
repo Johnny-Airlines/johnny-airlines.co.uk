@@ -12,6 +12,10 @@ var board = [
 var selectedPiece = false;
 var selectedPieceLocation;
 var turn = "W";
+var whiteKingCastle = true;
+var whiteQueenCastle = true;
+var blackKingCastle = true;
+var blackQueenCastle = true;
 var playingBot = true;
 if (playingBot) {
 	stockfish({fen:fen()}).then((data)=>{
@@ -73,6 +77,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 			document.getElementById("turnTxt").innerHTML = "White";
 			if (playingBot) {
 				stockfish({fen:fen()}).then((data)=>{
+					console.log(data)
 					console.log(data.move)
 					conversionArray = ["a","b","c","d","e","f","g","h"]
 					x1 = conversionArray.indexOf(data.move.charAt(0));
@@ -420,7 +425,7 @@ function fen() {
 		fenString = fenString.concat("/");
 	}
 	fenString = fenString.substring(0,fenString.length-1);
-	fenString = fenString.concat(" "+turn.toLowerCase() + " " + "KQkq" + " " + "-" + " " + "0" + " " + "1")
+	fenString = fenString.concat(" "+turn.toLowerCase() + " " + (whiteKingCastle ? "K" : "") + (whiteQueenCastle ? "Q" : "") + (blackKingCastle ? "k" : "") + (blackQueenCastle ? "q" : "") + " " + "-" + " " + "0" + " " + "1")
 	return fenString;
 }
 
@@ -433,4 +438,40 @@ async function stockfish(data = {}) {
         body: JSON.stringify(data),
     });
     return response.json();
+}
+function stockfishPlays() {
+	if (playingBot) {
+		stockfish({fen:fen()}).then((data)=>{
+			console.log(data)
+			console.log(data.move)
+			conversionArray = ["a","b","c","d","e","f","g","h"]
+			x1 = conversionArray.indexOf(data.move.charAt(0));
+			y1 = 8-parseInt(data.move.charAt(1));
+			x2 = conversionArray.indexOf(data.move.charAt(2));
+			y2 = 8-parseInt(data.move.charAt(3));
+			board[y2][x2] = board[y1][x1];
+			board[y1][x1] = "";
+			if (data.move == "e1g1") {
+				whiteKingCastle = false;
+				board[7][5] = "Wr";
+				board[7][7] = "";
+			}
+			updateBoard();
+			console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+			if (turn == "W") {
+				turn = "B";
+				document.getElementById("turnTxt").innerHTML = "Black";
+			}
+			else {
+				turn = "W";
+				document.getElementById("turnTxt").innerHTML = "White";
+			}
+			stockfishPlays()
+		})
+		.catch((e)=> {
+			console.log(e)
+			alert("Stockfish broke for some reason, now its ur turn.");
+		});
+		
+	}
 }
