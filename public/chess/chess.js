@@ -425,7 +425,8 @@ function fen() {
 		fenString = fenString.concat("/");
 	}
 	fenString = fenString.substring(0,fenString.length-1);
-	fenString = fenString.concat(" "+turn.toLowerCase() + " " + (whiteKingCastle ? "K" : "") + (whiteQueenCastle ? "Q" : "") + (blackKingCastle ? "k" : "") + (blackQueenCastle ? "q" : "") + (!whiteKingCastle&&!whiteQueenCastle&&!blackKingCastle&&!blackQueenCastle ? "-" : "") + " " + "-" + " " + "0" + " " + "1")
+	//fenString = fenString.concat(" "+turn.toLowerCase() + " " + (whiteKingCastle ? "K" : "") + (whiteQueenCastle ? "Q" : "") + (blackKingCastle ? "k" : "") + (blackQueenCastle ? "q" : "") + (!whiteKingCastle&&!whiteQueenCastle&&!blackKingCastle&&!blackQueenCastle ? "-" : "") + " " + "-" + " " + "0" + " " + "1")
+	fenString = fenString.concat(" " + turn.toLowerCase() + " - - 0 1")
 	return fenString;
 }
 
@@ -442,6 +443,7 @@ async function stockfish(data = {}) {
 function stockfishPlays() {
 	if (playingBot) {
 		stockfish({fen:fen()}).then((data)=>{
+			console.log(fen())
 			console.log(data)
 			console.log(data.move)
 			conversionArray = ["a","b","c","d","e","f","g","h"]
