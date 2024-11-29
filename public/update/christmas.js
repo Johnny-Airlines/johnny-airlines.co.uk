@@ -1,4 +1,3 @@
-//Firebse Initialize
 const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
   authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -10,6 +9,7 @@ const firebaseConfig = {
   measurementId: "G-V3TKRXKCV6"
 };
 firebase.initializeApp(firebaseConfig);
+
 //Databse refrences
 const db = firebase.database();
 const playersRef = db.ref("players");
@@ -24,6 +24,7 @@ firebase.auth().onAuthStateChanged((user) => {
         const email =
             user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
         const photoURL = user.photoURL;
+        const fetchTicket = db.ref("tickets/" + uid);
         startGame(displayName, email, uid, photoURL);
     } else {
         window.location.href = "../accounts.html";
@@ -405,6 +406,21 @@ function shoot() {
     db.ref(`bullets/`).child(myPlayer.id).child(bullet.key).update(bullet);
 }
 
+function updateDisplayName() {
+    firebase
+        .auth()
+        .currentUser.updateProfile({
+            displayName: prompt(""),
+        })
+        .then(() => {
+            myPlayer.displayName = firebase.auth().currentUser.displayName;
+            document.getElementById("overlaydname").innerHTML =
+                firebase.auth().currentUser.displayName;
+            document.getElementById("dname").innerHTML =
+                firebase.auth().currentUser.displayName;
+        });
+}
+
 //Drawing Functions
 function buttonDraw() {
     ctx = gameArea.context;
@@ -533,8 +549,13 @@ function startGame(displayName, email, uid, plane) {
     document.getElementById("pfp").src = plane;
     document.getElementById("dname").innerHTML = displayName;
     document.getElementById("uname").innerHTML = email;
+    document.getElementById("overlaypfp").src = plane;
+    document.getElementById("overlaydname").innerHTML = displayName;
+    document.getElementById("overlayuname").innerHTML = email;
     db.ref("users/" + uid + "/tickets").on("value", (snapshot) => {
         document.getElementById("ticketDisplay").innerHTML =
+            ":" + snapshot.val();
+        document.getElementById("overlayticketDisplay").innerHTML =
             ":" + snapshot.val();
     });
     tennis = {
@@ -557,17 +578,15 @@ function startGame(displayName, email, uid, plane) {
     });
     db.ref(`bullets`).on("value", (snapshot) => {
         bullets = snapshot.val();
-        console.log(bullets);
     });
     db.ref(`bombs`).on("child_removed", (snapshot) => {
         const bulletId = snapshot.key;
         bullets = bullets.filter((bullet) => bullet.id !== bulletId);
-        console.log(bullets);
     });
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
     });
-    document.getElementById("shop");
+
     playersRef.on("value", (snapshot) => {
         players = snapshot.val();
         for (const playerId in players) {
@@ -638,7 +657,7 @@ function updateGameArea() {
         myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" &&
         keysPressed.includes(66)
     ) {
-        myPlayer.acceleration = 100;
+        myPlayer.acceleration = 100000;
     }
 
     cleanUpArray();
@@ -654,7 +673,7 @@ function updateGameArea() {
 
     myPlayer.update();
     buttonDraw();
-	towers();
+    towers();
     if (tennis.play) {
         tennisUpdate();
     }
@@ -864,3 +883,4 @@ function getChallengeStatus(challengedUid) {
     });
 }
 //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
+
