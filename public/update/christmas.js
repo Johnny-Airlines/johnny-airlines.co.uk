@@ -107,6 +107,14 @@ const bulletImg = new Image();
 bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
+
+//CHRISTMAS
+const christmasTreeFrame1 = new Image();
+christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
+const christmasTreeFrame2 = new Image();
+christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
+var cFrame = 1;
+
 //Other Variables
 let ctx;
 var myPlayer;
@@ -530,6 +538,16 @@ function fetchPlayer(playerName) {
     return null;
 }
 
+function christmasTreeDraw() {
+	cFrame ++;
+	if (cFrame > 1000) {
+		cFrame = 0
+		console.log("1")
+	} else if (cFrame > 500) {
+		console.log("2")
+	}
+}
+
 //Start Game
 function startGame(displayName, email, uid, plane) {
     gameArea.start();
@@ -673,6 +691,7 @@ function updateGameArea() {
 
     myPlayer.update();
     buttonDraw();
+	christmasTreeDraw();
     towers();
     if (tennis.play) {
         tennisUpdate();
