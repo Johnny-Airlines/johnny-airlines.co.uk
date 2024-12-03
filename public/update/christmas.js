@@ -539,12 +539,28 @@ function fetchPlayer(playerName) {
 }
 
 function christmasTreeDraw() {
-	cFrame ++;
-	if (cFrame > 1000) {
-		cFrame = 0
-		console.log("1")
-	} else if (cFrame > 500) {
-		console.log("2")
+	cFrame += 1;
+    //document.getElementById("ticketDisplay").innerHTML = cFrame;
+    ctx = gameArea.context;
+    if (cFrame >= 100) {
+        cFrame = 0    ;
+    }
+ 	if (cFrame >= 50) {
+        ctx.drawImage(
+            christmasTreeFrame1,
+            8000 + myPlayer.x + gameArea.canvas.width / 2,
+            8000 + myPlayer.y + gameArea.canvas.height / 2,
+            272,
+            448,
+        );
+	} else if (cFrame <= 50) {
+		ctx.drawImage(
+            christmasTreeFrame2,
+            8000 + myPlayer.x + gameArea.canvas.width / 2,
+            8000 + myPlayer.y + gameArea.canvas.height / 2,
+            272,
+            448,
+        );
 	}
 }
 
