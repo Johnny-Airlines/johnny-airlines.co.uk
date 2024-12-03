@@ -113,7 +113,12 @@ const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
+const presentImage = new Image();
+presentImage.src = "../LGD.png"
 var cFrame = 1;
+var presentX = 0;
+var presentY = 0;
+
 
 //Other Variables
 let ctx;
@@ -377,16 +382,20 @@ class Bomb {
 
     draw() {
         var frameImage = new Image();
-        frameImage.src =
-            "https://johnny-airlines.co.uk/bomb/" + this.frame + ".png";
-        ctx.drawImage(
-            frameImage,
-            -this.x + myPlayer.x + gameArea.canvas.width / 2 - 78,
-            -this.y + myPlayer.y + gameArea.canvas.height / 2 - 69,
-            78 * 2,
-            69 * 2,
-        );
+        frameImage.src = "https://johnny-airlines.co.uk/bomb/" + this.frame + ".png";
+        drawImageAtFixedPosition(frameImage,-this.x-79,-this.y-69,78*2,69*2)
     }
+}
+
+function drawImageAtFixedPosition(image,x,y,width,height) {
+    ctx = gameArea.context;
+    ctx.drawImage(
+        image,
+        x + myPlayer.x + gameArea.canvas.width / 2,
+        y + myPlayer.y + gameArea.canvas.height / 2,
+        width,
+        height,
+    );
 }
 
 function dropBomb() {
@@ -432,13 +441,7 @@ function updateDisplayName() {
 //Drawing Functions
 function buttonDraw() {
     ctx = gameArea.context;
-    ctx.drawImage(
-        btn,
-        12249 + myPlayer.x + gameArea.canvas.width / 2,
-        3249 + myPlayer.y + gameArea.canvas.height / 2,
-        800,
-        800,
-    );
+    drawImageAtFixedPosition(btn,12249,3249,800,800)
     ctx.font = "250px serif";
     ctx.textAlign = "center";
     ctx.fillStyle = "#000000";
@@ -486,13 +489,7 @@ function miniMap() {
 
 function towers() {
     ctx = gameArea.context;
-    ctx.drawImage(
-        towersImg,
-        2227 + myPlayer.x + gameArea.canvas.width / 2,
-        5000 + myPlayer.y + gameArea.canvas.height / 2,
-        530,
-        970,
-    );
+    drawImageAtFixedPosition(towersImg,2227,5000,530,970)
 }
 
 function interact() {
@@ -540,28 +537,20 @@ function fetchPlayer(playerName) {
 
 function christmasTreeDraw() {
 	cFrame += 1;
-    //document.getElementById("ticketDisplay").innerHTML = cFrame;
-    ctx = gameArea.context;
+
     if (cFrame >= 100) {
         cFrame = 0    ;
     }
  	if (cFrame >= 50) {
-        ctx.drawImage(
-            christmasTreeFrame1,
-            8000 + myPlayer.x + gameArea.canvas.width / 2,
-            8000 + myPlayer.y + gameArea.canvas.height / 2,
-            272,
-            448,
-        );
+        drawImageAtFixedPosition(chistmasTreeFrame1,8000,8000,272,448)
+
 	} else if (cFrame <= 50) {
-		ctx.drawImage(
-            christmasTreeFrame2,
-            8000 + myPlayer.x + gameArea.canvas.width / 2,
-            8000 + myPlayer.y + gameArea.canvas.height / 2,
-            272,
-            448,
-        );
+        drawImageAtFixedPosition(christmasTreeFrame2,8000,8000,272,448)
 	}
+}
+
+function presentDraw() {
+    drawImageAtFixedPosition(presentImage,presentX,presentY,66,87)
 }
 
 //Start Game
@@ -708,6 +697,7 @@ function updateGameArea() {
     myPlayer.update();
     buttonDraw();
 	christmasTreeDraw();
+    presentDraw();
     towers();
     if (tennis.play) {
         tennisUpdate();
