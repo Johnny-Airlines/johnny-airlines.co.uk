@@ -560,7 +560,7 @@ function presentDraw() {
 		reward = Math.floor(Math.random()*5)
 		planeWin = Math.floor(Math.random()*100)
 		if (planeWin == 1) {
-			alert("You won a christmas plane! Check the shop after refreshing to equip your plane!")
+			alert("You found a christmas plane in the present! Check the shop after refreshing to equip your plane!")
 			db.ref(`users/${myPlayer.id}/ownedPlanes`).once("value", (snapshot) => {
 				ownedPlanes = snapshot.val()
 				ownedPlanes.push("christmasPlane");
@@ -573,14 +573,14 @@ function presentDraw() {
 			alert("You got a lump of coal")
 		}
 		else if (reward == 1) {
-			alert("You won 1 ticket")
+			alert("You found a ticket in tje present!")
 			tickets = tickets + 1
 			db.ref(`users/${myPlayer.id}`).update({
 				tickets,
 			});
 		}
 		else {
-			alert("You won " + reward + " tickets.")
+			alert("You found " + reward + " tickets in the present!")
 			tickets = tickets + reward
 			db.ref(`users/${myPlayer.id}`).update({
 				tickets,
