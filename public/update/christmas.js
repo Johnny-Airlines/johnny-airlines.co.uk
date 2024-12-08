@@ -24,7 +24,6 @@ firebase.auth().onAuthStateChanged((user) => {
         const email =
             user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
         const photoURL = user.photoURL;
-        const fetchTicket = db.ref("tickets/" + uid);
         startGame(displayName, email, uid, photoURL);
     } else {
         window.location.href = "../accounts.html";
@@ -107,14 +106,15 @@ const bulletImg = new Image();
 bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
-
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
 const presentImage = new Image();
-presentImage.src = "../LGD.png"
+presentImage.src = "../present.png"
+const presentIconImage = new Image();
+presentIconImage.src = "../presentIcon.png"
 var cFrame = 1;
 var presentX = 0;
 var presentY = 0;
@@ -128,6 +128,7 @@ let bombs = [];
 let bullets = [];
 let tennis = {};
 let challenges;
+let tickets;
 //Particle Variables
 var particleConfig = {
     particleNumber: 200,
@@ -479,12 +480,18 @@ function miniMap() {
     ctx.drawImage(mini, Math.floor(gameArea.canvas.width - 200), 0, 200, 200);
     ctx.drawImage(
         playerPoint,
-        Math.floor(gameArea.canvas.width - 200 - (myPlayer.x / 16000) * 200) -
-            5,
+        Math.floor(gameArea.canvas.width - 200 - (myPlayer.x / 16000) * 200) - 5,
         Math.floor((-myPlayer.y / 16000) * 200) - 5,
         10,
         10,
     );
+	ctx.drawImage(
+		presentIconImage,
+		Math.floor(gameArea.canvas.width - 200 + (presentX / 16000) * 200) - 5,
+		Math.floor((presentY / 16000)*200)-5,
+		7,
+		7,
+	);
 }
 
 function towers() {
@@ -542,15 +549,41 @@ function christmasTreeDraw() {
         cFrame = 0    ;
     }
  	if (cFrame >= 50) {
-        drawImageAtFixedPosition(chistmasTreeFrame1,8000,8000,272,448)
-
+        drawImageAtFixedPosition(christmasTreeFrame1,8000,8000,272,448)
 	} else if (cFrame <= 50) {
         drawImageAtFixedPosition(christmasTreeFrame2,8000,8000,272,448)
 	}
 }
 
 function presentDraw() {
-    drawImageAtFixedPosition(presentImage,presentX,presentY,66,87)
+	if (Math.abs(myPlayer.x+presentX) <= 40 && Math.abs(myPlayer.y+presentY) <= 46) {
+		reward = Math.floor(Math.random()*5)
+		planeWin = Math.floor(Math.random()*100)
+		if (planeWin == 1) {
+			alert("You won a chirstmas plane!")
+		}
+		else if (reward == 1) {
+			alert("You won 1 ticket")
+			tickets = tickets + 1
+			db.ref(`users/${myPlayer.id}`).update({
+				tickets,
+			});
+		}
+		else {
+			alert("You won " + reward + " tickets.")
+			tickets = tickets + reward
+			db.ref(`users/${myPlayer.id}`).update({
+				tickets,
+			});
+		}
+		presentX = Math.floor(Math.random()*16000);
+		presentY = Math.floor(Math.random()*16000);
+		db.ref(`/`).update({
+			presentX,
+			presentY
+		});
+	}
+    drawImageAtFixedPosition(presentImage,presentX-40,presentY-46,80,92)
 }
 
 //Start Game
@@ -580,6 +613,7 @@ function startGame(displayName, email, uid, plane) {
             ":" + snapshot.val();
         document.getElementById("overlayticketDisplay").innerHTML =
             ":" + snapshot.val();
+		tickets = snapshot.val();
     });
     tennis = {
         game: false,
@@ -609,6 +643,12 @@ function startGame(displayName, email, uid, plane) {
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
     });
+	db.ref(`presentX`).on("value", (snapshot) => {
+		presentX = snapshot.val();
+	});
+	db.ref(`presentY`).on("value", (snapshot) => {
+		presentY = snapshot.val();
+	}); 
 
     playersRef.on("value", (snapshot) => {
         players = snapshot.val();
