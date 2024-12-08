@@ -17,7 +17,7 @@ const firebaseConfig = {
   measurementId: "G-V3TKRXKCV6"
 
 };
-
+firebase.initializeApp(firebaseConfig);
 const db = firebase.database();
 var uid = "";
 firebase.auth().onAuthStateChanged((user) => {
@@ -62,7 +62,8 @@ firebase.auth().onAuthStateChanged((user) => {
             if (tickets == null) {
                 db.ref('users/' + uid).set({
                     tickets: 0,
-                    username: email.replace("@johnny-airlines.co.uk","")
+                    username: email.replace("@johnny-airlines.co.uk",""),
+					ownedPlanes:["Plane"],
                 })
             }
             else {

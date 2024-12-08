@@ -17,7 +17,8 @@ const titleDict = {
 	"colour_planes/Grey":"Grey",
 	"colour_planes/Pink":"Pink",
 	"colour_planes/White":"White",
-	"colour_planes/Yellow":"Yellow"
+	"colour_planes/Yellow":"Yellow",
+	"christmasPlane":"Christmas Plane(2024)"
 }
 
 const descDict = {
@@ -29,7 +30,8 @@ const descDict = {
 	"colour_planes/Grey":"A grey plane.",
 	"colour_planes/Pink":"A pink plane.",
 	"colour_planes/White":"A white plane.",
-	"colour_planes/Yellow":"A yellow plane."
+	"colour_planes/Yellow":"A yellow plane.",
+	"christmasPlane":"The christmas plane from the 2024 christmas event",
 }
 
 const buttonDict = {
@@ -41,7 +43,8 @@ const buttonDict = {
 	"colour_planes/Grey":"Buy",
 	"colour_planes/Pink":"Buy",
 	"colour_planes/White":"Buy",
-	"colour_planes/Yellow":"Buy"
+	"colour_planes/Yellow":"Buy",
+	"christmasPlane":"Must be found in present"
 }
 
 const costDict = {
@@ -53,7 +56,8 @@ const costDict = {
 	"colour_planes/Grey":25,
 	"colour_planes/Pink":25,
 	"colour_planes/White":25,
-	"colour_planes/Yellow":25
+	"colour_planes/Yellow":25,
+	"christmasPlane":""
 }
 
 
@@ -65,14 +69,14 @@ function loadShop() {
         })
     });
     var pfpUrl = firebase.auth().currentUser.photoURL;
-    var equipedPlane = pfpUrl.replace("https://johnny-airlines.co.uk/","")
+    var equipedPlane = pfpUrl.replace("../","")
     var equipedPlane = equipedPlane.replace(".png","")
     buttonDict[equipedPlane] = "Equiped"
 }
 
 function hoverOverShopItem(item) {
     loadShop()
-    shopItemImg.src = `https://johnny-airlines.co.uk/${item}.png`
+    shopItemImg.src = `../${item}.png`
     shopItemTitle.textContent = titleDict[item]
     shopItemDesc.textContent = descDict[item]
 	shopBuyButton.textContent = buttonDict[item]
@@ -85,18 +89,20 @@ shopBuyButton.addEventListener("click", buy);
 function buy() {
 	if (shopBuyButton.innerText.includes("Buy")) {
 		var plne = shopItemImg.src
-		plne = plne.replace("https://johnny-airlines.co.uk/","")
+		plne = plne.replace("https:/johnny-airlines.co.uk/","")
+		plne = plne.replace("http://localhost:8000/","")
 		plne = plne.replace(".png","")
 		db.ref(`/users/${firebase.auth().currentUser.uid}/tickets`).once("value", (snapshot) => {
 			var tickets = snapshot.val()
 			if (tickets < costDict[plne]) {
-				alert("YOU ARE TOO POOR, YOU PEASANT")
+				alert("YOU ARE TOO POOR")
 			} else {
 
 				db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
 					var ownedPlanes = snapshot.val();
+					console.log(ownedPlanes);
 					ownedPlanes.push(plne)
-					firebase.database().ref(`/users/${firebase.auth().currentUser.uid}/`).update({
+					db.ref(`/users/${firebase.auth().currentUser.uid}/`).update({
 						ownedPlanes: ownedPlanes,
 						tickets: tickets - costDict[plne]
 					})
@@ -106,6 +112,18 @@ function buy() {
 				hoverOverShopItem(plne)
 			}
 		})
+	}
+	else if (shopBuyButton.innerText == "Equip") {
+		var plne = shopItemImg.src;
+		console.log(plne)
+		if (plne.includes("localhost")) {
+			plne = plne.replace("http://localhost:8000/","")
+		}
+		console.log(plne)
+		firebase.auth().currentUser.updateProfile({
+			photoURL: "https://johnny-airlines.co.uk/"+plne,
+		});
+		alert("Please refresh for your plane to change");
 	}
 }
 
