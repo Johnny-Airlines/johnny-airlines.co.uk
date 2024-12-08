@@ -558,12 +558,18 @@ function christmasTreeDraw() {
 function presentDraw() {
 	if (Math.abs(myPlayer.x+presentX) <= 40 && Math.abs(myPlayer.y+presentY) <= 46) {
 		reward = Math.floor(Math.random()*5)
+<<<<<<< HEAD
 		planeWin = Math.floor(Math.random()*2)
 		if (planeWin == 1) {
 			alert("You won a christmas plane!")
 		}
 		else if (reward == 0) {
 			alert("You got a lump of coal")
+=======
+		planeWin = Math.floor(Math.random()*100)
+		if (planeWin == 1) {
+			alert("You won a chirstmas plane!")
+>>>>>>> f65e5f9b5267010803d9bf7211256b46634ad6ae
 		}
 		else if (reward == 1) {
 			alert("You won 1 ticket")
