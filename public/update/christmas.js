@@ -557,8 +557,8 @@ function christmasTreeDraw() {
 
 function presentDraw() {
 	if (Math.abs(myPlayer.x+presentX) <= 40 && Math.abs(myPlayer.y+presentY) <= 46) {
-		reward = Math.floor(Math.random()*5)
-		planeWin = Math.floor(Math.random()*100)
+		reward = Math.floor(Math.random()*2)
+		planeWin = Math.floor(Math.random()*1000)
 		if (planeWin == 1) {
 			alert("You found a christmas plane in the present! Check the shop after refreshing to equip your plane!")
 			db.ref(`users/${myPlayer.id}/ownedPlanes`).once("value", (snapshot) => {
