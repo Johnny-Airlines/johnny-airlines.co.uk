@@ -573,7 +573,7 @@ function presentDraw() {
 			alert("You got a lump of coal")
 		}
 		else if (reward == 1) {
-			alert("You found a ticket in tje present!")
+			alert("You found a ticket in the present!")
 			tickets = tickets + 1
 			db.ref(`users/${myPlayer.id}`).update({
 				tickets,
@@ -586,8 +586,8 @@ function presentDraw() {
 				tickets,
 			});
 		}
-		presentX = Math.floor(Math.random()*16000);
-		presentY = Math.floor(Math.random()*16000);
+		presentX = Math.floor(Math.random()*14000);
+		presentY = Math.floor(Math.random()*14000);
 		db.ref(`/`).update({
 			presentX,
 			presentY
