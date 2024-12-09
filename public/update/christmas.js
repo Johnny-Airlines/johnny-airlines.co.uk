@@ -573,7 +573,7 @@ function presentDraw() {
 			alert("You got a lump of coal")
 		}
 		else if (reward == 1) {
-			alert("You found a ticket in tje present!")
+			alert("You found a ticket in the present!")
 			tickets = tickets + 1
 			db.ref(`users/${myPlayer.id}`).update({
 				tickets,
