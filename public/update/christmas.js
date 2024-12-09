@@ -586,8 +586,8 @@ function presentDraw() {
 				tickets,
 			});
 		}
-		presentX = Math.floor(Math.random()*16000);
-		presentY = Math.floor(Math.random()*16000);
+		presentX = Math.floor(Math.random()*14000);
+		presentY = Math.floor(Math.random()*14000);
 		db.ref(`/`).update({
 			presentX,
 			presentY
