@@ -18,9 +18,9 @@ const titleDict = {
 	"colour_planes/Pink":"Pink",
 	"colour_planes/White":"White",
 	"colour_planes/Yellow":"Yellow",
-	"disco":"Disco",
-	"rainbow":"Rainbow",
-	"spitfire":"Spitfire",
+	"Disco":"Disco",
+	"Rainbow":"Rainbow",
+	"Spitfire":"Spitfire",
 	"christmasPlane":"Christmas Plane(2024)"
 }
 
@@ -34,9 +34,9 @@ const descDict = {
 	"colour_planes/Pink":"A pink plane.",
 	"colour_planes/White":"A white plane.",
 	"colour_planes/Yellow":"A yellow plane.",
-	"disco":"A disco plane.",
-	"rainbow":"A rainbow plane.",
-	"spitfire": "A classic plane from WW2 forever memorialized",
+	"Disco":"A disco plane.",
+	"Rainbow":"A rainbow plane.",
+	"Spitfire": "A classic plane from WW2 forever memorialized",
 	"christmasPlane":"The christmas plane from the 2024 christmas event",
 }
 
@@ -50,9 +50,9 @@ const buttonDict = {
 	"colour_planes/Pink":"Buy",
 	"colour_planes/White":"Buy",
 	"colour_planes/Yellow":"Buy",
-	"disco":"Buy",
-	"rainbow":"Buy",
-	"spitfire":"Buy",
+	"Disco":"Buy",
+	"Rainbow":"Buy",
+	"Spitfire":"Buy",
 	"christmasPlane":"Must be found in present"
 }
 
@@ -66,9 +66,9 @@ const costDict = {
 	"colour_planes/Pink":50,
 	"colour_planes/White":50,
 	"colour_planes/Yellow":52,
-	"disco":100,
-	"rainbow":200,
-	"spitfire":300,
+	"Disco":100,
+	"Rainbow":200,
+	"Spitfire":300,
 	"christmasPlane":""
 }
 
