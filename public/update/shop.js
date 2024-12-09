@@ -101,6 +101,8 @@ function buy() {
 				db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
 					var ownedPlanes = snapshot.val();
 					console.log(ownedPlanes);
+					console.log(tickets);
+					console.log(plne);
 					ownedPlanes.push(plne)
 					db.ref(`/users/${firebase.auth().currentUser.uid}/`).update({
 						ownedPlanes: ownedPlanes,
@@ -120,7 +122,7 @@ function buy() {
 			plne = plne.replace("http://localhost:8000/","")
 		}
 		if (plne.includes("https://johnny-airlines.co.uk/")) {
-			plne = plne.replace("https://johnny-airlines.co.uk/")
+			plne = plne.replace("https://johnny-airlines.co.uk/","")
 		}
 		console.log(plne)
 		firebase.auth().currentUser.updateProfile({
