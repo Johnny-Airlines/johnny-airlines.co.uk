@@ -119,6 +119,9 @@ function buy() {
 		if (plne.includes("localhost")) {
 			plne = plne.replace("http://localhost:8000/","")
 		}
+		if (plne.includes("https://johnny-airlines.co.uk/") {
+			plne = plne.replace("https://johnny-airlines.co.uk/")
+		}
 		console.log(plne)
 		firebase.auth().currentUser.updateProfile({
 			photoURL: "https://johnny-airlines.co.uk/"+plne,
