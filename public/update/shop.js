@@ -49,14 +49,14 @@ const buttonDict = {
 
 const costDict = {
     "Plane":0,
-    "colour_planes/Blue":25,
-	"colour_planes/Brown":25,
-	"colour_planes/Dark pink":25,
-	"colour_planes/Green":25,
-	"colour_planes/Grey":25,
-	"colour_planes/Pink":25,
-	"colour_planes/White":25,
-	"colour_planes/Yellow":25,
+    "colour_planes/Blue":50,
+	"colour_planes/Brown":50,
+	"colour_planes/Dark pink":50,
+	"colour_planes/Green":50,
+	"colour_planes/Grey":50,
+	"colour_planes/Pink":50,
+	"colour_planes/White":50,
+	"colour_planes/Yellow":52,
 	"christmasPlane":""
 }
 
