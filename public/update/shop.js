@@ -89,7 +89,7 @@ shopBuyButton.addEventListener("click", buy);
 function buy() {
 	if (shopBuyButton.innerText.includes("Buy")) {
 		var plne = shopItemImg.src
-		plne = plne.replace("https:/johnny-airlines.co.uk/","")
+		plne = plne.replace("https://johnny-airlines.co.uk/","")
 		plne = plne.replace("http://localhost:8000/","")
 		plne = plne.replace(".png","")
 		db.ref(`/users/${firebase.auth().currentUser.uid}/tickets`).once("value", (snapshot) => {
