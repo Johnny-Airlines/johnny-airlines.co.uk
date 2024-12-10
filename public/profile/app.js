@@ -64,6 +64,7 @@ firebase.auth().onAuthStateChanged((user) => {
                     tickets: 0,
                     username: email.replace("@johnny-airlines.co.uk",""),
 					ownedPlanes:["Plane"],
+					fuel: 100,
                 })
             }
             else {
