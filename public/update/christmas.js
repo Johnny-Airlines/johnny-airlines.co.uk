@@ -123,6 +123,8 @@ const bulletImg = new Image();
 bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
+const speechBubbleImg = new Image();
+speechBubbleImg.src = "../speechBubble.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -460,7 +462,7 @@ function updateDisplayName() {
 function buttonDraw() {
     ctx = gameArea.context;
     drawImageAtFixedPosition(btn,12249,3249,800,800)
-    ctx.font = "250px Pixelif Sans";
+    ctx.font = "250px Pixelify Sans";
     ctx.textAlign = "center";
     ctx.fillStyle = "#000000";
     db.ref("clicks").on("value", (snapshot) => {
