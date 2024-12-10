@@ -125,6 +125,10 @@ const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
 const speechBubbleImg = new Image();
 speechBubbleImg.src = "../speechBubble.png";
+const jerryCanImage = new Image();
+jerryCanImage.src = "../jerryCan.png";
+const jerryCanIconImage = new Image();
+jerryCanIconImage.src = "../jerryCanIcon.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -148,6 +152,7 @@ let bullets = [];
 let tennis = {};
 let challenges;
 let tickets;
+var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
 //Particle Variables
 var particleConfig = {
     particleNumber: 200,
@@ -268,7 +273,7 @@ class p {
         this.vy = 0;
         this.angle = 0;
         this.id = 0;
-        this.fuel = 100;
+        this.fuel = 0;
         this.acceleration = 2;
         this.plane = "";
         this.mouseDown = false;
@@ -511,6 +516,15 @@ function miniMap() {
 		7,
 		7,
 	);
+	for (let i = 0; i < 6; i++) {
+		ctx.drawImage(
+			jerryCanIconImage,	
+			Math.floor(gameArea.canvas.width - 200 + (jerryCans[i][0] / 16000) * 200) -5,
+			Math.floor((jerryCans[i][1] / 16000)*200) - 5,
+			7,
+			7,
+		);
+	}
 }
 
 function towers() {
@@ -531,6 +545,9 @@ function interact() {
         if (myPlayer.fuel > 1.5) {
             myPlayer.fuel -= 1.5;
             myPlayer.acceleration = 10;
+			db.ref(`users/${myPlayer.id}`).update({
+				fuel: myPlayer.fuel
+			});
         }
     }
 }
@@ -571,6 +588,28 @@ function christmasTreeDraw() {
         drawImageAtFixedPosition(christmasTreeFrame1,8000,8000,272,448)
 	} else if (cFrame <= 50) {
         drawImageAtFixedPosition(christmasTreeFrame2,8000,8000,272,448)
+	}
+}
+
+function jerryCansDraw() {
+	for (var i = 0; i < 6; i++) {
+		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
+		if (Math.abs(myPlayer.x+jerryCans[i][0])<=30 && Math.abs(myPlayer.y+jerryCans[i][1])<=30) {
+			if (myPlayer.fuel >= 80) {
+				myPlayer.fuel = 100;
+			}
+			else {
+				myPlayer.fuel += 20;
+			}
+			db.ref(`users/${myPlayer.id}`).update({
+				fuel: myPlayer.fuel
+			});
+			jerryCans[i] = [Math.floor(Math.random()*14000),Math.floor(Math.random()*14000)]
+			db.ref(`jerryCans/${i+1}`).update({
+				x: jerryCans[i][0],
+				y: jerryCans[i][1],
+			});
+		}
 	}
 }
 
@@ -625,6 +664,9 @@ function startGame(displayName, email, uid, plane) {
     myPlayer.id = uid;
     myPlayer.x = -8000;
     myPlayer.y = -8000;
+	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
+		myPlayer.fuel = snapshot.val();
+	});
     define();
     myPlayer.plane = plane;
     sendPlayerToDB(myPlayer);
@@ -677,7 +719,16 @@ function startGame(displayName, email, uid, plane) {
 	});
 	db.ref(`presentY`).on("value", (snapshot) => {
 		presentY = snapshot.val();
-	}); 
+	});
+	for (let i = 0; i < 6; i++) {
+		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
+			jerryCans[i][0] = snapshot.val();
+		});
+		db.ref(`jerryCans/${i+1}/y`).on("value", (snapshot) => {
+			jerryCans[i][1] = snapshot.val();
+		});
+	}
+	console.log(jerryCans);
 
     playersRef.on("value", (snapshot) => {
         players = snapshot.val();
@@ -767,6 +818,7 @@ function updateGameArea() {
     buttonDraw();
 	christmasTreeDraw();
     presentDraw();
+	jerryCansDraw();
     towers();
     if (tennis.play) {
         tennisUpdate();
