@@ -95,6 +95,15 @@ window.onmouseup = () => {
     --myPlayer.mouseDown;
 };
 
+let PixelFont = new FontFace(
+	"Pixelify Sans",
+	"url(https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght)"
+);
+PixelFont.load().then((font) => {
+	document.font.add(font)
+	console.log("font loaded")
+});
+
 //Images
 const plane = new Image();
 const bg = new Image();
@@ -263,7 +272,7 @@ class p {
     }
     update() {
         ctx = gameArea.context;
-        ctx.font = "24px serif";
+        ctx.font = "24px Pixelify Sans";
         ctx.textAlign = "center";
         ctx.save();
         ctx.translate(this.x, this.y);
