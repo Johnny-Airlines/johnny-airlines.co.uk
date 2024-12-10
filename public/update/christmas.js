@@ -66,6 +66,13 @@ document.addEventListener("keydown", (key) => {
         if (keysPressed[k] == 69) {
             shoot();
         }
+		if (keysPressed[k] == 191) {
+			document.getElementById("message-input").focus();
+			document.getElementById("message-input").select();
+		}
+		if (keysPressed[k] == 13) {
+			document.getElementById("message-btn").click();
+		}
     }
 });
 document.addEventListener("keyup", (key) => {
