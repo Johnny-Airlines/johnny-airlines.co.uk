@@ -24,7 +24,15 @@ firebase.auth().onAuthStateChanged((user) => {
         const email =
             user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
         const photoURL = user.photoURL;
-        startGame(displayName, email, uid, photoURL);
+		let PixelFont = new FontFace(
+			"Pixelify Sans",
+			"url('./PixelFont.ttf')"
+		);
+		PixelFont.load().then((font) => {
+			document.fonts.add(font)
+			console.log("font loaded")
+			startGame(displayName, email, uid, photoURL);
+		});
     } else {
         window.location.href = "../accounts.html";
     }
@@ -95,14 +103,7 @@ window.onmouseup = () => {
     --myPlayer.mouseDown;
 };
 
-let PixelFont = new FontFace(
-	"Pixelify Sans",
-	"url(https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght)"
-);
-PixelFont.load().then((font) => {
-	document.font.add(font)
-	console.log("font loaded")
-});
+
 
 //Images
 const plane = new Image();
@@ -299,7 +300,7 @@ class p {
             planeimg.height,
         );
         ctx.restore();
-        ctx.font = "24px serif";
+        ctx.font = "24px Pixelify Sans";
         ctx.textAlign = "center";
         ctx.fillStyle = "#00FFBA";
         ctx.fillText(
@@ -307,7 +308,7 @@ class p {
             gameArea.canvas.width / 2,
             gameArea.canvas.height / 2 - 35,
         );
-        ctx.font = "12px serif";
+        ctx.font = "12px Pixelify Sans";
         ctx.fillText(
             this.username,
             gameArea.canvas.width / 2,
@@ -333,7 +334,7 @@ class p {
             planeimg.height,
         );
         ctx.restore();
-        ctx.font = "24px serif";
+        ctx.font = "24px Pixelify Sans";
         ctx.textAlign = "center";
         ctx.fillStyle = "#932121";
         ctx.fillText(
@@ -341,7 +342,7 @@ class p {
             -this.x + myPlayer.x + gameArea.canvas.width / 2,
             -this.y + myPlayer.y + gameArea.canvas.height / 2 - 35,
         );
-        ctx.font = "12px serif";
+        ctx.font = "12px Pixelify Sans";
         ctx.fillText(
             this.username,
             -this.x + myPlayer.x + gameArea.canvas.width / 2,
@@ -459,7 +460,7 @@ function updateDisplayName() {
 function buttonDraw() {
     ctx = gameArea.context;
     drawImageAtFixedPosition(btn,12249,3249,800,800)
-    ctx.font = "250px serif";
+    ctx.font = "250px Pixelif Sans";
     ctx.textAlign = "center";
     ctx.fillStyle = "#000000";
     db.ref("clicks").on("value", (snapshot) => {
