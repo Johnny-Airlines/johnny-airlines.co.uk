@@ -21,7 +21,11 @@ const titleDict = {
 	"Disco":"Disco",
 	"Rainbow":"Rainbow",
 	"Spitfire":"Spitfire",
-	"christmasPlane":"Christmas Plane(2024)"
+	"christmasPlane":"Christmas Plane(2024)",
+	"CEO":"CEO",
+	"mop":"Mop",
+	"LGD":"LGD",
+	"purple":"Purple helicopter"
 }
 
 const descDict = {
@@ -38,6 +42,10 @@ const descDict = {
 	"Rainbow":"A rainbow plane.",
 	"Spitfire": "A classic plane from WW2 forever memorialized",
 	"christmasPlane":"The christmas plane from the 2024 christmas event",
+	"CEO":"The plane only the CEO gets!!",
+	"mop":"For the janitor.",
+	"LGD":"The plane only the Lead Graphics Designer gets.",
+	"purple":"Purple helicopter."
 }
 
 const buttonDict = {
@@ -53,7 +61,7 @@ const buttonDict = {
 	"Disco":"Buy",
 	"Rainbow":"Buy",
 	"Spitfire":"Buy",
-	"christmasPlane":"Must be found in present"
+	"christmasPlane":"Must be found in present",
 }
 
 const costDict = {
@@ -75,9 +83,19 @@ const costDict = {
 
 function loadShop() {
     db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
-        var ownedPlanes = snapshot.val();
+        planesInShop = []
+		thing = [...document.getElementById("Planes").children]
+		thing.forEach((element) => {
+			planesInShop.push(element.src.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png",""))
+		});
+		var ownedPlanes = snapshot.val();
         ownedPlanes.forEach((plane) => {
             buttonDict[plane] = "Equip"
+			if (!planesInShop.includes(plane)) {
+				console.log(plane)
+				planeElement = `<img width="66px" src="https://johnny-airlines.co.uk/${plane}.png" onclick="hoverOverShopItem('${plane}')"/>`
+				document.getElementById("Planes").innerHTML += planeElement
+			}
         })
     });
     var pfpUrl = firebase.auth().currentUser.photoURL;
