@@ -516,15 +516,6 @@ function miniMap() {
 		7,
 		7,
 	);
-	for (let i = 0; i < 6; i++) {
-		ctx.drawImage(
-			jerryCanIconImage,	
-			Math.floor(gameArea.canvas.width - 200 + (jerryCans[i][0] / 16000) * 200) -5,
-			Math.floor((jerryCans[i][1] / 16000)*200) - 5,
-			7,
-			7,
-		);
-	}
 }
 
 function towers() {
