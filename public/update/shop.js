@@ -25,7 +25,8 @@ const titleDict = {
 	"CEO":"CEO",
 	"mop":"Mop",
 	"LGD":"LGD",
-	"purple":"Purple helicopter"
+	"purple":"Purple helicopter",
+	"invis":""
 }
 
 const descDict = {
@@ -45,7 +46,8 @@ const descDict = {
 	"CEO":"The plane only the CEO gets!!",
 	"mop":"For the janitor.",
 	"LGD":"The plane only the Lead Graphics Designer gets.",
-	"purple":"Purple helicopter."
+	"purple":"Purple helicopter.",
+	"invis":""
 }
 
 const buttonDict = {
