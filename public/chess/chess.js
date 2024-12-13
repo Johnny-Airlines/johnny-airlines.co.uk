@@ -17,8 +17,9 @@ var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
 var playingBot = true;
+var depth = 5;
 if (playingBot) {
-	stockfish({fen:fen()}).then((data)=>{
+	stockfish({fen:fen(),depth:depth}).then((data)=>{
 		console.log(data.move)
 		conversionArray = ["a","b","c","d","e","f","g","h"]
 		x1 = conversionArray.indexOf(data.move.charAt(0));
@@ -76,7 +77,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 			}
 			document.getElementById("turnTxt").innerHTML = "White";
 			if (playingBot) {
-				stockfish({fen:fen()}).then((data)=>{
+				stockfish({fen:fen(),depth:depth}).then((data)=>{
 					console.log(data)
 					console.log(data.move)
 					conversionArray = ["a","b","c","d","e","f","g","h"]
@@ -442,7 +443,7 @@ async function stockfish(data = {}) {
 }
 function stockfishPlays() {
 	if (playingBot) {
-		stockfish({fen:fen()}).then((data)=>{
+		stockfish({fen:fen(),depth:depth}).then((data)=>{
 			console.log(fen())
 			console.log(data)
 			console.log(data.move)

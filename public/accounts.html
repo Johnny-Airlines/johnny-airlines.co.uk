@@ -7,6 +7,7 @@
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.google.com/recaptcha/enterprise.js?render=6Ld-_uspAAAAAF9qBg7_vO_61Drc9Jr_7v0Lbb0g"></script>
+	<script src="https://www.gstatic.com/firebasejs/10.0.0/firebase-database-compat.js"></script>
     <script>
  const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
@@ -120,7 +121,7 @@
                 // Signed in 
                 var user = userCredential.user;
                 console.info("Success");
-                location.replace("/profile/")
+                location.replace("/update/")
             })
             .catch((error) => {
                 var errorCode = error.code;
@@ -133,9 +134,24 @@
         firebase.auth().createUserWithEmailAndPassword(email, password)
             .then((userCredential) => {
                 // Signed in 
+				console.info("Success");
                 var user = userCredential.user;
-                console.info("Success");
-                location.replace("/profile/")
+				console.log(user)
+				console.log(user.email)
+				console.log(user.uid)
+				user.updateProfile({
+					displayName: user.email.replace('@johnny-airlines.co.uk',""),
+					photoURL: "https://johnny-airlines.co.uk/Plane.png",
+				}).then(()=> {
+				firebase.database().ref(`users/${user.uid}`).set({
+					tickets: 0,
+					username: user.email.replace("@johnny-airlines.co.uk",""),
+					ownedPlanes: ["Plane"],
+					fuel: 100
+				}).then(() => {
+					location.replace("/update")
+				})
+				})
             })
             .catch((error) => {
                 var errorCode = error.code;
