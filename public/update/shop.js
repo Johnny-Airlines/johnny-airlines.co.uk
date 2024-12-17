@@ -26,7 +26,8 @@ const titleDict = {
 	"mop":"Mop",
 	"LGD":"LGD",
 	"purple":"Purple helicopter",
-	"invis":""
+	"invis":"",
+	"paper":"Paper Plane"
 }
 
 const descDict = {
@@ -41,13 +42,14 @@ const descDict = {
 	"colour_planes/Yellow":"A yellow plane.",
 	"Disco":"A disco plane.",
 	"Rainbow":"A rainbow plane.",
-	"Spitfire": "A classic plane from WW2 forever memorialized",
+	"Spitfire": "A spitfire.",
 	"christmasPlane":"The christmas plane from the 2024 christmas event",
 	"CEO":"The plane only the CEO gets!!",
 	"mop":"For the janitor.",
 	"LGD":"The plane only the Lead Graphics Designer gets.",
 	"purple":"Purple helicopter.",
-	"invis":""
+	"invis":"",
+	"paper":"A paper plane. An absolute classic"
 }
 
 const buttonDict = {
@@ -63,6 +65,7 @@ const buttonDict = {
 	"Disco":"Buy",
 	"Rainbow":"Buy",
 	"Spitfire":"Buy",
+	"paper":"Buy",
 	"christmasPlane":"Must be found in present",
 }
 
@@ -79,6 +82,7 @@ const costDict = {
 	"Disco":100,
 	"Rainbow":200,
 	"Spitfire":300,
+	"paper":500,
 	"christmasPlane":""
 }
 
