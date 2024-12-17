@@ -134,13 +134,11 @@ const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
-const presentImage = new Image();
-presentImage.src = "../present.png"
-const presentIconImage = new Image();
-presentIconImage.src = "../presentIcon.png"
+const ticketImage = new Image();
+ticketImage.src = "../Ticket.png"
 var cFrame = 1;
-var presentX = 0;
-var presentY = 0;
+var ticketX = 0;
+var ticketY = 0;
 
 
 //Other Variables
@@ -509,13 +507,6 @@ function miniMap() {
         10,
         10,
     );
-	ctx.drawImage(
-		presentIconImage,
-		Math.floor(gameArea.canvas.width - 200 + (presentX / 16000) * 200) - 5,
-		Math.floor((presentY / 16000)*200)-5,
-		7,
-		7,
-	);
 }
 
 function towers() {
@@ -569,19 +560,6 @@ function fetchPlayer(playerName) {
     return null;
 }
 
-function christmasTreeDraw() {
-	cFrame += 1;
-
-    if (cFrame >= 100) {
-        cFrame = 0    ;
-    }
- 	if (cFrame >= 50) {
-        drawImageAtFixedPosition(christmasTreeFrame1,8000,8000,272,448)
-	} else if (cFrame <= 50) {
-        drawImageAtFixedPosition(christmasTreeFrame2,8000,8000,272,448)
-	}
-}
-
 function jerryCansDraw() {
 	for (var i = 0; i < 6; i++) {
 		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
@@ -604,45 +582,21 @@ function jerryCansDraw() {
 	}
 }
 
-function presentDraw() {
-	if (Math.abs(myPlayer.x+presentX) <= 40 && Math.abs(myPlayer.y+presentY) <= 46) {
-		reward = Math.floor(Math.random()*2)
-		planeWin = Math.floor(Math.random()*1000)
-		if (planeWin == 1) {
-			alert("You found a christmas plane in the present! Check the shop after refreshing to equip your plane!")
-			db.ref(`users/${myPlayer.id}/ownedPlanes`).once("value", (snapshot) => {
-				ownedPlanes = snapshot.val()
-				ownedPlanes.push("christmasPlane");
-				db.ref(`users/${myPlayer.id}`).update({
-					ownedPlanes,
-				});
-			});
-		}
-		else if (reward == 0) {
-			alert("You got a lump of coal")
-		}
-		else if (reward == 1) {
-			alert("You found a ticket in the present!")
-			tickets = tickets + 1
-			db.ref(`users/${myPlayer.id}`).update({
-				tickets,
-			});
-		}
-		else {
-			alert("You found " + reward + " tickets in the present!")
-			tickets = tickets + reward
-			db.ref(`users/${myPlayer.id}`).update({
-				tickets,
-			});
-		}
-		presentX = Math.floor(Math.random()*14000);
-		presentY = Math.floor(Math.random()*14000);
-		db.ref(`/`).update({
-			presentX,
-			presentY
-		});
+function ticketDraw() {
+	if (Math.abs(myPlayer.x+ticketX) <= 40 && Math.abs(myPlayer.y+ticketY) <= 46) {
+        alert("You found a ticket!")
+        tickets = tickets + 1
+        db.ref(`users/${myPlayer.id}`).update({
+            tickets,
+        });
+		ticketX = Math.floor(Math.random()*14000);
+		ticketY = Math.floor(Math.random()*14000);
+        db.ref(`/`).update({
+            presentX:ticketX,
+            presentY:ticketY
+        });
 	}
-    drawImageAtFixedPosition(presentImage,presentX-40,presentY-46,80,92)
+    drawImageAtFixedPosition(ticketImage,ticketX-125,ticketY-70,250,140)
 }
 
 //Start Game
@@ -706,10 +660,10 @@ function startGame(displayName, email, uid, plane) {
         challenges = snapshot.val();
     });
 	db.ref(`presentX`).on("value", (snapshot) => {
-		presentX = snapshot.val();
+		ticketX = snapshot.val();
 	});
 	db.ref(`presentY`).on("value", (snapshot) => {
-		presentY = snapshot.val();
+		ticketY = snapshot.val();
 	});
 	for (let i = 0; i < 6; i++) {
 		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
@@ -807,8 +761,7 @@ function updateGameArea() {
 
     myPlayer.update();
     buttonDraw();
-	christmasTreeDraw();
-    presentDraw();
+    ticketDraw();
 	jerryCansDraw();
     towers();
     if (tennis.play) {
