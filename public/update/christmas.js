@@ -56,9 +56,9 @@ var gameArea = {
 };
 
 //Resizing game area if window resized
-/*addEventListener("resize", (event) => {
+addEventListener("resize", (event) => {
 	gameArea.resize();
-});*/
+});
 //Key detection
 let keysPressed = [];
 document.addEventListener("keydown", (key) => {
