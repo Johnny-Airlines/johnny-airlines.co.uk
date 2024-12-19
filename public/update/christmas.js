@@ -647,14 +647,11 @@ function startGame(displayName, email, uid, plane) {
     });
     db.ref(`bombs`).on("child_removed", (snapshot) => {
         const bombId = snapshot.key;
+		console.log(bombs)
         bombs = bombs.filter((bomb) => bomb.id !== bombId);
     });
     db.ref(`bullets`).on("value", (snapshot) => {
         bullets = snapshot.val();
-    });
-    db.ref(`bombs`).on("child_removed", (snapshot) => {
-        const bulletId = snapshot.key;
-        bullets = bullets.filter((bullet) => bullet.id !== bulletId);
     });
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
