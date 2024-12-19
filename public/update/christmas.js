@@ -43,7 +43,7 @@ var gameArea = {
     canvas: document.createElement("canvas"),
     start: function () {
         gameArea.resize();
-        this.context = this.canvas.getContext("2d");
+        this.context = this.canvas.getContext("2d",{alpha:false});
         document.body.insertBefore(this.canvas, document.body.childNodes[0]);
     },
     resize: function () {
@@ -56,9 +56,9 @@ var gameArea = {
 };
 
 //Resizing game area if window resized
-addEventListener("resize", (event) => {
-    gameArea.resize();
-});
+/*addEventListener("resize", (event) => {
+	gameArea.resize();
+});*/
 //Key detection
 let keysPressed = [];
 document.addEventListener("keydown", (key) => {
