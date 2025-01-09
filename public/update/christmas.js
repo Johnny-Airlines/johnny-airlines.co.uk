@@ -584,7 +584,7 @@ function jerryCansDraw() {
 
 function ticketDraw() {
 	if (Math.abs(myPlayer.x+ticketX) <= 40 && Math.abs(myPlayer.y+ticketY) <= 46) {
-        alert("You found a ticket!")
+        //alert("You found a ticket!")
         tickets = tickets + 1
         db.ref(`users/${myPlayer.id}`).update({
             tickets,
