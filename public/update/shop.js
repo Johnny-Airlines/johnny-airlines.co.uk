@@ -27,7 +27,8 @@ const titleDict = {
 	"LGD":"LGD",
 	"purple":"Purple helicopter",
 	"invis":"",
-	"paper":"Paper Plane"
+	"paper":"Paper Plane",
+	"SEC":"Security Plane"
 }
 
 const descDict = {
@@ -49,7 +50,8 @@ const descDict = {
 	"LGD":"The plane only the Lead Graphics Designer gets.",
 	"purple":"Purple helicopter.",
 	"invis":"",
-	"paper":"A paper plane. An absolute classic"
+	"paper":"A paper plane. An absolute classic",
+	"SEC":"A plane for head of security"
 }
 
 const buttonDict = {
@@ -83,7 +85,7 @@ const costDict = {
 	"Rainbow":200,
 	"Spitfire":300,
 	"paper":500,
-	"christmasPlane":""
+	"christmasPlane":"",
 }
 
 

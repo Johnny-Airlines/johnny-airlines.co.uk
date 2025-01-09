@@ -64,7 +64,7 @@ dataRef.on('value', (snapshot) => {
 		editInputPlanes.addEventListener('blur', () => {
 			ownedPlanesCell.style.display = 'inline-block';
 			editInputPlanes.style.display = 'none';
-			editPlanes.style.width = "100%";
+			editInputPlanes.style.width = "100%";
 			ownedPlanesCell.style.width="100%";
 			dataRef.child(childSnapshot.key).child("ownedPlanes").set(JSON.parse(editInputPlanes.value));
 		});
