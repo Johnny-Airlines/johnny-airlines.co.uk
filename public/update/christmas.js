@@ -507,6 +507,13 @@ function miniMap() {
         10,
         10,
     );
+	ctx.drawImage(
+		ticketImage,
+		Math.floor(gameArea.canvas.width - 200 + (ticketX / 16000) * 200) - 5,
+		Math.floor((ticketY / 16000)*200)-5,
+		10,
+		10,
+	);
 }
 
 function towers() {
@@ -595,6 +602,47 @@ function ticketDraw() {
             presentX:ticketX,
             presentY:ticketY
         });
+	}
+	highestV = 0.1
+	ticketPlayer = 0
+	for (const player in players) {
+		var playerVelocity = Math.sqrt(players[player]["vx"]**2+players[player]["vy"]**2)
+		if (playerVelocity > highestV) {
+			highestV = playerVelocity
+			ticketPlayer = players[player].id
+		}
+	}
+	if (ticketPlayer == myPlayer.id) {
+		runVector = [0,0]
+		for (const player in players) {
+			runVector = [runVector[0]+ticketX+players[player].x,runVector[1]+ticketY+players[player].y]
+		}
+		if (ticketX < 8000) {
+			runVector[0] = runVector[0] - ticketX*5 + 8000*5
+		}
+		else {
+			runVector[0] = runVector[0] + ticketX*5 - 8000*5
+		}
+		if (ticketY < 8000) {
+			runVector[1] = runVector[1] - ticketY*5 + 8000*5
+		}
+		else {
+			runVector[1] = runVector[1] + ticketY*5 - 8000*5
+		}
+		console.log(runVector)
+		runAngle = Math.atan2(runVector[1],runVector[0]) + Math.PI / 2
+		console.log(runAngle)
+		ticketX += Math.cos(runAngle - Math.PI / 2) * 50;
+        ticketY += Math.sin(runAngle - Math.PI / 2) * 50;
+		if (ticketX < 0) { ticketX += 16000 }
+		if (ticketX > 16000) { ticketX -= 16000 }
+		if (ticketY < 0) { ticketY += 16000 }
+		if (ticketY > 16000) { ticketY -= 16000 }
+		db.ref(`/`).update({
+			presentX:ticketX,
+			presentY:ticketY,
+		})
+
 	}
     drawImageAtFixedPosition(ticketImage,ticketX-125,ticketY-70,250,140)
 }
