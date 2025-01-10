@@ -632,8 +632,8 @@ function ticketDraw() {
 		console.log(runVector)
 		runAngle = Math.atan2(runVector[1],runVector[0]) + Math.PI / 2
 		console.log(runAngle)
-		ticketX += Math.cos(runAngle - Math.PI / 2) * 50;
-        ticketY += Math.sin(runAngle - Math.PI / 2) * 50;
+		ticketX += Math.cos(runAngle - Math.PI / 2) * 45;
+        ticketY += Math.sin(runAngle - Math.PI / 2) * 45;
 		if (ticketX < 0) { ticketX += 16000 }
 		if (ticketX > 16000) { ticketX -= 16000 }
 		if (ticketY < 0) { ticketY += 16000 }
@@ -790,7 +790,7 @@ function updateGameArea() {
         myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" &&
         keysPressed.includes(66)
     ) {
-        myPlayer.acceleration = 100000;
+        myPlayer.acceleration = 1000;
     }
 
     cleanUpArray();
