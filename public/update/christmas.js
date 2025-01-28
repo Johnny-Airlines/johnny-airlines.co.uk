@@ -797,9 +797,8 @@ function updateGameArea() {
     }
 
     // Special shortcuts for special people
-    let killCode = false
     if (keysPressed.includes(16) && !chatFocus){
-        if ( myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" && keysPressed.includes(66) ) {
+        if ( (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2	") && keysPressed.includes(66) ) {
             myPlayer.vx *= 1.1;
             myPlayer.vy *= 1.1;
         }
