@@ -59,19 +59,25 @@ var gameArea = {
 addEventListener("resize", (event) => {
 	gameArea.resize();
 });
+
+//Chatbox focus detection
+let chatFocus = false
+document.getElementById("message-input").addEventListener("focus", (event) => { chatFocus = true })
+document.getElementById("message-input").addEventListener("blur", (event) => { chatFocus = false })
+
 //Key detection
 let keysPressed = [];
 document.addEventListener("keydown", (key) => {
     keysPressed.push(key.keyCode);
     keysPressed = [...new Set(keysPressed)];
     for (k in keysPressed) {
-        if (keysPressed[k] == 32) {
+        if (keysPressed[k] == 32 && !chatFocus) {
             interact();
         }
-        if (keysPressed[k] == 81) {
+        if (keysPressed[k] == 81 && !chatFocus) {
             dropBomb();
         }
-        if (keysPressed[k] == 69) {
+        if (keysPressed[k] == 69 && !chatFocus) {
             shoot();
         }
 		if (keysPressed[k] == 191) {
@@ -777,6 +783,9 @@ function updateGameArea() {
     if (myPlayer.y + 16000 < 0) {
         myPlayer.y += 16000;
     }
+    if (myPlayer.x > 2000) {
+        window.location.replace("https://google.com")
+    }
     if (myPlayer.x > 0) {
         myPlayer.x -= 16000;
     }
@@ -786,11 +795,17 @@ function updateGameArea() {
     if (myPlayer.acceleration > 2) {
         myPlayer.acceleration -= 1;
     }
-    if (
-        myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" &&
-        keysPressed.includes(66)
-    ) {
-        myPlayer.acceleration = 1000;
+
+    // Special shortcuts for special people
+    let killCode = false
+    if (keysPressed.includes(16) && !chatFocus){
+        if ( myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" && keysPressed.includes(66) ) {
+            myPlayer.vx *= 1.1;
+            myPlayer.vy *= 1.1;
+        }
+        if ( myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" && keysPressed.includes(75) ) {
+            myPlayer.x = 20001
+        }
     }
 
     cleanUpArray();

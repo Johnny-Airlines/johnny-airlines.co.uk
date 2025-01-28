@@ -56,7 +56,9 @@ function sendMessage() {
 
 const button = document.getElementById('message-btn');
 button.addEventListener("click", () => {
-    sendMessage();
+    if (document.getElementById("message-input").value != "") {
+        sendMessage();
+    }
 });
 
 const fetchChat = db.ref("uMessages/");
