@@ -635,9 +635,7 @@ function ticketDraw() {
 		else {
 			runVector[1] = runVector[1] + ticketY*5 - 8000*5
 		}
-		console.log(runVector)
 		runAngle = Math.atan2(runVector[1],runVector[0]) + Math.PI / 2
-		console.log(runAngle)
 		ticketX += Math.cos(runAngle - Math.PI / 2) * 45;
         ticketY += Math.sin(runAngle - Math.PI / 2) * 45;
 		if (ticketX < 0) { ticketX += 16000 }
@@ -797,14 +795,15 @@ function updateGameArea() {
     }
 
     // Special shortcuts for special people
-    if (keysPressed.includes(16) && !chatFocus){
-        if ( (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2	") && keysPressed.includes(66) ) {
+    if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2	")){
+        if (keysPressed.includes(66)) {
             myPlayer.vx *= 1.1;
             myPlayer.vy *= 1.1;
         }
-        if ( myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" && keysPressed.includes(75) ) {
-            myPlayer.x = 20001
-        }
+		if (keysPressed.includes(67)) {
+			keysPressed.splice(keysPressed.indexOf(67),1)
+			command = prompt("Command: ")
+		}
     }
 
     cleanUpArray();

@@ -43,14 +43,11 @@ function sendMessage() {
     //auto scroll to bottom
     document.getElementById("messages").scrollIntoView({ behavior: "smooth", block: "end", inline: "nearest" });
 
-    
-
     // create db collection and send in the data
     db.ref("uMessages/" + timestamp).set({
         username:myPlayer.username,
         message,
         timestamp,
-        admin
     });
 }
 
@@ -65,16 +62,14 @@ const fetchChat = db.ref("uMessages/");
 
 fetchChat.on("child_added", function (snapshot) {
     const messages = snapshot.val();
-    if (messages.admin == false) 
-    {
-        const message = `<li class=${myPlayer.username === messages.username ? "sent" : "receive"}><span>${timeConverter(messages.timestamp)} ${messages.username}: </span>${messages.message}</li>`;
-        // append the message on the page
-        document.getElementById("messages").innerHTML += message;
-    }
-    else {
-        const message = `<li class=${myPlayer.username === messages.username ? "sent" : "receive"}><span>${timeConverter(messages.timestamp)} ${messages.username}: </span>${messages.message}</li>`;
-        // append the message on the page
-        document.getElementById("messages").innerHTML += message;
-    }
+	//const message = `<li class=${myPlayer.username === messages.username ? "sent" : "receive"}><span>${timeConverter(messages.timestamp)} ${messages.username}: </span>${messages.message}</li>`;
+	const message = document.createElement("li");
+	message.setAttribute("class",`${myPlayer.username === messages.username ? "sent" : "receive"}`);
+	const messageSpan = document.createElement("span")
+	messageSpan.textContent = `${timeConverter(messages.timestamp)} ${messages.username}: `
+	message.appendChild(messageSpan)
+	message.appendChild(document.createTextNode(`${messages.message}`))
+	// append the message on the page
+	document.getElementById("messages").appendChild(message);
 });
 
