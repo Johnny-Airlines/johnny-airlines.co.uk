@@ -651,6 +651,35 @@ function ticketDraw() {
     drawImageAtFixedPosition(ticketImage,ticketX-125,ticketY-70,250,140)
 }
 
+function isValidCommand(cmd) {
+	cmdArgs = cmd.split(" ")
+	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
+		unames = []
+		for (player in players) {
+			unames.push(players[player]["username"])
+		}
+		if (unames.includes(cmdArgs[1])) {
+			return true;
+		}
+	}
+	return false;
+}
+
+function executeCommand(cmdId, cmd) {
+	cmdArgs = cmd.split(" ")
+	if (cmdArgs[1] == myPlayer.username) {
+		if (cmdArgs[0] == "tp") {
+			console.log(cmdArgs)
+			myPlayer.x = parseInt(cmdArgs[2])
+			myPlayer.y = parseInt(cmdArgs[3])
+		}
+		if (cmdArgs[0] == "kill") {
+			myPlayer.x = 20000
+		}
+		db.ref(`cmds/${cmdId}`).remove()
+	}
+}
+
 //Start Game
 function startGame(displayName, email, uid, plane) {
     gameArea.start();
@@ -713,6 +742,9 @@ function startGame(displayName, email, uid, plane) {
 	});
 	db.ref(`presentY`).on("value", (snapshot) => {
 		ticketY = snapshot.val();
+	});
+	db.ref(`cmds`).on("child_added", (snapshot) => {
+		executeCommand(snapshot.key,snapshot.val().command)
 	});
 	for (let i = 0; i < 6; i++) {
 		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
@@ -803,6 +835,13 @@ function updateGameArea() {
 		if (keysPressed.includes(67)) {
 			keysPressed.splice(keysPressed.indexOf(67),1)
 			command = prompt("Command: ")
+			if (isValidCommand(command)) {
+				db.ref(`cmds`).push({
+					command,
+				});
+			} else {
+				alert("Invalid command")
+			}
 		}
     }
 
