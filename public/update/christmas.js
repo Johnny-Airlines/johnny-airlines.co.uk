@@ -827,7 +827,7 @@ function updateGameArea() {
     }
 
     // Special shortcuts for special people
-    if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2	")){
+    if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2")){
         if (keysPressed.includes(66)) {
             myPlayer.vx *= 1.1;
             myPlayer.vy *= 1.1;
