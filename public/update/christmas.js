@@ -145,6 +145,8 @@ ticketImage.src = "../Ticket.png"
 var cFrame = 1;
 var ticketX = 0;
 var ticketY = 0;
+var safeX;
+var safeY;
 
 
 //Other Variables
@@ -528,7 +530,7 @@ function towers() {
 }
 
 function interact() {
-    if (buttonDetectClick(12249, 13049, 3249, 4049)) {
+    if (playerCollisionCheck(12249, 13049, 3249, 4049)) {
         db.ref("clicks").transaction((currentCount) => {
             return (currentCount || 0) + 1;
         });
@@ -547,7 +549,7 @@ function interact() {
     }
 }
 
-function buttonDetectClick(a, b, c, d) {
+function playerCollisionCheck(a, b, c, d) {
     return (
         a + myPlayer.x + gameArea.canvas.width / 2 <
             gameArea.canvas.width / 2 &&
@@ -678,6 +680,46 @@ function executeCommand(cmdId, cmd) {
 		}
 		db.ref(`cmds/${cmdId}`).remove()
 	}
+}
+
+function prison() {
+	ctx = gameArea.context
+	ctx.fillStyle = "#000000"
+	ctx.fillRect(
+		4000 + myPlayer.x + gameArea.canvas.width / 2,
+		4000 + myPlayer.y + gameArea.canvas.height / 2,
+		100,
+		800,
+	)
+	ctx.fillRect(
+		4000 + myPlayer.x + gameArea.canvas.width / 2,
+		4000 + myPlayer.y + gameArea.canvas.height / 2,
+		800,
+		100,
+	)
+	ctx.fillRect(
+		4700 + myPlayer.x + gameArea.canvas.width / 2,
+		4000 + myPlayer.y + gameArea.canvas.height / 2,
+		100,
+		800,
+	)
+	ctx.fillRect(
+		4000 + myPlayer.x + gameArea.canvas.width / 2,
+		4700 + myPlayer.y + gameArea.canvas.height / 2,
+		800,
+		100,
+	)
+	if (playerCollisionCheck(4000, 4100, 4000, 4800) || playerCollisionCheck(4000, 4800, 4000, 4100) || playerCollisionCheck(4700, 4800, 4000, 4800) || playerCollisionCheck(4000, 4800, 4700, 4800)) {
+		myPlayer.vx *= -1.1
+		myPlayer.vy *= -1.1
+		myPlayer.x = safeX
+		myPlayer.y = safeY
+	}
+	else {
+		safeX = myPlayer.x
+		safeY = myPlayer.y
+	}
+
 }
 
 //Start Game
@@ -861,6 +903,7 @@ function updateGameArea() {
     ticketDraw();
 	jerryCansDraw();
     towers();
+	prison();
     if (tennis.play) {
         tennisUpdate();
     }
