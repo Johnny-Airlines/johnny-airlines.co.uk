@@ -710,8 +710,8 @@ function prison() {
 		100,
 	)
 	if (playerCollisionCheck(4000, 4100, 4000, 4800) || playerCollisionCheck(4000, 4800, 4000, 4100) || playerCollisionCheck(4700, 4800, 4000, 4800) || playerCollisionCheck(4000, 4800, 4700, 4800)) {
-		myPlayer.vx *= -1.1
-		myPlayer.vy *= -1.1
+		myPlayer.vx *= -0.5
+		myPlayer.vy *= -0.5
 		myPlayer.x = safeX
 		myPlayer.y = safeY
 	}
