@@ -147,6 +147,7 @@ var ticketX = 0;
 var ticketY = 0;
 var safeX;
 var safeY;
+var prisonCmdId;
 
 
 //Other Variables
@@ -655,7 +656,7 @@ function ticketDraw() {
 
 function isValidCommand(cmd) {
 	cmdArgs = cmd.split(" ")
-	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
+	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill" || cmdArgs[0] == "prison" || cmdArgs[0] == "release") {
 		unames = []
 		for (player in players) {
 			unames.push(players[player]["username"])
@@ -674,42 +675,36 @@ function executeCommand(cmdId, cmd) {
 			console.log(cmdArgs)
 			myPlayer.x = parseInt(cmdArgs[2])
 			myPlayer.y = parseInt(cmdArgs[3])
+			db.ref(`cmds/${cmdId}`).remove()
 		}
 		if (cmdArgs[0] == "kill") {
 			myPlayer.x = 20000
+			db.ref(`cmds/${cmdId}`).remove()
 		}
-		db.ref(`cmds/${cmdId}`).remove()
+		if (cmdArgs[0] == "prison") {
+			myPlayer.x = -2656
+			myPlayer.y = -13312
+			myPlayer.fuel = 0
+			prisonCmdId = cmdId
+			db.ref(`users/${myPlayer.id}`).update({
+				fuel: myPlayer.fuel
+			});
+		}
+		if (cmdArgs[0] == "release") {
+			myPlayer.x = -8000
+			myPlayer.y = -8000
+			db.ref(`cmds/${prisonCmdId}`).remove()
+			db.ref(`cmds/${cmdId}`).remove()
+		}
+		
 	}
 }
 
 function prison() {
 	ctx = gameArea.context
 	ctx.fillStyle = "#000000"
-	ctx.fillRect(
-		4000 + myPlayer.x + gameArea.canvas.width / 2,
-		4000 + myPlayer.y + gameArea.canvas.height / 2,
-		100,
-		800,
-	)
-	ctx.fillRect(
-		4000 + myPlayer.x + gameArea.canvas.width / 2,
-		4000 + myPlayer.y + gameArea.canvas.height / 2,
-		800,
-		100,
-	)
-	ctx.fillRect(
-		4700 + myPlayer.x + gameArea.canvas.width / 2,
-		4000 + myPlayer.y + gameArea.canvas.height / 2,
-		100,
-		800,
-	)
-	ctx.fillRect(
-		4000 + myPlayer.x + gameArea.canvas.width / 2,
-		4700 + myPlayer.y + gameArea.canvas.height / 2,
-		800,
-		100,
-	)
-	if (playerCollisionCheck(4000, 4100, 4000, 4800) || playerCollisionCheck(4000, 4800, 4000, 4100) || playerCollisionCheck(4700, 4800, 4000, 4800) || playerCollisionCheck(4000, 4800, 4700, 4800)) {
+	//center 2656, 13312
+	if (playerCollisionCheck(2400, 2912, 13056, 13088) || playerCollisionCheck(2400, 2432, 13056, 13568) || playerCollisionCheck(2880, 2912, 13056, 13568) || playerCollisionCheck(2400, 2912, 13536, 13568)) {
 		myPlayer.vx *= -0.5
 		myPlayer.vy *= -0.5
 		myPlayer.x = safeX
