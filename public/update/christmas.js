@@ -833,11 +833,14 @@ function startGame(displayName, email, uid, plane) {
     });
     // Draw all players on the canvas
 
-    updateGameArea();
+    updateGameArea(Date.now());
 }
 
 //Update Game Area
-function updateGameArea() {
+function updateGameArea(lastTimestamp) {
+	currentTime = Date.now()
+	fps = (1/((currentTime-lastTimestamp)/1000))
+	
     gameArea.clear();
     myPlayer.x += myPlayer.vx;
     myPlayer.y += myPlayer.vy;
@@ -899,6 +902,7 @@ function updateGameArea() {
     }
 
     myPlayer.update();
+	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20)
     buttonDraw();
     ticketDraw();
 	jerryCansDraw();
@@ -935,8 +939,15 @@ function updateGameArea() {
         bomb.update();
         bomb.draw();
     });
-
-    setTimeout(updateGameArea, 20);
+	
+	if ((Date.now()-currentTime)<(1000/30)) {
+		setTimeout(() => {
+			updateGameArea(currentTime)
+		}, (1000/30)-(Date.now()-currentTime));
+	}
+	else {
+		updateGameArea(currentTime)
+	}
 }
 
 function paddle(x, y, width, height, playerName) {
