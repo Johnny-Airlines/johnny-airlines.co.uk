@@ -992,11 +992,11 @@ function paddle(x, y, width, height, playerName) {
     };
 }
 let pl;
-let pl2;
+let ai;
 let ball;
 function define() {
     pl = new paddle(5, 200, 25, 100, "test");
-    pl2 = new paddle(610, 200, 25, 100, "Johnny Airlines CEO");
+    ai = new paddle(610, 200, 25, 100, "Johnny Airlines CEO");
 
     ball = {
         x: 320 + myPlayer.x + gameArea.canvas.width / 2,
@@ -1034,7 +1034,7 @@ function define() {
 function tick() {
     tennisUpdate();
     draw();
-    window.setTimeout("tick()", 1000 / 60);
+    //window.setTimeout("tick()", 1000 / 30);
 }
 function tennisUpdate() {
     ball.x += ball.xSpeed;
@@ -1046,18 +1046,25 @@ function tennisUpdate() {
         ball.reverseY();
     }
     var collidedWithPlayer = pl.hasCollidedWith(ball);
-    var collidedWithPlayer2 = pl2.hasCollidedWith(ball);
-    if (collidedWithPlayer || collidedWithPlayer2) {
+    var collidedWithAi = ai.hasCollidedWith(ball);
+    if (collidedWithPlayer || collidedWithAi) {
         ball.reverseX();
         ball.modifyXSpeedBy(0.25);
         var speedUpValue = collidedWithPlayer
             ? pl.speedModifier
-            : pl2.speedModifier;
+            : ai.speedModifier;
         ball.modifyYSpeedBy(speedUpValue);
     }
     for (var keyCode of keysPressed) {
         pl.move(keyCode);
     }
+	var aiMiddle = ai.y + (ai.height / 2);
+	if(aiMiddle < ball.y) {
+		ai.move(40);
+	}
+	if(aiMiddle > ball.y) {
+		ai.move(38);
+	}
 }
 function draw() {
     ctx.fillStyle = "black";
@@ -1068,7 +1075,7 @@ function draw() {
         480,
     );
     renderPaddle(pl);
-    renderPaddle(pl2);
+    renderPaddle(ai);
     renderBall(ball);
     ctx.drawImage(
         up,
