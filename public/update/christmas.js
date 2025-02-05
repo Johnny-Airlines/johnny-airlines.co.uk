@@ -74,10 +74,10 @@ document.addEventListener("keydown", (key) => {
         if (keysPressed[k] == 32 && !chatFocus) {
             interact();
         }
-        if (keysPressed[k] == 81 && !chatFocus) {
+        if (keysPressed[k] == 81 && !chatFocus && prisonCmdId == "N/A") {
             dropBomb();
         }
-        if (keysPressed[k] == 69 && !chatFocus) {
+        if (keysPressed[k] == 69 && !chatFocus && prisonCmdId == "N/A") {
             shoot();
         }
 		if (keysPressed[k] == 191) {
@@ -147,7 +147,7 @@ var ticketX = 0;
 var ticketY = 0;
 var safeX;
 var safeY;
-var prisonCmdId;
+var prisonCmdId = "N/A";
 
 
 //Other Variables
@@ -421,13 +421,13 @@ class Bomb {
 
 function drawImageAtFixedPosition(image,x,y,width,height) {
     ctx = gameArea.context;
-    ctx.drawImage(
-        image,
-        x + myPlayer.x + gameArea.canvas.width / 2,
-        y + myPlayer.y + gameArea.canvas.height / 2,
-        width,
-        height,
-    );
+	ctx.drawImage(
+		image,
+		x + myPlayer.x + gameArea.canvas.width / 2,
+		y + myPlayer.y + gameArea.canvas.height / 2,
+		width,
+		height,
+	);
 }
 
 function dropBomb() {
@@ -693,6 +693,7 @@ function executeCommand(cmdId, cmd) {
 		if (cmdArgs[0] == "release") {
 			myPlayer.x = -8000
 			myPlayer.y = -8000
+			prisonCmdId = "N/A"
 			db.ref(`cmds/${prisonCmdId}`).remove()
 			db.ref(`cmds/${cmdId}`).remove()
 		}
