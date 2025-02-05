@@ -74,10 +74,10 @@ document.addEventListener("keydown", (key) => {
         if (keysPressed[k] == 32 && !chatFocus) {
             interact();
         }
-        if (keysPressed[k] == 81 && !chatFocus) {
+        if (keysPressed[k] == 81 && !chatFocus && prisonCmdId == "N/A") {
             dropBomb();
         }
-        if (keysPressed[k] == 69 && !chatFocus) {
+        if (keysPressed[k] == 69 && !chatFocus && prisonCmdId == "N/A") {
             shoot();
         }
 		if (keysPressed[k] == 191) {
@@ -143,12 +143,6 @@ christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
 const ticketImage = new Image();
 ticketImage.src = "../Ticket.png"
 var cFrame = 1;
-var ticketX = 0;
-var ticketY = 0;
-var safeX;
-var safeY;
-var prisonCmdId;
-
 
 //Other Variables
 let ctx;
@@ -160,6 +154,14 @@ let tennis = {};
 let challenges;
 let tickets;
 var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
+var ticketX = 0;
+var ticketY = 0;
+var safeX;
+var safeY;
+var prisonCmdId = "N/A";
+var lastShot = Date.now();
+var lastBomb = Date.now();
+
 //Particle Variables
 var particleConfig = {
     particleNumber: 200,
@@ -421,38 +423,44 @@ class Bomb {
 
 function drawImageAtFixedPosition(image,x,y,width,height) {
     ctx = gameArea.context;
-    ctx.drawImage(
-        image,
-        x + myPlayer.x + gameArea.canvas.width / 2,
-        y + myPlayer.y + gameArea.canvas.height / 2,
-        width,
-        height,
-    );
+	ctx.drawImage(
+		image,
+		x + myPlayer.x + gameArea.canvas.width / 2,
+		y + myPlayer.y + gameArea.canvas.height / 2,
+		width,
+		height,
+	);
 }
 
 function dropBomb() {
-    const bomb = new Bomb(
-        myPlayer.x,
-        myPlayer.y,
-        0,
-        Math.floor(Math.random() * 100000000000000000000),
-    );
-    bombs.push(bomb);
-    db.ref(`bombs/${bomb.id}`).set(bomb);
+	if ((Date.now() - lastBomb) > 500) {
+		const bomb = new Bomb(
+			myPlayer.x,
+			myPlayer.y,
+			0,
+			Math.floor(Math.random() * 100000000000000000000),
+		);
+		bombs.push(bomb);
+		db.ref(`bombs/${bomb.id}`).set(bomb);
+		lastBomb = Date.now()
+	}
 }
 
 function shoot() {
-    let bullet = new Bullet(
-        myPlayer.x,
-        myPlayer.y,
-        myPlayer.angle,
-        myPlayer.id,
-        Date.now(),
-        0,
-    );
-    bulletKey = db.ref(`bullets/${bullet.player}`).push(bullet).key;
-    bullet.key = bulletKey;
-    db.ref(`bullets/`).child(myPlayer.id).child(bullet.key).update(bullet);
+	if ((Date.now() - lastShot) > 500) {
+		let bullet = new Bullet(
+			myPlayer.x,
+			myPlayer.y,
+			myPlayer.angle,
+			myPlayer.id,
+			Date.now(),
+			0,
+		);
+		bulletKey = db.ref(`bullets/${bullet.player}`).push(bullet).key;
+		bullet.key = bulletKey;
+		db.ref(`bullets/`).child(myPlayer.id).child(bullet.key).update(bullet);
+		lastShot = Date.now()
+	}
 }
 
 function updateDisplayName() {
@@ -695,6 +703,7 @@ function executeCommand(cmdId, cmd) {
 			myPlayer.y = -8000
 			db.ref(`cmds/${prisonCmdId}`).remove()
 			db.ref(`cmds/${cmdId}`).remove()
+			prisonCmdId = "N/A"
 		}
 		
 	}
