@@ -903,6 +903,7 @@ function pvp() {
 					if (myPlayer.health <= 0) {
 						location.reload()
 					}
+					db.ref(`/bullets/${tempBullet.id}/${tempBullet.key}`).remove();
 				}
 			}
 		}
