@@ -10,9 +10,18 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-//Databse refrences
+//Database refrences
 const db = firebase.database();
 const playersRef = db.ref("players");
+
+//Status info
+var isOfflineForDatabase = {
+	state: "offline"
+}
+
+var isOnlineForDatabase = {
+	state: "online"
+}
 
 //Sign in user
 firebase.auth().onAuthStateChanged((user) => {
@@ -284,6 +293,7 @@ class p {
         this.acceleration = 2;
         this.plane = "";
         this.mouseDown = false;
+		this.health = 100;
     }
     update() {
         ctx = gameArea.context;
@@ -742,9 +752,15 @@ function startGame(displayName, email, uid, plane) {
 	});
     myPlayer.plane = plane;
     sendPlayerToDB(myPlayer);
-    // Add a disconnect handler to remove the player from the database
-    playersRef.child(myPlayer.id).onDisconnect().remove();
-    players.push(myPlayer);
+	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
+	db.ref(`.info/connected`).on('value', (snapshot) => {
+		if (snapshot.val() == false) {
+			return;
+		}
+		userStatusDatabaseRef.onDisconnect().set(isOfflineForDatabase).then(() => {
+			userStatusDatabaseRef.set(isOnlineForDatabase);
+		})
+	})
     document.getElementById("pfp").src = plane;
     document.getElementById("dname").innerHTML = displayName;
     document.getElementById("uname").innerHTML = email;
@@ -770,7 +786,6 @@ function startGame(displayName, email, uid, plane) {
     });
     db.ref(`bombs`).on("child_removed", (snapshot) => {
         const bombId = snapshot.key;
-		console.log(bombs)
         bombs = bombs.filter((bomb) => bomb.id !== bombId);
     });
     db.ref(`bullets`).on("value", (snapshot) => {
@@ -811,10 +826,10 @@ function startGame(displayName, email, uid, plane) {
                     otherPlayerPoints,
                     Math.floor(
                         gameArea.canvas.width -
-                            200 -
+                            218 -
                             (playerInstance.x / 16000) * 200,
                     ) - 5,
-                    Math.floor((-playerInstance.y / 16000) * 200) - 5,
+                    Math.floor((-playerInstance.y / 16000) * 200) - 7,
                     10,
                     10,
                 );
@@ -829,11 +844,66 @@ function startGame(displayName, email, uid, plane) {
                     }
                 }
             }
+			db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
+				if (snapshot.val().state == "offline") {
+					console.log(player.id)
+					try {
+						db.ref(`bullets/${player.id}`).remove()
+					}
+					catch (e) {
+						console.log("huh")
+					}
+
+					db.ref(`players/${player.id}`).remove()
+				}
+			})
+
         }
     });
     // Draw all players on the canvas
 
     updateGameArea(Date.now());
+}
+
+function pvp() {
+	ctx = gameArea.context
+	pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	if (pvpOn) {
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
+		ctx.strokeStyle = "#555555";
+		ctx.lineWidth = 13;
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , Math.PI*3/2 , Math.PI*3/2+myPlayer.health*Math.PI*2/100 );
+		ctx.strokeStyle = "#ff0000";
+		ctx.lineWidth = 8;
+		ctx.stroke();
+
+		
+
+	}
+	for (let bulletPlayerGroup in bullets) {
+		for (let bullet in bullets[bulletPlayerGroup]) {
+			tempBullet = new Bullet(
+				bullets[bulletPlayerGroup][bullet].x,
+				bullets[bulletPlayerGroup][bullet].y,
+				bullets[bulletPlayerGroup][bullet].angle,
+				bullets[bulletPlayerGroup][bullet].player,
+				bullets[bulletPlayerGroup][bullet].timestamp,
+				bullets[bulletPlayerGroup][bullet].key,
+			);
+			tempBullet.draw();
+			if (tempBullet.player == myPlayer.id) {
+				tempBullet.update();
+			}
+			else {
+				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
+					myPlayer.health -= 5
+				}
+			}
+		}
+	}
 }
 
 //Update Game Area
@@ -909,22 +979,7 @@ function updateGameArea(lastTimestamp) {
     towers();
 	prison();
 	frame();
-    for (let bulletPlayerGroup in bullets) {
-        for (let bullet in bullets[bulletPlayerGroup]) {
-            tempBullet = new Bullet(
-                bullets[bulletPlayerGroup][bullet].x,
-                bullets[bulletPlayerGroup][bullet].y,
-                bullets[bulletPlayerGroup][bullet].angle,
-                bullets[bulletPlayerGroup][bullet].player,
-                bullets[bulletPlayerGroup][bullet].timestamp,
-                bullets[bulletPlayerGroup][bullet].key,
-            );
-            tempBullet.draw();
-            if (bullets[bulletPlayerGroup][bullet].player == myPlayer.id) {
-                tempBullet.update();
-            }
-        }
-    }
+	pvp();
 
     myPlayer.planeDraw();
     boostbar();
