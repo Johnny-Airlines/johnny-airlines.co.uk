@@ -150,8 +150,6 @@ var myPlayer;
 let players = [];
 let bombs = [];
 let bullets = [];
-let tennis = {};
-let challenges;
 let tickets;
 var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
 var ticketX = 0;
@@ -739,7 +737,6 @@ function startGame(displayName, email, uid, plane) {
 	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
 		myPlayer.fuel = snapshot.val();
 	});
-    define();
     myPlayer.plane = plane;
     sendPlayerToDB(myPlayer);
     // Add a disconnect handler to remove the player from the database
@@ -758,10 +755,6 @@ function startGame(displayName, email, uid, plane) {
             ":" + snapshot.val();
 		tickets = snapshot.val();
     });
-    tennis = {
-        game: false,
-        enemy: "",
-    };
     db.ref(`bombs`).on("child_added", (snapshot) => {
         const bombData = snapshot.val();
         const bomb = new Bomb(
@@ -912,11 +905,6 @@ function updateGameArea(lastTimestamp) {
 	jerryCansDraw();
     towers();
 	prison();
-    if (tennis.play) {
-        tennisUpdate();
-    }
-    draw();
-    frame();
     for (let bulletPlayerGroup in bullets) {
         for (let bullet in bullets[bulletPlayerGroup]) {
             tempBullet = new Bullet(
@@ -953,179 +941,3 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-
-function paddle(x, y, width, height, playerName) {
-    this.x = x;
-    this.y = y;
-    this.width = width;
-    this.height = height;
-    this.speedModifier = 0;
-    this.hasCollidedWith = function (ball) {
-        var paddleLeftWall = this.x;
-        var paddleRightWall = this.x + this.width;
-        var paddleTopWall = this.y;
-        var paddleBottomWall = this.y + this.height;
-        if (
-            ball.x > paddleLeftWall &&
-            ball.x < paddleRightWall &&
-            ball.y > paddleTopWall &&
-            ball.y < paddleBottomWall
-        ) {
-            return true;
-        }
-        return false;
-    };
-    this.move = function (keyCode) {
-        var nextY = this.y;
-        if (keyCode == 40) {
-            nextY = nextY + 5;
-            this.speedModifer = 1.5;
-        } else if (keyCode == 38) {
-            nextY = nextY - 5;
-            this.speedModifier = 1.5;
-        } else {
-            this.speedModifier = 0;
-        }
-        nextY = nextY < 0 ? 0 : nextY;
-        nextY = nextY + this.height > 480 ? 480 - this.height : nextY;
-        this.y = nextY;
-    };
-}
-let pl;
-let pl2;
-let ball;
-function define() {
-    pl = new paddle(5, 200, 25, 100, "test");
-    pl2 = new paddle(610, 200, 25, 100, "Johnny Airlines CEO");
-
-    ball = {
-        x: 320 + myPlayer.x + gameArea.canvas.width / 2,
-        y: 240 + myPlayer.y + gameArea.canvas.height / 2,
-        radius: 3,
-        xSpeed: 2,
-        ySpeed: 0,
-        reverseX: function () {
-            this.xSpeed *= -1;
-        },
-        reverseY: function () {
-            this.ySpeed *= -1;
-        },
-        reset: function () {
-            this.x = 320;
-            this.y = 240;
-            this.xSpeed = 2;
-            this.ySpeed = 0;
-        },
-        isBouncing: function () {
-            return ball.ySpeed != 0;
-        },
-        modifyXSpeedBy: function (modification) {
-            modification = this.xSpeed < 0 ? modification * -1 : modification;
-            var nextValue = this.xSpeed + modification;
-            nextValue = Math.abs(nextValue) > 9 ? 9 : nextValue;
-            this.xSpeed = nextValue;
-        },
-        modifyYSpeedBy: function (modification) {
-            modification = this.ySpeed < 0 ? modification * -1 : modification;
-            this.ySpeed += modification;
-        },
-    };
-}
-function tick() {
-    tennisUpdate();
-    draw();
-    window.setTimeout("tick()", 1000 / 60);
-}
-function tennisUpdate() {
-    ball.x += ball.xSpeed;
-    ball.y += ball.ySpeed;
-    if (ball.x < 0 || ball.x > 640) {
-        ball.reset();
-    }
-    if (ball.y <= 0 || ball.y >= 480) {
-        ball.reverseY();
-    }
-    var collidedWithPlayer = pl.hasCollidedWith(ball);
-    var collidedWithPlayer2 = pl2.hasCollidedWith(ball);
-    if (collidedWithPlayer || collidedWithPlayer2) {
-        ball.reverseX();
-        ball.modifyXSpeedBy(0.25);
-        var speedUpValue = collidedWithPlayer
-            ? pl.speedModifier
-            : pl2.speedModifier;
-        ball.modifyYSpeedBy(speedUpValue);
-    }
-    for (var keyCode of keysPressed) {
-        pl.move(keyCode);
-    }
-}
-function draw() {
-    ctx.fillStyle = "black";
-    ctx.fillRect(
-        2716 + myPlayer.x + gameArea.canvas.width / 2,
-        1409 + myPlayer.y + gameArea.canvas.height / 2,
-        640,
-        480,
-    );
-    renderPaddle(pl);
-    renderPaddle(pl2);
-    renderBall(ball);
-    ctx.drawImage(
-        up,
-        2988 + myPlayer.x + gameArea.canvas.width / 2,
-        1611 + myPlayer.y + gameArea.canvas.height / 2,
-        96,
-        96,
-    );
-}
-function renderPaddle(paddle) {
-    ctx.fillStyle = "white";
-    ctx.fillRect(
-        2716 + paddle.x + myPlayer.x + gameArea.canvas.width / 2,
-        1409 + paddle.y + myPlayer.y + gameArea.canvas.height / 2,
-        paddle.width,
-        paddle.height,
-    );
-}
-function renderBall(ball) {
-    ctx.beginPath();
-    ctx.arc(
-        2716 + ball.x + myPlayer.x + gameArea.canvas.width / 2,
-        1409 + ball.y + myPlayer.y + gameArea.canvas.height / 2,
-        ball.radius,
-        0,
-        2 * Math.PI,
-        false,
-    );
-    ctx.fillStyle = "white";
-    ctx.fill();
-}
-
-// Function to send a challenge to another user
-function sendChallenge(challengedUid) {
-    const challengeRef = db.ref(`challenges/${myPlayer.id}/${challengedUid}`);
-    challengeRef.set({
-        status: "pending",
-        challengerUid: myPlayer.id,
-        challengedUid,
-        timestamp: Date.now(),
-    });
-}
-
-// Function to accept or deny a challenge
-function respondToChallenge(challengeUid, response) {
-    const challengeRef = db.ref(`challenges/${challengeUid}/${myPlayer.id}`);
-    challengeRef.update({
-        status: response === "accept" ? "accept" : "denied",
-    });
-}
-
-// Function to get the status of a challenge
-function getChallengeStatus(challengedUid) {
-    const challengeRef = db.ref(`challenges/${myPlayer.id}/${challengedUid}`);
-    return challengeRef.once("value").then((snapshot) => {
-        return snapshot.val().status;
-    });
-}
-//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
-
