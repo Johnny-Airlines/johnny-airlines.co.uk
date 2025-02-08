@@ -662,7 +662,7 @@ function ticketDraw() {
 
 function isValidCommand(cmd) {
 	cmdArgs = cmd.split(" ")
-	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill" || cmdArgs[0] == "prison" || cmdArgs[0] == "release") {
+	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
 		unames = []
 		for (player in players) {
 			unames.push(players[player]["username"])
@@ -670,6 +670,9 @@ function isValidCommand(cmd) {
 		if (unames.includes(cmdArgs[1])) {
 			return true;
 		}
+	}
+	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release") {
+		return true;
 	}
 	return false;
 }
@@ -905,6 +908,7 @@ function updateGameArea(lastTimestamp) {
 	jerryCansDraw();
     towers();
 	prison();
+	frame();
     for (let bulletPlayerGroup in bullets) {
         for (let bullet in bullets[bulletPlayerGroup]) {
             tempBullet = new Bullet(
