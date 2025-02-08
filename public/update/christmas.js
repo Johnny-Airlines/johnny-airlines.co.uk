@@ -514,7 +514,7 @@ function boostbar() {
 function miniMap() {
     ctx = gameArea.context;
     ctx.imageSmoothingEnabled = false;
-    ctx.drawImage(mini, Math.floor(gameArea.canvas.width - 200), 0, 200, 200);
+    ctx.drawImage(mini, Math.floor(gameArea.canvas.width - 218), 2, 200, 200);
     ctx.drawImage(
         playerPoint,
         Math.floor(gameArea.canvas.width - 200 - (myPlayer.x / 16000) * 200) - 5,
