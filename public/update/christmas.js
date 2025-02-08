@@ -900,6 +900,9 @@ function pvp() {
 			else {
 				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
 					myPlayer.health -= 5
+					if (myPlayer.health <= 0) {
+						location.reload()
+					}
 				}
 			}
 		}
