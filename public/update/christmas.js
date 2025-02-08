@@ -908,6 +908,7 @@ function updateGameArea(lastTimestamp) {
 	jerryCansDraw();
     towers();
 	prison();
+	frame();
     for (let bulletPlayerGroup in bullets) {
         for (let bullet in bullets[bulletPlayerGroup]) {
             tempBullet = new Bullet(
