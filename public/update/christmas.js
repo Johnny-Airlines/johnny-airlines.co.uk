@@ -517,15 +517,15 @@ function miniMap() {
     ctx.drawImage(mini, Math.floor(gameArea.canvas.width - 218), 2, 200, 200);
     ctx.drawImage(
         playerPoint,
-        Math.floor(gameArea.canvas.width - 200 - (myPlayer.x / 16000) * 200) - 5,
-        Math.floor((-myPlayer.y / 16000) * 200) - 5,
+        Math.floor(gameArea.canvas.width - 218 - (myPlayer.x / 16000) * 200) - 5,
+        Math.floor((-myPlayer.y / 16000) * 200) - 7,
         10,
         10,
     );
 	ctx.drawImage(
 		ticketImage,
-		Math.floor(gameArea.canvas.width - 200 + (ticketX / 16000) * 200) - 5,
-		Math.floor((ticketY / 16000)*200)-5,
+		Math.floor(gameArea.canvas.width - 218 + (ticketX / 16000) * 200) - 5,
+		Math.floor((ticketY / 16000)*200)-7,
 		10,
 		10,
 	);
