@@ -908,6 +908,10 @@ function pvp() {
 			}
 		}
 	}
+	bombs.forEach((bomb) => {
+        bomb.update();
+        bomb.draw();
+    });
 }
 
 //Update Game Area
@@ -990,11 +994,6 @@ function updateGameArea(lastTimestamp) {
     miniMap();
     sendPlayerToDB(myPlayer);
 
-    bombs.forEach((bomb) => {
-        bomb.update();
-        bomb.draw();
-    });
-	
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
 			updateGameArea(currentTime)
