@@ -144,6 +144,8 @@ const jerryCanImage = new Image();
 jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
+const heartImage = new Image();
+heartImage.src = "../heart.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -877,9 +879,8 @@ function pvp() {
 		ctx.strokeStyle = "#ff0000";
 		ctx.lineWidth = 8;
 		ctx.stroke();
-
 		
-
+		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
 	}
 	for (let bulletPlayerGroup in bullets) {
 		for (let bullet in bullets[bulletPlayerGroup]) {
