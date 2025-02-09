@@ -409,11 +409,12 @@ class Bullet {
 
 //Bomb constuctor
 class Bomb {
-    constructor(x, y, frame, id) {
+    constructor(x, y, frame, id, player) {
         this.x = x;
         this.y = y;
         this.frame = frame;
         this.id = id;
+		this.player = player;
     }
 
     update() {
@@ -449,6 +450,7 @@ function dropBomb() {
 			myPlayer.y,
 			0,
 			Math.floor(Math.random() * 100000000000000000000),
+			myPlayer.id
 		);
 		bombs.push(bomb);
 		db.ref(`bombs/${bomb.id}`).set(bomb);
@@ -783,6 +785,7 @@ function startGame(displayName, email, uid, plane) {
             bombData.y,
             bombData.frame,
             bombData.id,
+			bombData.player
         );
         bombs.push(bomb);
     });
@@ -898,18 +901,14 @@ function pvp() {
 			else {
 				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
 					myPlayer.health -= 3
-					
-
 					if (myPlayer.health <= 0) {
 						db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-							console.log(snapshot.val())
 							if (snapshot.val() > 0) {
 								db.ref(`users/${tempBullet.player}/tickets`).once('value', (snapshot2) => {
-									console.log(snapshot2.val())
 									db.ref(`users/${tempBullet.player}/`).update({
 										tickets: snapshot2.val()+1
 									});
-								}).then(()=>{;
+								}).then(()=>{
 									db.ref(`users/${myPlayer.id}/`).update({
 										tickets: snapshot.val()-1
 									});
@@ -931,13 +930,12 @@ function pvp() {
 			myPlayer.health -= 10
 			if (myPlayer.health <= 0) {
 				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-					console.log(snapshot.val())
 					if (snapshot.val() > 0) {
-						db.ref(`users/${bomb.id}/tickets`).once('value', (snapshot2) => {
-							db.ref(`users/${bomb.id}/`).update({
+						db.ref(`users/${bomb.player}/tickets`).once('value', (snapshot2) => {
+							db.ref(`users/${bomb.player}/`).update({
 								tickets: snapshot2.val()+1
 							});
-						}).then(()=>{;
+						}).then(()=>{
 							db.ref(`users/${myPlayer.id}/`).update({
 								tickets: snapshot.val()-1
 							});
