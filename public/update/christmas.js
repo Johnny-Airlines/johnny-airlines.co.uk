@@ -846,7 +846,6 @@ function startGame(displayName, email, uid, plane) {
             }
 			db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
 				if (snapshot.val().state == "offline") {
-					console.log(player.id)
 					try {
 						db.ref(`bullets/${player.id}`).remove()
 					}
@@ -900,6 +899,20 @@ function pvp() {
 				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
 					myPlayer.health -= 3
 					if (myPlayer.health <= 0) {
+						db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+							console.log(snapshot.val())
+							if (snapshot.val() > 0) {
+								db.ref(`users/${tempBullet.player}/tickets`).once('value', (snapshot2) => {
+									db.ref(`users/${tempBullet.player}/`).update({
+										tickets: snapshot2.val()+1
+									});
+								});
+								db.ref(`users/${myPlayer.id}/`).update({
+									tickets: snapshot.val()-1
+								});
+							}
+						})
+						
 						location.reload()
 					}
 					db.ref(`/bullets/${tempBullet.id}/${tempBullet.key}`).remove();
@@ -913,6 +926,20 @@ function pvp() {
 		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
 			myPlayer.health -= 10
 			if (myPlayer.health <= 0) {
+				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+					console.log(snapshot.val())
+					if (snapshot.val() > 0) {
+						db.ref(`users/${bomb.id}/tickets`).once('value', (snapshot2) => {
+							db.ref(`users/${bomb.id}/`).update({
+								tickets: snapshot2.val()+1
+							});
+						});
+						db.ref(`users/${myPlayer.id}/`).update({
+							tickets: snapshot.val()-1
+						});
+					}
+				})
+
 				location.reload()
 			}
 		}
