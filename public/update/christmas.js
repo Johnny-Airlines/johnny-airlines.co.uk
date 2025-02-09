@@ -455,7 +455,7 @@ function dropBomb() {
 }
 
 function shoot() {
-	if ((Date.now() - lastShot) > 500) {
+	if ((Date.now() - lastShot) > 250) {
 		let bullet = new Bullet(
 			myPlayer.x,
 			myPlayer.y,
