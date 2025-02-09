@@ -171,8 +171,8 @@ var lastBomb = Date.now();
 
 //Particle Variables
 var particleConfig = {
-    particleNumber: 200,
-    maxParticleSize: 5,
+    particleNumber: 0,
+    maxParticleSize: 4,
     maxSpeed: 1,
     colorVariation: 50,
 };
@@ -396,8 +396,8 @@ class Bullet {
         ctx.restore();
     }
     update() {
-        this.x -= 100 * Math.cos(this.angle + (Math.PI / 2) * 3);
-        this.y -= 100 * Math.sin(this.angle + (Math.PI / 2) * 3);
+        this.x -= 75 * Math.cos(this.angle + (Math.PI / 2) * 3);
+        this.y -= 75 * Math.sin(this.angle + (Math.PI / 2) * 3);
         db.ref(`bullets/`).child(myPlayer.id).child(this.key).set(this);
         if (Date.now() - this.timestamp > 2000) {
             db.ref(`bullets/`).child(myPlayer.id).child(this.key).remove();
@@ -834,14 +834,12 @@ function startGame(displayName, email, uid, plane) {
                     10,
                 );
                 if (playerInstance.mouseDown) {
-                    for (let i = 0; i < 20; i++) {
-                        particles.push(
-                            new Particle(
-                                -1 * playerInstance.x,
-                                -1 * playerInstance.y,
-                            ),
-                        );
-                    }
+					particles.push(
+						new Particle(
+							-1 * playerInstance.x,
+							-1 * playerInstance.y,
+						),
+					);
                 }
             }
 			db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
