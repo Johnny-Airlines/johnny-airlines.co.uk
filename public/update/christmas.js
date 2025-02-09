@@ -171,8 +171,8 @@ var lastBomb = Date.now();
 
 //Particle Variables
 var particleConfig = {
-    particleNumber: 200,
-    maxParticleSize: 5,
+    particleNumber: 0,
+    maxParticleSize: 4,
     maxSpeed: 1,
     colorVariation: 50,
 };
@@ -392,12 +392,12 @@ class Bullet {
             -this.y + myPlayer.y + gameArea.canvas.height / 2,
         );
         ctx.rotate(this.angle + (Math.PI / 2) * 3);
-        ctx.drawImage(bulletImg, 0, 0, -300 / 32, -130 / 32);
+        ctx.drawImage(bulletImg, 0, 0, -300 / 16, -130 / 16);
         ctx.restore();
     }
     update() {
-        this.x -= 100 * Math.cos(this.angle + (Math.PI / 2) * 3);
-        this.y -= 100 * Math.sin(this.angle + (Math.PI / 2) * 3);
+        this.x -= 75 * Math.cos(this.angle + (Math.PI / 2) * 3);
+        this.y -= 75 * Math.sin(this.angle + (Math.PI / 2) * 3);
         db.ref(`bullets/`).child(myPlayer.id).child(this.key).set(this);
         if (Date.now() - this.timestamp > 2000) {
             db.ref(`bullets/`).child(myPlayer.id).child(this.key).remove();
@@ -455,7 +455,7 @@ function dropBomb() {
 }
 
 function shoot() {
-	if ((Date.now() - lastShot) > 500) {
+	if ((Date.now() - lastShot) > 250) {
 		let bullet = new Bullet(
 			myPlayer.x,
 			myPlayer.y,
@@ -834,14 +834,12 @@ function startGame(displayName, email, uid, plane) {
                     10,
                 );
                 if (playerInstance.mouseDown) {
-                    for (let i = 0; i < 20; i++) {
-                        particles.push(
-                            new Particle(
-                                -1 * playerInstance.x,
-                                -1 * playerInstance.y,
-                            ),
-                        );
-                    }
+					particles.push(
+						new Particle(
+							-1 * playerInstance.x,
+							-1 * playerInstance.y,
+						),
+					);
                 }
             }
 			db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
@@ -899,7 +897,7 @@ function pvp() {
 			}
 			else {
 				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
-					myPlayer.health -= 5
+					myPlayer.health -= 3
 					if (myPlayer.health <= 0) {
 						location.reload()
 					}
@@ -908,6 +906,16 @@ function pvp() {
 			}
 		}
 	}
+	bombs.forEach((bomb) => {
+        bomb.update();
+        bomb.draw();
+		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
+			myPlayer.health -= 10
+			if (myPlayer.health <= 0) {
+				location.reload()
+			}
+		}
+    });
 }
 
 //Update Game Area
@@ -990,11 +998,6 @@ function updateGameArea(lastTimestamp) {
     miniMap();
     sendPlayerToDB(myPlayer);
 
-    bombs.forEach((bomb) => {
-        bomb.update();
-        bomb.draw();
-    });
-	
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
 			updateGameArea(currentTime)
