@@ -897,7 +897,7 @@ function pvp() {
 			}
 			else {
 				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
-					myPlayer.health -= 5
+					myPlayer.health -= 3
 					if (myPlayer.health <= 0) {
 						location.reload()
 					}
@@ -909,6 +909,12 @@ function pvp() {
 	bombs.forEach((bomb) => {
         bomb.update();
         bomb.draw();
+		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
+			myPlayer.health -= 10
+			if (myPlayer.health <= 0) {
+				location.reload()
+			}
+		}
     });
 }
 
