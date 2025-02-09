@@ -392,7 +392,7 @@ class Bullet {
             -this.y + myPlayer.y + gameArea.canvas.height / 2,
         );
         ctx.rotate(this.angle + (Math.PI / 2) * 3);
-        ctx.drawImage(bulletImg, 0, 0, -300 / 32, -130 / 32);
+        ctx.drawImage(bulletImg, 0, 0, -300 / 16, -130 / 16);
         ctx.restore();
     }
     update() {
