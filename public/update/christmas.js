@@ -115,7 +115,7 @@ let mouseDown = 0;
 window.onmousedown = (e) => {
     ++mouseDown;
     ++myPlayer.mouseDown;
-};
+}
 window.onmouseup = () => {
     --mouseDown;
     --myPlayer.mouseDown;
@@ -417,14 +417,12 @@ class Bullet {
 			playersRef.once("value", (snapshot) => {
 				let closestDist = Infinity;
 				players = Object.values(snapshot.val())
-				console.log(players)
 				players.forEach((player) => {
 					let distForPlayer = Math.sqrt((this.x-player.x)**2+(this.y-player.y)**2) 
 					if (distForPlayer < closestDist && player.id != this.player) {
 						closestDist = distForPlayer
 						selectedPlayerX = player.x
 						selectedPlayerY = player.y
-						console.log(player.id)
 					}
 				})
 			})
@@ -434,15 +432,14 @@ class Bullet {
         
         this.x -= speed * Math.cos(this.angle + (Math.PI / 2) * 3);
         this.y -= speed * Math.sin(this.angle + (Math.PI / 2) * 3);
+		db.ref(`bullets/${this.key}`).set(this);
         if (Date.now() - this.timestamp > 10000 && this.isRocket) {
             db.ref(`bullets/${this.key}`).remove();
         }
         else if (Date.now()-this.timestamp > 2000 && !this.isRocket) {
             db.ref(`bullets/${this.key}`).remove();
         }
-		db.ref(`bullets/${this.key}`).set(this);
-    }
-        
+	} 
         
 }
 
