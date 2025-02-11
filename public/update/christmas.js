@@ -175,6 +175,7 @@ var safeY;
 var prisonCmdId = "N/A";
 var lastShot = Date.now();
 var lastBomb = Date.now();
+var lastMissile = Date.now();
 
 //Particle Variables
 var particleConfig = {
@@ -501,7 +502,7 @@ function shoot() {
 }
 
 function missileShoot() {
-	if ((Date.now() - lastShot) > 250) {
+	if ((Date.now() - lastMissile) > 2000) {
 		key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
@@ -513,7 +514,7 @@ function missileShoot() {
             true
 		);
 		db.ref(`bullets/${key}`).set(bullet);
-		lastShot = Date.now()
+		lastMissile = Date.now()
 	}
 }
 
