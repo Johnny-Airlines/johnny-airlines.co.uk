@@ -412,7 +412,23 @@ class Bullet {
     update() {
         let speed = 75
         if (this.isRocket) {
-            this.angle = Math.atan2((myPlayer.y-this.y),(myPlayer.x-this.x)) + (Math.PI / 2) * 3
+			let selectedPlayerX = myPlayer.x
+			let selectedPlayerY = myPlayer.y
+			playersRef.once("value", (snapshot) => {
+				let closestDist = Infinity;
+				players = Object.values(snapshot.val())
+				console.log(players)
+				players.forEach((player) => {
+					let distForPlayer = Math.sqrt((this.x-player.x)**2+(this.y-player.y)**2) 
+					if (distForPlayer < closestDist && player.id != this.player) {
+						closestDist = distForPlayer
+						selectedPlayerX = player.x
+						selectedPlayerY = player.y
+						console.log(player.id)
+					}
+				})
+			})
+            this.angle = Math.atan2((selectedPlayerY-this.y),(selectedPlayerX-this.x)) + (Math.PI / 2) * 3
             speed = 25
         }
         
@@ -424,9 +440,7 @@ class Bullet {
         else if (Date.now()-this.timestamp > 2000 && !this.isRocket) {
             db.ref(`bullets/${this.key}`).remove();
         }
-        else {
-            db.ref(`bullets/${this.key}`).set(this);
-        }
+		db.ref(`bullets/${this.key}`).set(this);
     }
         
         
@@ -946,12 +960,15 @@ function pvp() {
 		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
 	}
 	bullets.forEach((bullet) => {
-		console.log(bullet.key)
 		if (bullet.player == myPlayer.id) {
 			bullet.update();
 		}
-		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
-			myPlayer.health -= 3
+		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
+			if (bullet.isRocket) {
+				myPlayer.health -= 10
+			} else {
+				myPlayer.health -= 3
+			}
 			if (myPlayer.health <= 0) {
 				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
 					if (snapshot.val() > 0) {
