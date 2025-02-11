@@ -89,6 +89,9 @@ document.addEventListener("keydown", (key) => {
         if (keysPressed[k] == 69 && !chatFocus && prisonCmdId == "N/A") {
             shoot();
         }
+		if (keysPressed[k] == 70 && !chatFocus && prisonCmdId == "N/A") {
+			missileShoot();
+		}
 		if (keysPressed[k] == 191) {
 			document.getElementById("message-input").focus();
 			document.getElementById("message-input").select();
@@ -400,9 +403,9 @@ class Bullet {
     update() {
         this.x -= 75 * Math.cos(this.angle + (Math.PI / 2) * 3);
         this.y -= 75 * Math.sin(this.angle + (Math.PI / 2) * 3);
-        db.ref(`bullets/`).child(myPlayer.id).child(this.key).set(this);
-        if (Date.now() - this.timestamp > 2000) {
-            db.ref(`bullets/`).child(myPlayer.id).child(this.key).remove();
+        db.ref(`bullets/${this.key}`).set(this);
+        if (Date.now() - this.timestamp > 1000) {
+            db.ref(`bullets/${this.key}`).remove();
         }
     }
 }
@@ -445,11 +448,12 @@ function drawImageAtFixedPosition(image,x,y,width,height) {
 
 function dropBomb() {
 	if ((Date.now() - lastBomb) > 500) {
+		key = db.ref().child('bombs').push().key;
 		const bomb = new Bomb(
 			myPlayer.x,
 			myPlayer.y,
 			0,
-			Math.floor(Math.random() * 100000000000000000000),
+			key,
 			myPlayer.id
 		);
 		bombs.push(bomb);
@@ -460,17 +464,16 @@ function dropBomb() {
 
 function shoot() {
 	if ((Date.now() - lastShot) > 250) {
+		key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
 			myPlayer.y,
 			myPlayer.angle,
 			myPlayer.id,
 			Date.now(),
-			0,
+			key
 		);
-		bulletKey = db.ref(`bullets/${bullet.player}`).push(bullet).key;
-		bullet.key = bulletKey;
-		db.ref(`bullets/`).child(myPlayer.id).child(bullet.key).update(bullet);
+		db.ref(`bullets/${key}`).set(bullet);
 		lastShot = Date.now()
 	}
 }
@@ -793,9 +796,22 @@ function startGame(displayName, email, uid, plane) {
         const bombId = snapshot.key;
         bombs = bombs.filter((bomb) => bomb.id !== bombId);
     });
-    db.ref(`bullets`).on("value", (snapshot) => {
-        bullets = snapshot.val();
-    });
+	db.ref(`bullets`).on("child_added", (snapshot) => {
+		const bulletData = snapshot.val();
+		const bullet = new Bullet(
+			bulletData.x,
+			bulletData.y,
+            bulletData.angle,
+			bulletData.player,
+			bulletData.timestamp,
+			bulletData.key
+		);
+		bullets.push(bullet);
+	});
+	db.ref(`bullets`).on("child_removed", (snapshot) => {
+		const bulletId = snapshot.key;
+		bullets = bullets.filter((bullet) => bullet.key !== bulletId)
+	});
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
     });
@@ -884,45 +900,34 @@ function pvp() {
 		
 		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
 	}
-	for (let bulletPlayerGroup in bullets) {
-		for (let bullet in bullets[bulletPlayerGroup]) {
-			tempBullet = new Bullet(
-				bullets[bulletPlayerGroup][bullet].x,
-				bullets[bulletPlayerGroup][bullet].y,
-				bullets[bulletPlayerGroup][bullet].angle,
-				bullets[bulletPlayerGroup][bullet].player,
-				bullets[bulletPlayerGroup][bullet].timestamp,
-				bullets[bulletPlayerGroup][bullet].key,
-			);
-			tempBullet.draw();
-			if (tempBullet.player == myPlayer.id) {
-				tempBullet.update();
-			}
-			else {
-				if (Math.sqrt((tempBullet.x-myPlayer.x)**2 + (tempBullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
-					myPlayer.health -= 3
-					if (myPlayer.health <= 0) {
-						db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-							if (snapshot.val() > 0) {
-								db.ref(`users/${tempBullet.player}/tickets`).once('value', (snapshot2) => {
-									db.ref(`users/${tempBullet.player}/`).update({
-										tickets: snapshot2.val()+1
-									});
-								}).then(()=>{
-									db.ref(`users/${myPlayer.id}/`).update({
-										tickets: snapshot.val()-1
-									});
-									location.reload()
-								});
-							}
-						})		
-						
-					}
-					db.ref(`/bullets/${tempBullet.id}/${tempBullet.key}`).remove();
-				}
-			}
+	bullets.forEach((bullet) => {
+		console.log(bullet.key)
+		if (bullet.player == myPlayer.id) {
+			bullet.update();
 		}
-	}
+		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
+			myPlayer.health -= 3
+			if (myPlayer.health <= 0) {
+				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+					if (snapshot.val() > 0) {
+						db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
+							db.ref(`users/${bullet.player}/`).update({
+								tickets: snapshot2.val()+1
+							});
+						}).then(()=>{
+							db.ref(`users/${myPlayer.id}/`).update({
+								tickets: snapshot.val()-1
+							});
+							location.reload()
+						});
+					}
+				})		
+				
+			}
+			db.ref(`/bullets/${bullet.key}`).remove();
+		}
+		bullet.draw();
+	})
 	bombs.forEach((bomb) => {
         bomb.update();
         bomb.draw();
