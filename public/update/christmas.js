@@ -957,6 +957,7 @@ function pvp() {
 		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
 	}
 	bullets.forEach((bullet) => {
+		bullet.draw()
 		if (bullet.player == myPlayer.id) {
 			bullet.update();
 		}
