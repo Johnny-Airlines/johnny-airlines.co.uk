@@ -404,7 +404,7 @@ class Bullet {
         this.x -= 75 * Math.cos(this.angle + (Math.PI / 2) * 3);
         this.y -= 75 * Math.sin(this.angle + (Math.PI / 2) * 3);
         db.ref(`bullets/${this.key}`).set(this);
-        if (Date.now() - this.timestamp > 2000) {
+        if (Date.now() - this.timestamp > 1000) {
             db.ref(`bullets/${this.key}`).remove();
         }
     }
@@ -801,6 +801,7 @@ function startGame(displayName, email, uid, plane) {
 		const bullet = new Bullet(
 			bulletData.x,
 			bulletData.y,
+            bulletData.angle,
 			bulletData.player,
 			bulletData.timestamp,
 			bulletData.key
@@ -809,7 +810,7 @@ function startGame(displayName, email, uid, plane) {
 	});
 	db.ref(`bullets`).on("child_removed", (snapshot) => {
 		const bulletId = snapshot.key;
-		bullets = bullets.filter((bullet) => bullet.id !== bulletId)
+		bullets = bullets.filter((bullet) => bullet.key !== bulletId)
 	});
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
