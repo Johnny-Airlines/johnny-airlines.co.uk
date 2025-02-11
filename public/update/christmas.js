@@ -426,7 +426,6 @@ class Bullet {
         else {
             db.ref(`bullets/${this.key}`).set(this);
         }
-        }
     }
         
         
