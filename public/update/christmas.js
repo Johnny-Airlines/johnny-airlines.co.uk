@@ -905,7 +905,7 @@ function pvp() {
 		if (bullet.player == myPlayer.id) {
 			bullet.update();
 		}
-		if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
+		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {	
 			myPlayer.health -= 3
 			if (myPlayer.health <= 0) {
 				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
