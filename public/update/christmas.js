@@ -847,22 +847,21 @@ function startGame(displayName, email, uid, plane) {
         const bombId = snapshot.key;
         bombs = bombs.filter((bomb) => bomb.id !== bombId);
     });
-	db.ref(`bullets`).on("child_added", (snapshot) => {
-		const bulletData = snapshot.val();
-		const bullet = new Bullet(
-			bulletData.x,
-			bulletData.y,
-            bulletData.angle,
-			bulletData.player,
-			bulletData.timestamp,
-			bulletData.key,
-            bulletData.isRocket
-		);
-		bullets.push(bullet);
-	});
-	db.ref(`bullets`).on("child_removed", (snapshot) => {
-		const bulletId = snapshot.key;
-		bullets = bullets.filter((bullet) => bullet.key !== bulletId)
+	db.ref(`bullets`).on("value", (snapshot) => {
+		bullets = []
+		bulletsData = Object.values(snapshot.val())
+		bulletsData.forEach((bulletData)=>{
+			const bullet = new Bullet(
+				bulletData.x,
+				bulletData.y,
+				bulletData.angle,
+				bulletData.player,
+				bulletData.timestamp,
+				bulletData.key,
+				bulletData.isRocket
+			);
+			bullets.push(bullet);
+		})
 	});
     db.ref("challenges").on("value", (snapshot) => {
         challenges = snapshot.val();
