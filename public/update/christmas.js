@@ -149,6 +149,8 @@ const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
+const rocketImg = new Image();
+rocketImg.src = "../rocket.png"
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -381,13 +383,14 @@ class p {
 }
 
 class Bullet {
-    constructor(x, y, angle, player, timestamp, key) {
+    constructor(x, y, angle, player, timestamp, key, isRocket) {
         this.x = x;
         this.y = y;
         this.angle = angle;
         this.player = player;
         this.timestamp = timestamp;
         this.key = key;
+        this.isRocket = isRocket;
     }
     draw() {
         ctx = gameArea.context;
@@ -396,18 +399,36 @@ class Bullet {
             -this.x + myPlayer.x + gameArea.canvas.width / 2,
             -this.y + myPlayer.y + gameArea.canvas.height / 2,
         );
-        ctx.rotate(this.angle + (Math.PI / 2) * 3);
-        ctx.drawImage(bulletImg, 0, 0, -300 / 16, -130 / 16);
+        ctx.rotate(this.angle - (Math.PI / 2) * 3 + Math.PI);
+        if (this.isRocket) {
+            ctx.drawImage(rocketImg, 0, 0, -300 /4, -130 / 4);
+        }
+        else {
+            ctx.drawImage(bulletImg, 0, 0, -300 / 16, -130 / 16);
+        }
         ctx.restore();
     }
     update() {
-        this.x -= 75 * Math.cos(this.angle + (Math.PI / 2) * 3);
-        this.y -= 75 * Math.sin(this.angle + (Math.PI / 2) * 3);
-        db.ref(`bullets/${this.key}`).set(this);
-        if (Date.now() - this.timestamp > 1000) {
+        let speed = 75
+        if (this.isRocket) {
+            this.angle = Math.atan2((myPlayer.y-this.y),(myPlayer.x-this.x)) + (Math.PI / 2) * 3
+            speed = 25
+        }
+        
+        this.x -= speed * Math.cos(this.angle + (Math.PI / 2) * 3);
+        this.y -= speed * Math.sin(this.angle + (Math.PI / 2) * 3);
+        if (Date.now() - this.timestamp > 10000 && this.isRocket) {
             db.ref(`bullets/${this.key}`).remove();
         }
+        else if (Date.now()-this.timestamp > 2000 && !this.isRocket) {
+            db.ref(`bullets/${this.key}`).remove();
+        }
+        else {
+            db.ref(`bullets/${this.key}`).set(this);
+        }
     }
+        
+        
 }
 
 //Bomb constuctor
@@ -471,7 +492,25 @@ function shoot() {
 			myPlayer.angle,
 			myPlayer.id,
 			Date.now(),
-			key
+			key,
+            false
+		);
+		db.ref(`bullets/${key}`).set(bullet);
+		lastShot = Date.now()
+	}
+}
+
+function missileShoot() {
+	if ((Date.now() - lastShot) > 250) {
+		key = db.ref().child('bullets').push().key;
+		let bullet = new Bullet(
+			myPlayer.x,
+			myPlayer.y,
+			myPlayer.angle,
+			myPlayer.id,
+			Date.now(),
+			key,
+            true
 		);
 		db.ref(`bullets/${key}`).set(bullet);
 		lastShot = Date.now()
@@ -804,7 +843,8 @@ function startGame(displayName, email, uid, plane) {
             bulletData.angle,
 			bulletData.player,
 			bulletData.timestamp,
-			bulletData.key
+			bulletData.key,
+            bulletData.isRocket
 		);
 		bullets.push(bullet);
 	});
@@ -866,7 +906,11 @@ function startGame(displayName, email, uid, plane) {
 			db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
 				if (snapshot.val().state == "offline") {
 					try {
-						db.ref(`bullets/${player.id}`).remove()
+                        bullets.forEach((bullet)=>{
+                            if (bullet.player == player.id) {
+                                db.ref(`bullets/${bullet.key}`).remove();
+                            }
+                        })
 					}
 					catch (e) {
 						console.log("huh")
