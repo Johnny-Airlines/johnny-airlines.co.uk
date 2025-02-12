@@ -457,7 +457,6 @@ class Bomb {
         this.frame++;
         if (this.frame >= 20) {
             db.ref(`bombs/${this.id}`).remove();
-            bombs.splice(bombs.indexOf(this), 1);
         }
     }
 
@@ -490,7 +489,7 @@ function dropBomb() {
 			key,
 			myPlayer.id
 		);
-		bombs.push(bomb);
+		//bombs.push(bomb);
 		db.ref(`bombs/${bomb.id}`).set(bomb);
 	}
 }
