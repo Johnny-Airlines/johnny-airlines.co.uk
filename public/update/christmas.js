@@ -456,7 +456,7 @@ class Bomb {
     update() {
         this.frame++;
         if (this.frame >= 20) {
-            db.ref(`bombs/${this.id}`).remove();
+            db.ref(`bombs/${this.id}`).remove;
             bombs.splice(bombs.indexOf(this), 1);
         }
     }
@@ -481,7 +481,7 @@ function drawImageAtFixedPosition(image,x,y,width,height) {
 
 function dropBomb() {
 	if ((Date.now() - lastBomb) > 500) {
-		key = db.ref().child('bombs').push().key;
+		let key = db.ref().child('bombs').push().key;
 		const bomb = new Bomb(
 			myPlayer.x,
 			myPlayer.y,
@@ -489,7 +489,7 @@ function dropBomb() {
 			key,
 			myPlayer.id
 		);
-		bombs.push(bomb);
+		//bombs.push(bomb);
 		db.ref(`bombs/${bomb.id}`).set(bomb);
 		lastBomb = Date.now()
 	}
