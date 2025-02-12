@@ -1,3 +1,7 @@
+(function(){"use strict"; 
+//Database refrences
+const db = firebase.database();
+
 firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         loadShop();
@@ -91,8 +95,8 @@ const costDict = {
 
 function loadShop() {
     db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
-        planesInShop = []
-		thing = [...document.getElementById("Planes").children]
+        let planesInShop = []
+		let thing = [...document.getElementById("Planes").children]
 		thing.forEach((element) => {
 			planesInShop.push(element.src.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png",""))
 		});
@@ -101,7 +105,7 @@ function loadShop() {
             buttonDict[plane] = "Equip"
 			if (!planesInShop.includes(plane)) {
 				console.log(plane)
-				planeElement = `<img width="66px" src="https://johnny-airlines.co.uk/${plane}.png" onclick="hoverOverShopItem('${plane}')"/>`
+				let planeElement = `<img width="66px" src="https://johnny-airlines.co.uk/${plane}.png" onclick="hoverOverShopItem('${plane}')"/>`
 				document.getElementById("Planes").innerHTML += planeElement
 			}
         })
@@ -170,4 +174,4 @@ function buy() {
 	}
 }
 
-
+})();

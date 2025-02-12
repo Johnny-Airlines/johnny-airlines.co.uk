@@ -1,3 +1,4 @@
+(function(){"use strict";
 const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
   authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -39,7 +40,6 @@ firebase.auth().onAuthStateChanged((user) => {
 		);
 		PixelFont.load().then((font) => {
 			document.fonts.add(font)
-			console.log("font loaded")
 			startGame(displayName, email, uid, photoURL);
 		});
     } else {
@@ -79,7 +79,7 @@ let keysPressed = [];
 document.addEventListener("keydown", (key) => {
     keysPressed.push(key.keyCode);
     keysPressed = [...new Set(keysPressed)];
-    for (k in keysPressed) {
+    for (let k in keysPressed) {
         if (keysPressed[k] == 32 && !chatFocus) {
             interact();
         }
@@ -497,7 +497,7 @@ function dropBomb() {
 
 function shoot() {
 	if ((Date.now() - lastShot) > 250) {
-		key = db.ref().child('bullets').push().key;
+		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
 			myPlayer.y,
@@ -514,7 +514,7 @@ function shoot() {
 
 function missileShoot() {
 	if ((Date.now() - lastMissile) > 2000) {
-		key = db.ref().child('bullets').push().key;
+		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
 			myPlayer.y,
@@ -686,8 +686,8 @@ function ticketDraw() {
             presentY:ticketY
         });
 	}
-	highestV = 0.1
-	ticketPlayer = 0
+	let highestV = 0.1
+	let ticketPlayer = 0
 	for (const player in players) {
 		var playerVelocity = Math.sqrt(players[player]["vx"]**2+players[player]["vy"]**2)
 		if (playerVelocity > highestV) {
@@ -696,7 +696,7 @@ function ticketDraw() {
 		}
 	}
 	if (ticketPlayer == myPlayer.id) {
-		runVector = [0,0]
+		let runVector = [0,0]
 		for (const player in players) {
 			runVector = [runVector[0]+ticketX+players[player].x,runVector[1]+ticketY+players[player].y]
 		}
@@ -712,7 +712,7 @@ function ticketDraw() {
 		else {
 			runVector[1] = runVector[1] + ticketY*5 - 8000*5
 		}
-		runAngle = Math.atan2(runVector[1],runVector[0]) + Math.PI / 2
+		let runAngle = Math.atan2(runVector[1],runVector[0]) + Math.PI / 2
 		ticketX += Math.cos(runAngle - Math.PI / 2) * 45;
         ticketY += Math.sin(runAngle - Math.PI / 2) * 45;
 		if (ticketX < 0) { ticketX += 16000 }
@@ -746,7 +746,7 @@ function isValidCommand(cmd) {
 }
 
 function executeCommand(cmdId, cmd) {
-	cmdArgs = cmd.split(" ")
+	let cmdArgs = cmd.split(" ")
 	if (cmdArgs[1] == myPlayer.username) {
 		if (cmdArgs[0] == "tp") {
 			console.log(cmdArgs)
@@ -802,6 +802,7 @@ function startGame(displayName, email, uid, plane) {
     myPlayer = new p();
     myPlayer.displayName = displayName;
     myPlayer.username = email;
+	window.playerUsername = email;
     myPlayer.id = uid;
     myPlayer.x = -8000;
     myPlayer.y = -8000;
@@ -849,23 +850,22 @@ function startGame(displayName, email, uid, plane) {
     });
 	db.ref(`bullets`).on("value", (snapshot) => {
 		bullets = []
-		bulletsData = Object.values(snapshot.val())
-		bulletsData.forEach((bulletData)=>{
-			const bullet = new Bullet(
-				bulletData.x,
-				bulletData.y,
-				bulletData.angle,
-				bulletData.player,
-				bulletData.timestamp,
-				bulletData.key,
-				bulletData.isRocket
-			);
-			bullets.push(bullet);
-		})
+		if (snapshot.val() != null) {
+			let bulletsData = Object.values(snapshot.val())
+			bulletsData.forEach((bulletData)=>{
+				const bullet = new Bullet(
+					bulletData.x,
+					bulletData.y,
+					bulletData.angle,
+					bulletData.player,
+					bulletData.timestamp,
+					bulletData.key,
+					bulletData.isRocket
+				);
+				bullets.push(bullet);
+			})
+		}
 	});
-    db.ref("challenges").on("value", (snapshot) => {
-        challenges = snapshot.val();
-    });
 	db.ref(`presentX`).on("value", (snapshot) => {
 		ticketX = snapshot.val();
 	});
@@ -883,12 +883,11 @@ function startGame(displayName, email, uid, plane) {
 			jerryCans[i][1] = snapshot.val();
 		});
 	}
-	console.log(jerryCans);
 
     playersRef.on("value", (snapshot) => {
         players = snapshot.val();
         for (const playerId in players) {
-            player = players[playerId];
+            let player = players[playerId];
             if (player.id != myPlayer.id) {
                 const playerInstance = new p();
                 Object.assign(playerInstance, player);
@@ -940,7 +939,7 @@ function startGame(displayName, email, uid, plane) {
 
 function pvp() {
 	ctx = gameArea.context
-	pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
 	if (pvpOn) {
 		ctx.beginPath();
 		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
@@ -1014,8 +1013,8 @@ function pvp() {
 
 //Update Game Area
 function updateGameArea(lastTimestamp) {
-	currentTime = Date.now()
-	fps = (1/((currentTime-lastTimestamp)/1000))
+	let currentTime = Date.now()
+	let fps = (1/((currentTime-lastTimestamp)/1000))
 	
     gameArea.clear();
     myPlayer.x += myPlayer.vx;
@@ -1101,3 +1100,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
+})();
