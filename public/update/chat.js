@@ -1,4 +1,5 @@
-//const username = prompt("");
+(function(){"use strict";
+const db = firebase.database();
 
 let pressedKeys = [];
 var admin = false;
@@ -45,7 +46,7 @@ function sendMessage() {
 
     // create db collection and send in the data
     db.ref("uMessages/" + timestamp).set({
-        username:myPlayer.username,
+        username:window.playerUsername,
         message,
         timestamp,
     });
@@ -64,7 +65,7 @@ fetchChat.on("child_added", function (snapshot) {
     const messages = snapshot.val();
 	//const message = `<li class=${myPlayer.username === messages.username ? "sent" : "receive"}><span>${timeConverter(messages.timestamp)} ${messages.username}: </span>${messages.message}</li>`;
 	const message = document.createElement("li");
-	message.setAttribute("class",`${myPlayer.username === messages.username ? "sent" : "receive"}`);
+	message.setAttribute("class",`${window.playerUsername === messages.username ? "sent" : "receive"}`);
 	const messageSpan = document.createElement("span")
 	messageSpan.textContent = `${timeConverter(messages.timestamp)} ${messages.username}: `
 	message.appendChild(messageSpan)
@@ -72,4 +73,5 @@ fetchChat.on("child_added", function (snapshot) {
 	// append the message on the page
 	document.getElementById("messages").appendChild(message);
 });
+})();
 
