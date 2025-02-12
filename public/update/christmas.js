@@ -457,7 +457,6 @@ class Bomb {
         this.frame++;
         if (this.frame >= 20) {
             db.ref(`bombs/${this.id}`).remove();
-            bombs.splice(bombs.indexOf(this), 1);
         }
     }
 
@@ -481,7 +480,8 @@ function drawImageAtFixedPosition(image,x,y,width,height) {
 
 function dropBomb() {
 	if ((Date.now() - lastBomb) > 500) {
-		key = db.ref().child('bombs').push().key;
+		lastBomb = Date.now()
+		let key = db.ref().child('bombs').push().key;
 		const bomb = new Bomb(
 			myPlayer.x,
 			myPlayer.y,
@@ -489,14 +489,14 @@ function dropBomb() {
 			key,
 			myPlayer.id
 		);
-		bombs.push(bomb);
+		//bombs.push(bomb);
 		db.ref(`bombs/${bomb.id}`).set(bomb);
-		lastBomb = Date.now()
 	}
 }
 
 function shoot() {
 	if ((Date.now() - lastShot) > 250) {
+		lastShot = Date.now()
 		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
@@ -508,12 +508,12 @@ function shoot() {
             false
 		);
 		db.ref(`bullets/${key}`).set(bullet);
-		lastShot = Date.now()
 	}
 }
 
 function missileShoot() {
 	if ((Date.now() - lastMissile) > 2000) {
+		lastMissile = Date.now()
 		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
 			myPlayer.x,
@@ -525,7 +525,6 @@ function missileShoot() {
             true
 		);
 		db.ref(`bullets/${key}`).set(bullet);
-		lastMissile = Date.now()
 	}
 }
 
@@ -960,6 +959,7 @@ function pvp() {
 			bullet.update();
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
+			db.ref(`/bullets/${bullet.key}`).remove();
 			if (bullet.isRocket) {
 				myPlayer.health -= 10
 			} else {
@@ -979,12 +979,9 @@ function pvp() {
 							location.reload()
 						});
 					}
-				})		
-				
+				})			
 			}
-			db.ref(`/bullets/${bullet.key}`).remove();
 		}
-		bullet.draw();
 	})
 	bombs.forEach((bomb) => {
         bomb.update();
