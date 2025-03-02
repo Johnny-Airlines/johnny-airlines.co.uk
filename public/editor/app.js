@@ -1,6 +1,8 @@
+monaco.editor.setTheme('vs-dark')
+
 var editor = monaco.editor.create(document.getElementById('container'), {
 	value: ['def x():', '\tprint("hey")', ''].join('\n'),
-	language: 'python'
+	language: 'python',
 });
 async function sendData(data) {
 	// Construct a FormData instance
@@ -43,7 +45,7 @@ async function runFile() {
 			throw new Error(`Response status: ${response.status}`)
 		}
 
-		const json = await response;
+		const json = await response.text();
 		document.getElementById("output").value = json
 	} catch (error) {
 		console.error(error.message);
