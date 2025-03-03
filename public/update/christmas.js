@@ -489,7 +489,6 @@ function dropBomb() {
 			key,
 			myPlayer.id
 		);
-		//bombs.push(bomb);
 		db.ref(`bombs/${bomb.id}`).set(bomb);
 	}
 }
@@ -959,28 +958,31 @@ function pvp() {
 			bullet.update();
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
-			db.ref(`/bullets/${bullet.key}`).remove();
-			if (bullet.isRocket) {
-				myPlayer.health -= 10
-			} else {
-				myPlayer.health -= 3
-			}
-			if (myPlayer.health <= 0) {
-				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-					if (snapshot.val() > 0) {
-						db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
-							db.ref(`users/${bullet.player}/`).update({
-								tickets: snapshot2.val()+1
+			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
+				if (bullet.isRocket) {
+					myPlayer.health -= 10
+					console.log("huh")
+				} else {
+					myPlayer.health -= 3
+				}
+				if (myPlayer.health <= 0) {
+					db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+						if (snapshot.val() > 0) {
+							db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
+								db.ref(`users/${bullet.player}/`).update({
+									tickets: snapshot2.val()+1
+								});
+							}).then(()=>{
+								db.ref(`users/${myPlayer.id}/`).update({
+									tickets: snapshot.val()-1
+								});
+								location.reload()
 							});
-						}).then(()=>{
-							db.ref(`users/${myPlayer.id}/`).update({
-								tickets: snapshot.val()-1
-							});
-							location.reload()
-						});
-					}
-				})			
-			}
+						}
+					})			
+				}
+
+			});
 		}
 	})
 	bombs.forEach((bomb) => {

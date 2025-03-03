@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta http-equiv="Content-Type" content="text/html;charset=utf-8" />
+		<link
+			rel="stylesheet"
+			data-name="vs/editor/editor.main"
+			href="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/editor/editor.main.css"
+		/>
+		<link rel="stylesheet" href="./style.css"/>
+	</head>
+	<body>
+		<h2>Monaco Editor Sync Loading Sample</h2>
+		<div class="mainbodyContainer">
+			<div id="fileExplorer"></div>
+			<div id="container"></div>
+			<div class="ouputContainer">
+				<p id="output">Hmm</p>
+			</div>
+		</div>
+		<input type="text" placeholder="test.py" id="filenameInput"></input>
+		<button id="sendFileBtn">Send File</button>
+		<button id="runCodeBtn"></button>
+		<script> 
+			var require = { paths: { vs: 'https://cdn.jsdelivr.net/npm/monaco-editor/min/vs' } };
+		</script>
+		<script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/loader.js"></script>
+		<script src="https://cdn.jsdelivr.net/npm/monaco-editor/min/vs/editor/editor.main.js"></script>
+
+		<script src="./app.js"></script>
+	</body>
+</html>
