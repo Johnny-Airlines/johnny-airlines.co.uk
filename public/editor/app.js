@@ -31,8 +31,11 @@ async function sendData(data) {
 				'Access-Control-Allow-Origin':'*'
 			}
 		});
+		alert(await response.body)
+		alert(await response.json())
 		console.log(await response.json());
 	} catch (e) {
+		alert(e.stack)
 		console.error(e);
 	}
 }
@@ -41,6 +44,7 @@ async function runFile() {
 	const url = `http://api.johnny-airlines.co.uk:5000/runPyFile/${document.getElementById("filenameInput").value}/a`
 	try {
 		const response = await fetch(url);
+		alert(response.ok)
 		if (!response.ok) {
 			throw new Error(`Response status: ${response.status}`)
 		}
@@ -48,6 +52,7 @@ async function runFile() {
 		const json = await response.text();
 		document.getElementById("output").value = json
 	} catch (error) {
+		alert(error.message)
 		console.error(error.message);
 	}
 }
