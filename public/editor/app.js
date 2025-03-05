@@ -1,9 +1,12 @@
-monaco.editor.setTheme('vs-dark')
+ronaco.editor.setTheme('vs-dark')
 
 var editor = monaco.editor.create(document.getElementById('container'), {
 	value: ['def x():', '\tprint("hey")', ''].join('\n'),
 	language: 'python',
 });
+
+
+
 async function sendData(data) {
 	// Construct a FormData instance
 	const formData = new FormData();
@@ -31,11 +34,8 @@ async function sendData(data) {
 				'Access-Control-Allow-Origin':'*'
 			}
 		});
-		alert(await response.body)
-		alert(await response.json())
 		console.log(await response.json());
 	} catch (e) {
-		alert(e.stack)
 		console.error(e);
 	}
 }
@@ -44,19 +44,34 @@ async function runFile() {
 	const url = `http://api.johnny-airlines.co.uk:5000/runPyFile/${document.getElementById("filenameInput").value}/a`
 	try {
 		const response = await fetch(url);
-		alert(response.ok)
 		if (!response.ok) {
 			throw new Error(`Response status: ${response.status}`)
 		}
 
 		const json = await response.text();
-		document.getElementById("output").value = json
+		document.getElementById("output").textContent = json
 	} catch (error) {
-		alert(error.message)
 		console.error(error.message);
 	}
 }
 
+
+async function listFiles() {
+	const url = `http://api.johnny-airlines.co.uk:5000/listFiles`;
+	try {
+		const response = await fetch(url)
+		if (!response.ok) {
+			throw new Error(`Response status: ${response.status}`)
+		}
+		let files = await response.text()
+		files = files.slice(1,-1)
+		files = files.replace(/'/g,"");
+		files = files.split(",");
+		return files;
+	} catch(e) {
+		console.error(e.message);
+	}
+}
 
 document.getElementById("sendFileBtn").addEventListener("click", sendData);
 document.getElementById("runCodeBtn").addEventListener("click", runFile);
