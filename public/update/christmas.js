@@ -727,10 +727,10 @@ function ticketDraw() {
 }
 
 function isValidCommand(cmd) {
-	cmdArgs = cmd.split(" ")
+	let cmdArgs = cmd.split(" ")
 	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
-		unames = []
-		for (player in players) {
+		let unames = []
+		for (let player in players) {
 			unames.push(players[player]["username"])
 		}
 		if (unames.includes(cmdArgs[1])) {
@@ -1053,7 +1053,7 @@ function updateGameArea(lastTimestamp) {
         }
 		if (keysPressed.includes(67)) {
 			keysPressed.splice(keysPressed.indexOf(67),1)
-			command = prompt("Command: ")
+			let command = prompt("Command: ")
 			if (isValidCommand(command)) {
 				db.ref(`cmds`).push({
 					command,
