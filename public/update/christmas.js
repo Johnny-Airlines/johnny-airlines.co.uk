@@ -1006,9 +1006,6 @@ function pvp() {
 					}
 				})	
 			}
-		}
-    });
-}
 
 //Update Game Area
 function updateGameArea(lastTimestamp) {
