@@ -1,4 +1,4 @@
-(function(){"use strict"; 
+ 
 //Database refrences
 const db = firebase.database();
 
@@ -174,4 +174,4 @@ function buy() {
 	}
 }
 
-})();
+
