@@ -86,7 +86,7 @@ addEventListener("mousemove", (event) => {
 	boids[0].y = mouseY;
 });
 
-var boids = [new Boid(mouseX,mouseY,true)];
+var boids = [new Boid(mouseX,mouseY,false)];
 
 for (let i = 0; i < 500; i++) {
 	boids.push(new Boid(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),false))
