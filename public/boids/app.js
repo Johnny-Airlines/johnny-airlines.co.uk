@@ -104,10 +104,10 @@ for (let i = 0; i < 500; i++) {
 	boids.push(new Boid(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),false))
 }
 
-const alignmentStrength = 0.3;
-const cohesionStrength = 0.3;
-const vision = 300;
-const collisionDistance = 50;
+var alignmentStrength = 0.3;
+var cohesionStrength = 0.3;
+var vision = 300;
+var collisionDistance = 50;
 
 update()
 
