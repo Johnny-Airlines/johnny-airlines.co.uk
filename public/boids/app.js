@@ -2,7 +2,8 @@ class Boid {
 	constructor(x,y,isMouse) {
 		this.x = x;
 		this.y = y;
-		this.angle = Math.floor(Math.random()*Math.PI*2);
+		//this.angle = Math.floor(Math.random()*Math.PI*2);
+		this.angle = 0;
 		this.vx = 1;
 		this.vy = 1;
 		this.maxV = 10;
@@ -100,14 +101,14 @@ addEventListener("mousemove", (event) => {
 
 var boids = [new Boid(mouseX,mouseY,false)];
 
-for (let i = 0; i < 500; i++) {
+for (let i = 0; i < 300; i++) {
 	boids.push(new Boid(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),false))
 }
 
-var alignmentStrength = 0.3;
-var cohesionStrength = 0.3;
-var vision = 300;
-var collisionDistance = 50;
+var alignmentStrength = 0.5;
+var cohesionStrength = 0.4;
+var vision = 150;
+var collisionDistance = 10;
 
 update()
 
@@ -121,29 +122,33 @@ function update() {
 		for (j in boids) {
 			if (i != j) {
 				otherBoid = boids[j]
-				
-				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < vision) {
-					//boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
-					boidAlignment += otherBoid.angle;
-					centerOfMass[0] += otherBoid.x
-					centerOfMass[1] += otherBoid.y
-					numOfBoids += 1
-					if (otherBoid.isMouse) {
-						boidAlignment += otherBoid.angle*4000;
-						centerOfMass[0] += otherBoid.x*4000
-						centerOfMass[1] += otherBoid.y*4000
-					}
-					//boid.angle += Math.PI/2
-				}
+				let offScreenAdjust = [0,-1000,1000]
+				for (let i = 0; i < 3; i++) {	
+					for (let j = 0; j < 3; j++) {
+						if (((boid.x-otherBoid.x + offScreenAdjust[i])**2+(boid.y-otherBoid.y + offScreenAdjust[j])**2)**0.5 < vision) {
+							//boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
+							boidAlignment += otherBoid.angle;
+							centerOfMass[0] += otherBoid.x
+							centerOfMass[1] += otherBoid.y
+							numOfBoids += 1
+							if (otherBoid.isMouse) {
+								boidAlignment += otherBoid.angle*4000;
+								centerOfMass[0] += otherBoid.x*4000
+								centerOfMass[1] += otherBoid.y*4000
+							}
+							//boid.angle += Math.PI/2
+						}
 
-				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < collisionDistance) {
-					centerOfMass[0] -= otherBoid.x*2;
-					centerOfMass[0] -= otherBoid.y*2;
+						if (((boid.x-otherBoid.x + offScreenAdjust[i])**2+(boid.y-otherBoid.y + offScreenAdjust[j])**2)**0.5 < collisionDistance) {
+							centerOfMass[0] -= otherBoid.x*2;
+							centerOfMass[0] -= otherBoid.y*2;
+						}
+					}
 				}
 			}
 		}
-		boidAlignment = boidAlignment/numOfBoids  + Math.floor(Math.random()*1)*Math.PI - Math.PI*0.5;
-		//boidAlignment = boidAlignment/numOfBoids
+		//boidAlignment = boidAlignment/numOfBoids  + Math.floor(Math.random()*1)*Math.PI - Math.PI*0.5;
+		boidAlignment = boidAlignment/numOfBoids
 		centerOfMass[0] /= numOfBoids;
 		centerOfMass[1] /= numOfBoids;
 		if (Math.sqrt((boid.vy)**2 + (boid.vx)**2) < boid.maxV) {
@@ -162,5 +167,5 @@ function update() {
 		//boid.update()
 		boid.draw()
 	}
-	setTimeout(update,15);
+	setTimeout(update,1);
 }
