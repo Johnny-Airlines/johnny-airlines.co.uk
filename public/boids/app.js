@@ -14,13 +14,25 @@ class Boid {
 		if (Math.sqrt((this.vy)**2 + (this.vx)**2) > this.maxV) {
 			if (this.vy > 0) {
 				this.vy -= 0.1;
-				this.vx -= 0.1;
+				//this.vx -= 0.1;
 			}
 			if (this.vy < 0) {
 				this.vy += 0.1;
+				//this.vx += 0.1;
+			}
+			if (this.vx > 0) {
+				//this.vy -= 0.1;
+				this.vx -= 0.1;
+			}
+			if (this.vx < 0) {
+				//this.vy += 0.1;
 				this.vx += 0.1;
 			}
 		}
+
+		
+
+		
 
 		this.x += this.vx;
 		this.y += this.vy;
@@ -86,15 +98,16 @@ addEventListener("mousemove", (event) => {
 	boids[0].y = mouseY;
 });
 
-var boids = [new Boid(mouseX,mouseY,true)];
+var boids = [new Boid(mouseX,mouseY,false)];
 
 for (let i = 0; i < 500; i++) {
 	boids.push(new Boid(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),false))
 }
 
-const alignmentStrength = 0.1;
-const cohesionStrength = 0.1;
-const vision = 300
+var alignmentStrength = 0.3;
+var cohesionStrength = 0.3;
+var vision = 300;
+var collisionDistance = 50;
 
 update()
 
@@ -121,6 +134,11 @@ function update() {
 						centerOfMass[1] += otherBoid.y*4000
 					}
 					//boid.angle += Math.PI/2
+				}
+
+				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < collisionDistance) {
+					centerOfMass[0] -= otherBoid.x*2;
+					centerOfMass[0] -= otherBoid.y*2;
 				}
 			}
 		}
