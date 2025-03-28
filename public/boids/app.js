@@ -40,16 +40,16 @@ class Boid {
 
 		this.angle = Math.atan2(this.vy,this.vx);
 
-		if (this.x > 1000) {
-			this.x -= 1000
+		if (this.x > 3000) {
+			this.x -= 3000
 		} else if (this.x < 0) {
-			this.x += 1000
+			this.x += 3000
 		}
 
-		if (this.y > 1000) {
-			this.y -= 1000
+		if (this.y > 900) {
+			this.y -= 900
 		} else if (this.y < 0) {
-			this.y += 1000
+			this.y += 900
 		}
 	}
 
@@ -102,18 +102,19 @@ addEventListener("mousemove", (event) => {
 var boids = [new Boid(mouseX,mouseY,false)];
 
 for (let i = 0; i < 300; i++) {
-	boids.push(new Boid(Math.floor(Math.random()*1000),Math.floor(Math.random()*1000),false))
+	boids.push(new Boid(Math.floor(Math.random()*3000),Math.floor(Math.random()*900),false))
 }
 
 var alignmentStrength = 0.5;
 var cohesionStrength = 0.4;
 var vision = 150;
 var collisionDistance = 10;
+var wierdThing = false;
 
 update()
 
 function update() {
-	ctx.clearRect(0,0,1000,1000);
+	//ctx.clearRect(0,0,3000,900);
 	for (i in boids) {
 		boid = boids[i]
 		let boidAlignment = 0;
