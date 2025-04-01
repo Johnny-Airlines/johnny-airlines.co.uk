@@ -8,6 +8,3 @@ randNum = Math.floor(Math.random()*500)
 if (randNum <= 2) {
 	window.location=randUrls[randNum]
 }
-if (randNum > 400) {
-	window.location = randUrls[0]
-}
