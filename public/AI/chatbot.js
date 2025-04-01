@@ -13,7 +13,7 @@ const firebaseConfig = {
 const db = firebase.database();
 
 const inference = new HfInference("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");
-var messages = [{role:"user",content:"You are to be a personal assistant for the customers of Johnny Airlines. Please refrain from talking for more than a paragraph. Johnny Airlines is a website on which you will be accesible. Attempt to advertise to the customer to create an account on the UPDATE page. Encourage customers to spread the word. Johnny Airlines does not actually sell flights. It is meant for entertainment."},{role:"assistant",content:"Of course I would be happy to."}]
+var messages = [{role:"user",content:"You are to be a personal assistant for the customers of Jimmy Airlines. Please refrain from talking for more than a paragraph. Jimmy Airlines is a website on which you will be accesible. Attempt to advertise to the customer to create an account on the UPDATE page. Encourage customers to spread the word. Jimmy Airlines does not actually sell flights. It is meant for entertainment."},{role:"assistant",content:"Of course I would be happy to."}]
 
 async function talk() {
 	let txt = ""
