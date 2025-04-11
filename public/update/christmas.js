@@ -1018,8 +1018,8 @@ function updateGameArea(lastTimestamp) {
     gameArea.clear();
     myPlayer.x += myPlayer.vx;
     myPlayer.y += myPlayer.vy;
-    myPlayer.vy *= 0.96;
-    myPlayer.vx *= 0.96;
+    myPlayer.vy -= myPlayer.vy * Math.abs(myPlayer.vy) * 0.00001;
+    myPlayer.vx -= myPlayer.vx * Math.abs(myPlayer.vx) * 0.00001;
     if (Math.abs(myPlayer.vx) < 0.1) {
         myPlayer.vx == 0;
     }
