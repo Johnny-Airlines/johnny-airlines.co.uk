@@ -10,6 +10,15 @@ options.add_argument("--no-sandbox")
 options.add_argument("--disable-dev-shm-usage")
 driver = webdriver.Chrome(options=options)
 
+homepagecode = """
+<script async src='https://cse.google.com/cse.js?cx=b40d3f76f484747f1'></script><div class='gcse-search'></div>
+<script>
+document.addEventListener('keyup', (e) => {
+    if (e.code == "Space") { window.location = `/selenium?url=${prompt()}`}
+    alert()
+})
+</script>
+"""
 
 def selenium_task(url):
     driver.get(url)
@@ -23,7 +32,7 @@ def selenium_endpoint():
 
 @app.route('/')
 def index():
-    return "<embed src='https://google.com' width='100%' height='100%'/>"
+    return homepagecode
 
 
-app.run(host='0.0.0.0')
+app.run(host='0.0.0.0', debug=True)
