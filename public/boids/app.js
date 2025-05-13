@@ -4,9 +4,9 @@ class Boid {
 		this.y = y;
 		//this.angle = Math.floor(Math.random()*Math.PI*2);
 		this.angle = 0;
-		this.vx = 0;
-		this.vy = 0;
-		this.maxV = 15;
+		this.vx = 1;
+		this.vy = 1;
+		this.maxV = 10;
 		this.color = `rgb(${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)})`;
 		this.isMouse = isMouse;
 	}
@@ -114,7 +114,7 @@ var wierdThing = false;
 update()
 
 function update() {
-	ctx.clearRect(0,0,3000,900);
+	//ctx.clearRect(0,0,3000,900);
 	for (i in boids) {
 		boid = boids[i]
 		let boidAlignment = 0;
