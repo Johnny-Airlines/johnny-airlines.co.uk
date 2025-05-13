@@ -14,8 +14,7 @@ homepagecode = """
 <script async src='https://cse.google.com/cse.js?cx=b40d3f76f484747f1'></script><div class='gcse-search'></div>
 <script>
 document.addEventListener('keyup', (e) => {
-    if (e.code == "Space") { window.location = `/selenium?url=${prompt()}`}
-    alert()
+    if (e.code == "Tab") { window.location = `/selenium?url=${prompt()}`}
 })
 </script>
 """
@@ -35,4 +34,4 @@ def index():
     return homepagecode
 
 
-app.run(host='0.0.0.0', debug=True)
+app.run(host='0.0.0.0')
