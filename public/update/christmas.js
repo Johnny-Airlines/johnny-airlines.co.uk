@@ -1,4 +1,4 @@
-(function(){ "use strict"
+//(function(){ "use strict"
 const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
   authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -151,6 +151,20 @@ const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
 rocketImg.src = "../rocket.png"
+const gambleImg = new Image();
+gambleImg.src = "../gamble.png"
+const die1 = new Image();
+die1.src = "../die/1.png"
+const die2 = new Image();
+die2.src = "../die/2.png"
+const die3 = new Image();
+die3.src = "../die/3.png"
+const die4 = new Image();
+die4.src = "../die/4.png"
+const die5 = new Image();
+die5.src = "../die/5.png"
+const die6 = new Image();
+die6.src = "../die/6.png"
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -794,8 +808,11 @@ function prison() {
 
 function gambling() {
     ctx = gameArea.context;
-    ctx.fillStyle= "#000000";
-    ctx.fillRect(11000+myPlayer.x+gameArea.canvas.width/2, 3700+myPlayer.y+gameArea.canvas.height/2, 500, 500);
+    ctx.fillStyle = "#000000";
+    //ctx.fillRect(10722+myPlayer.x+gameArea.canvas.width/2, 3471+myPlayer.y+gameArea.canvas.height/2, 500, 500);
+	drawImageAtFixedPosition(gambleImg,10722,3471,500,500);
+	drawImageAtFixedPosition(die1,10722+70,3471+15,135,135);
+	drawImageAtFixedPosition(die6,10722+295,3471+15,135,135);
 }
 
 //Start Game
@@ -1105,4 +1122,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-})();
+//})();
