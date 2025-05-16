@@ -790,7 +790,12 @@ function prison() {
 		safeX = myPlayer.x
 		safeY = myPlayer.y
 	}
+}
 
+function gambling() {
+    ctx = gameArea.context;
+    ctx.fillStyle= "#000000";
+    ctx.fillRect(11000+myPlayer.x+gameArea.canvas.width/2, 3700+myPlayer.y+gameArea.canvas.height/2, 500, 500);
 }
 
 //Start Game
@@ -1084,6 +1089,7 @@ function updateGameArea(lastTimestamp) {
 	prison();
 	frame();
 	pvp();
+    gambling();
 
     myPlayer.planeDraw();
     boostbar();
