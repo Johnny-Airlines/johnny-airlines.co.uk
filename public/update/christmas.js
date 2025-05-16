@@ -1,4 +1,4 @@
-(function(){ "use strict"
+//(function(){ "use strict"
 const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
   authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -151,6 +151,21 @@ const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
 rocketImg.src = "../rocket.png"
+const gambleImg = new Image();
+gambleImg.src = "../gamble.png"
+const die1 = new Image();
+die1.src = "../die/1.png"
+const die2 = new Image();
+die2.src = "../die/2.png"
+const die3 = new Image();
+die3.src = "../die/3.png"
+const die4 = new Image();
+die4.src = "../die/4.png"
+const die5 = new Image();
+die5.src = "../die/5.png"
+const die6 = new Image();
+die6.src = "../die/6.png"
+const diceImages = [die1,die2,die3,die4,die5,die6];
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -175,7 +190,10 @@ var safeY;
 var prisonCmdId = "N/A";
 var lastShot = Date.now();
 var lastBomb = Date.now();
-var lastMissile = Date.now();
+var lastMissile = Date.now()
+var dieNum1 = 1;
+var dieNum2 = 6;
+var diceRoll = null;
 
 //Particle Variables
 var particleConfig = {
@@ -611,7 +629,43 @@ function interact() {
         setTimeout(function () {
             btn.src = "bUnclicked.png";
         }, 50);
-    } else {
+    } 
+	if (playerCollisionCheck(10722+70, 10722+440, 3471+180, 3471+255) && diceRoll == null) {
+		db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
+			db.ref(`users/${myPlayer.id}/`).update({
+				tickets: snapshot.val()-1
+			});	
+		});
+		diceRoll = setInterval(() => {
+			dieNum1 += 1
+			dieNum2 += 1
+			if (dieNum1 == 7) { dieNum1 = 1}
+			if (dieNum2 == 7) { dieNum2 = 1}
+			//drawImageAtFixedPosition(diceImages[dieNum1-1],10722+70,3471+15,135,135);
+			//drawImageAtFixedPosition(diceImages[dieNum2-1],10722+295,3471+15,135,135);	
+
+		},100);
+		setTimeout(() => {
+			clearInterval(diceRoll);
+			dieNum1 = Math.floor(Math.random()*6)+1
+			win = (Math.floor(Math.random() * 20)+1 == 1)
+			if (win) {
+				dieNum2 = 7 - dieNum1;
+				db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
+					db.ref(`users/${myPlayer.id}/`).update({
+						tickets: snapshot.val()+10
+					});	
+				});
+			}
+			else {
+				dieNum2 = Math.floor(Math.random()*6)+1
+				while (dieNum2 == 7 - dieNum1) {
+					dieNum2 = Math.floor(Math.random()*6)+1
+				}
+			}
+			diceRoll = null;
+		},5000)
+	} else {
         if (myPlayer.fuel > 1.5) {
             myPlayer.fuel -= 1.5;
             myPlayer.acceleration = 10;
@@ -790,7 +844,14 @@ function prison() {
 		safeX = myPlayer.x
 		safeY = myPlayer.y
 	}
+}
 
+function gambling() {
+    ctx = gameArea.context;
+    ctx.fillStyle = "#000000";
+	drawImageAtFixedPosition(gambleImg,10722,3471,500,500);
+	drawImageAtFixedPosition(diceImages[dieNum1-1],10722+70,3471+15,135,135);
+	drawImageAtFixedPosition(diceImages[dieNum2-1],10722+295,3471+15,135,135);	
 }
 
 //Start Game
@@ -1084,6 +1145,7 @@ function updateGameArea(lastTimestamp) {
 	prison();
 	frame();
 	pvp();
+    gambling();
 
     myPlayer.planeDraw();
     boostbar();
@@ -1099,4 +1161,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-})();
+//})();
