@@ -664,7 +664,7 @@ function interact() {
 				}
 			}
 			diceRoll = null;
-		},5000)
+		},1000)
 	} else {
         if (myPlayer.fuel > 1.5) {
             myPlayer.fuel -= 1.5;
