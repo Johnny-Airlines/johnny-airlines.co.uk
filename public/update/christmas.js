@@ -648,7 +648,7 @@ function interact() {
 		setTimeout(() => {
 			clearInterval(diceRoll);
 			dieNum1 = Math.floor(Math.random()*6)+1
-			win = (Math.floor(Math.random() * 20)+1 == 1)
+			let win = (Math.floor(Math.random() * 20)+1 == 1)
 			if (win) {
 				dieNum2 = 7 - dieNum1;
 				db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
