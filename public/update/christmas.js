@@ -1,4 +1,4 @@
-(function(){ "use strict"
+//(function(){ "use strict"
 const firebaseConfig = {
   apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
   authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -166,6 +166,8 @@ die5.src = "../die/5.png"
 const die6 = new Image();
 die6.src = "../die/6.png"
 const diceImages = [die1,die2,die3,die4,die5,die6];
+const jumbleImg = new Image();
+jumbleImg.src = "../jumble.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -194,6 +196,8 @@ var lastMissile = Date.now()
 var dieNum1 = 1;
 var dieNum2 = 6;
 var diceRoll = null;
+var currentJumble;
+var lastJumble;
 
 //Particle Variables
 var particleConfig = {
@@ -617,7 +621,7 @@ function miniMap() {
 
 function towers() {
     ctx = gameArea.context;
-    drawImageAtFixedPosition(towersImg,2227,5000,530,970)
+    drawImageAtFixedPosition(towersImg,6450,2276,530,970)
 }
 
 function interact() {
@@ -787,7 +791,7 @@ function isValidCommand(cmd) {
 		for (let player in players) {
 			unames.push(players[player]["username"])
 		}
-		if (unames.includes(cmdArgs[1])) {
+		if (unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo") {
 			return true;
 		}
 	}
@@ -852,6 +856,12 @@ function gambling() {
 	drawImageAtFixedPosition(gambleImg,10722,3471,500,500);
 	drawImageAtFixedPosition(diceImages[dieNum1-1],10722+70,3471+15,135,135);
 	drawImageAtFixedPosition(diceImages[dieNum2-1],10722+295,3471+15,135,135);	
+}
+
+function jumble() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	drawImageAtFixedPosition(jumbleImg,2116,5129,360,360);
 }
 
 //Start Game
@@ -1146,6 +1156,7 @@ function updateGameArea(lastTimestamp) {
 	frame();
 	pvp();
     gambling();
+	jumble();
 
     myPlayer.planeDraw();
     boostbar();
@@ -1161,4 +1172,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-})();
+//})();
