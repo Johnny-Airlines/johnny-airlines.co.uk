@@ -327,7 +327,7 @@ class p {
     }
     update() {
         ctx = gameArea.context;
-        ctx.font = "24px Pixelify Sans";
+        
         ctx.textAlign = "center";
         ctx.save();
         ctx.translate(this.x, this.y);
@@ -861,7 +861,16 @@ function gambling() {
 function jumble() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
+    ctx.font = "32px Pixelify Sans";
+    ctx.textAlign = "center";
 	drawImageAtFixedPosition(jumbleImg,2116,5129,360,360);
+    let word=["a","i","r","m","a","i","l"]
+    word.forEach((letter, index) => {
+        //alert(letter)
+        //alert(index)
+        ctx.fillText(letter, 2116 + 37 + 48 * index + myPlayer.x + gameArea.canvas.width / 2, 5129 + 24 + 22 + myPlayer.y + gameArea.canvas.height / 2);
+    });
+
 }
 
 //Start Game
