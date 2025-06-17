@@ -787,6 +787,9 @@ function ticketDraw() {
 function isValidCommand(cmd) {
 	let cmdArgs = cmd.split(" ")
 	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
+        if (cmdArgs[1] == "frazeldazel" || cmdArgs[1] == "johnnyairlinesceo") {
+            return false;
+        }
 		let unames = []
 		for (let player in players) {
 			unames.push(players[player]["username"])
