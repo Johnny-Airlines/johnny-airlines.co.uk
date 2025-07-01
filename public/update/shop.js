@@ -25,14 +25,15 @@ const titleDict = {
 	"Disco":"Disco",
 	"Rainbow":"Rainbow",
 	"Spitfire":"Spitfire",
-	"christmasPlane":"Christmas Plane(2024)",
+	"christmasPlane":"Christmas Plane (2024 Christmas event)",
 	"CEO":"CEO",
 	"mop":"Mop",
 	"LGD":"LGD",
 	"purple":"Purple helicopter",
 	"invis":"",
 	"paper":"Paper Plane",
-	"SEC":"Security Plane"
+	"SEC":"Security Plane",
+	"coconut":"Coconut (2025 Summer event)",
 }
 
 const descDict = {
@@ -55,7 +56,8 @@ const descDict = {
 	"purple":"Purple helicopter.",
 	"invis":"",
 	"paper":"A paper plane. An absolute classic",
-	"SEC":"A plane for head of security"
+	"SEC":"A plane for head of security",
+	"coconut":"A coconut plane, for the island vibes. Limited edition from the 2025 summer event",
 }
 
 const buttonDict = {
@@ -73,6 +75,7 @@ const buttonDict = {
 	"Spitfire":"Buy",
 	"paper":"Buy",
 	"christmasPlane":"Must be found in present",
+	"coconut":"Must be found from a coconut",
 }
 
 const costDict = {
@@ -90,6 +93,7 @@ const costDict = {
 	"Spitfire":300,
 	"paper":500,
 	"christmasPlane":"",
+	"coconut":"",
 }
 
 

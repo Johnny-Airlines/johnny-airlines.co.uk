@@ -143,10 +143,14 @@ const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
 const speechBubbleImg = new Image();
 speechBubbleImg.src = "../speechBubble.png";
-const jerryCanImage = new Image();
+/*const jerryCanImage = new Image();
 jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
-jerryCanIconImage.src = "../jerryCanIcon.png";
+jerryCanIconImage.src = "../jerryCanIcon.png";*/
+const jerryCanImage = new Image();
+jerryCanImage.src = "../coconut.png";
+const jerryCanIconImage = new Image();
+jerryCanIconImage.src = "../coconut.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
@@ -613,6 +617,15 @@ function miniMap() {
 		10,
 		10,
 	);
+    for (let i = 0; i < 6; i++) {
+        ctx.drawImage(
+            jerryCanIconImage,
+            Math.floor(gameArea.canvas.width - 218 + (jerryCans[i][0] / 16000) * 200) - 5,
+            Math.floor((jerryCans[i][1] / 16000) * 200) - 7,
+            10,
+            10,
+        )
+    }
 }
 
 function towers() {
@@ -706,7 +719,7 @@ function jerryCansDraw() {
 	for (var i = 0; i < 6; i++) {
 		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
 		if (Math.abs(myPlayer.x+jerryCans[i][0])<=30 && Math.abs(myPlayer.y+jerryCans[i][1])<=30) {
-			if (myPlayer.fuel >= 80) {
+			/*if (myPlayer.fuel >= 80) {
 				myPlayer.fuel = 100;
 			}
 			else {
@@ -714,7 +727,17 @@ function jerryCansDraw() {
 			}
 			db.ref(`users/${myPlayer.id}`).update({
 				fuel: myPlayer.fuel
-			});
+			});*/
+            if (Math.floor(Math.random())*1000 == 1) {
+                alert("You won the coconut plane!")
+            }
+            else {
+                alert("You got a ticket!")
+                tickets = tickets + 1
+                db.ref(`users/${myPlayer.id}`).update({
+                    tickets,
+                });
+            }
 			jerryCans[i] = [Math.floor(Math.random()*14000),Math.floor(Math.random()*14000)]
 			db.ref(`jerryCans/${i+1}`).update({
 				x: jerryCans[i][0],
