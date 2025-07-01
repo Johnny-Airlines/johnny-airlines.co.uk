@@ -755,7 +755,7 @@ function coconutsDraw() {
 	for (var i = 0; i < 6; i++) {
 		drawImageAtFixedPosition(coconutImage,coconuts[i][0]-31,coconuts[i][1]-31,62,62);
 		if (Math.abs(myPlayer.x+coconuts[i][0])<=30 && Math.abs(myPlayer.y+coconuts[i][1])<=30) {
-            let randoThing = Math.floor(Math.random())*500
+            let randoThing = Math.floor(Math.random()*500)
 			if (randoThing == 1) {
                 alert("You found the rare coconut plane!")
             }
