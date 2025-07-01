@@ -112,9 +112,12 @@ onmousemove = function (e) {
 };
 //Mousedown detection
 let mouseDown = 0;
+const myAudio = document.createElement("audio");
+myAudio.src = "../island.mp3";
 window.onmousedown = (e) => {
     ++mouseDown;
     ++myPlayer.mouseDown;
+	myAudio.play()
 }
 window.onmouseup = () => {
     --mouseDown;
@@ -147,6 +150,10 @@ const jerryCanImage = new Image();
 jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
+const coconutImage = new Image();
+coconutImage.src = "../coconut.png";
+const coconutIconImage = new Image();
+coconutIconImage.src = "../coconut.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
@@ -182,7 +189,8 @@ let players = [];
 let bombs = [];
 let bullets = [];
 let tickets;
-var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
+var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
+var coconuts = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]; 
 var ticketX = 0;
 var ticketY = 0;
 var safeX;
@@ -613,6 +621,24 @@ function miniMap() {
 		10,
 		10,
 	);
+    /*for (let i = 0; i < 20; i++) {
+        ctx.drawImage(
+            jerryCanIconImage,
+            Math.floor(gameArea.canvas.width - 218 + (jerryCans[i][0] / 16000) * 200) - 5,
+            Math.floor((jerryCans[i][1] / 16000) * 200) - 7,
+            10,
+            10,
+        )
+    }*/
+	for (let i = 0; i < 6; i++) {
+        ctx.drawImage(
+            coconutIconImage,
+            Math.floor(gameArea.canvas.width - 218 + (coconuts[i][0] / 16000) * 200) - 5,
+            Math.floor((coconuts[i][1] / 16000) * 200) - 7,
+            10,
+            10,
+        )
+    }
 }
 
 function towers() {
@@ -702,8 +728,9 @@ function fetchPlayer(playerName) {
     return null;
 }
 
+
 function jerryCansDraw() {
-	for (var i = 0; i < 6; i++) {
+	for (var i = 0; i < 20; i++) {
 		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
 		if (Math.abs(myPlayer.x+jerryCans[i][0])<=30 && Math.abs(myPlayer.y+jerryCans[i][1])<=30) {
 			if (myPlayer.fuel >= 80) {
@@ -719,6 +746,33 @@ function jerryCansDraw() {
 			db.ref(`jerryCans/${i+1}`).update({
 				x: jerryCans[i][0],
 				y: jerryCans[i][1],
+			});
+		}
+	}
+}
+
+function coconutsDraw() {
+	for (var i = 0; i < 6; i++) {
+		drawImageAtFixedPosition(coconutImage,coconuts[i][0]-31,coconuts[i][1]-31,62,62);
+		if (Math.abs(myPlayer.x+coconuts[i][0])<=30 && Math.abs(myPlayer.y+coconuts[i][1])<=30) {
+            let randoThing = Math.floor(Math.random())*500
+			if (randoThing == 1) {
+                alert("You found the rare coconut plane!")
+            }
+            else if (randoThing < 375) {
+                alert("You found a ticket!")
+                tickets = tickets + 1
+                db.ref(`users/${myPlayer.id}`).update({
+                    tickets,
+                });
+            }
+			else {
+				alert("Aww man, this coconut has nothing in it.")
+			}
+			coconuts[i] = [Math.floor(Math.random()*14000),Math.floor(Math.random()*14000)]
+			db.ref(`coconuts/${i+1}`).update({
+				x: coconuts[i][0],
+				y: coconuts[i][1],
 			});
 		}
 	}
@@ -934,12 +988,20 @@ function startGame(displayName, email, uid, plane) {
 	db.ref(`cmds`).on("child_added", (snapshot) => {
 		executeCommand(snapshot.key,snapshot.val().command)
 	});
-	for (let i = 0; i < 6; i++) {
+	for (let i = 0; i < 20; i++) {
 		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
 			jerryCans[i][0] = snapshot.val();
 		});
 		db.ref(`jerryCans/${i+1}/y`).on("value", (snapshot) => {
 			jerryCans[i][1] = snapshot.val();
+		});
+	}
+	for (let i = 0; i < 6; i++) {
+		db.ref(`coconuts/${i+1}/x`).on("value", (snapshot) => {
+			coconuts[i][0] = snapshot.val();
+		});
+		db.ref(`coconuts/${i+1}/y`).on("value", (snapshot) => {
+			coconuts[i][1] = snapshot.val();
 		});
 	}
 
@@ -1071,6 +1133,27 @@ function pvp() {
 	});
 }
 
+function summerEventWelcomeText() {
+	ctx = gameArea.context
+	ctx.font = "24px Pixelify Sans";
+	ctx.fillText(
+		"Welcome to the summer event, chill to some summer vibes,",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8000 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+	ctx.fillText(
+		"collect coconuts for tickets",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8024 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+	ctx.fillText(
+		"and perhaps find the new rare plane in a coconut.",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8048 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+
+}
+
 //Update Game Area
 function updateGameArea(lastTimestamp) {
 	let currentTime = Date.now()
@@ -1141,11 +1224,13 @@ function updateGameArea(lastTimestamp) {
     buttonDraw();
     ticketDraw();
 	jerryCansDraw();
+	coconutsDraw();
     towers();
 	prison();
 	frame();
 	pvp();
     gambling();
+	summerEventWelcomeText();
 
     myPlayer.planeDraw();
     boostbar();
