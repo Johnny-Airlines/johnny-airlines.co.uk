@@ -1,0 +1,59 @@
+body {
+    font-family: Arial, sans-serif;
+    margin: 20px;
+    background-color: #f4f4f4;
+    color: #333;
+}
+
+h1 {
+    color: #333;
+    text-align: center;
+}
+
+div {
+    margin-bottom: 15px;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"],
+input[type="file"] {
+    width: calc(100% - 22px); /* Adjust for padding and border */
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+input[type="text"][readonly] {
+    background-color: #eee;
+}
+
+small {
+    display: block;
+    margin-top: 5px;
+    font-style: italic;
+    color: #666;
+}
+
+#terminal-container {
+    border: 1px solid #ccc;
+    padding: 10px;
+    background-color: #000; /* Typically terminals have a dark background */
+    border-radius: 4px;
+    box-shadow: 0 0 10px rgba(0,0,0,0.1);
+}
+
+/* Styling for xterm.js can be further customized if needed,
+   but its default theme is generally good.
+   The xterm.js CSS linked in the HTML handles the core terminal look.
+   This is just for the container. */
+.xterm {
+    /* Example: if you need to override xterm's default font that isn't fitting well */
+    /* font-family: 'Courier New', Courier, monospace; */
+    /* font-size: 14px; */
+}

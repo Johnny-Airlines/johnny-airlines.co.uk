@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Web SSH Client</title>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/xterm@5.3.0/css/xterm.min.css" />
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Web SSH Client</h1>
+
+    <div>
+        <label for="server-address">Server Address:</label>
+        <input type="text" id="server-address" value="ubuntu@thebigone.johnny-airlines.co.uk" readonly>
+    </div>
+
+    <div>
+        <label for="ssh-key">SSH Key:</label>
+        <input type="file" id="ssh-key-input" accept=".pem,.key">
+        <small><em>Placeholder for SSH key input</em></small>
+    </div>
+
+    <div id="terminal-container">
+        <div id="terminal"></div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/xterm@5.3.0/lib/xterm.min.js"></script>
+    <script src="script.js"></script>
+</body>
+</html>
