@@ -1,0 +1,83 @@
+/* Styles for the Swiper Carousel */
+.swiper-container {
+  width: 80%; /* Or a fixed width like 960px */
+  max-width: 1000px; /* Maximum width of the carousel */
+  height: auto; /* Adjust height automatically based on content */
+  margin: 20px auto; /* Center the carousel on the page */
+  border-radius: 8px; /* Optional: rounded corners for the container */
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: subtle shadow */
+}
+
+.swiper-slide {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  box-sizing: border-box; /* Include padding in width/height calculation */
+  background-color: #f9f9f9; /* Light background for slides */
+  border-radius: 8px; /* Optional: rounded corners for slides */
+  min-height: 400px; /* Minimum height for slides */
+}
+
+.swiper-slide a {
+  text-decoration: none;
+  color: inherit;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%; /* Make link fill the slide */
+}
+
+.swiper-slide img {
+  max-width: 80%; /* Responsive image width */
+  height: auto;   /* Maintain aspect ratio */
+  max-height: 250px; /* Maximum image height */
+  object-fit: contain; /* Scale image to fit within bounds, maintaining aspect ratio */
+  margin-bottom: 15px;
+  border-radius: 4px; /* Optional: rounded corners for images */
+}
+
+.swiper-slide u {
+  font-size: 1.5em; /* Larger title text */
+  font-weight: bold;
+  margin-bottom: 10px;
+  color: #333;
+}
+
+.swiper-slide p, .swiper-slide .div {
+  font-size: 1em;
+  color: #555;
+  text-align: center;
+  line-height: 1.6;
+}
+
+/* Navigation Buttons */
+.swiper-button-next,
+.swiper-button-prev {
+  color: #007aff; /* Example color, change as needed */
+  --swiper-navigation-size: 30px; /* Adjust size of nav arrows */
+}
+
+/* Pagination Bullets */
+.swiper-pagination-bullet {
+  background: #007aff; /* Example color for inactive bullets */
+  opacity: 0.5;
+}
+
+.swiper-pagination-bullet-active {
+  background: #0056b3; /* Example color for active bullet */
+  opacity: 1;
+}
+
+/* Ensure the main page title and logo are still visible and well-placed */
+body > .logo {
+  text-align: center; /* Or adjust as per original design */
+  margin-bottom: 10px;
+}
+
+body > .title {
+  text-align: center; /* Or adjust as per original design */
+  margin-bottom: 20px;
+  font-size: 2.5em; /* Ensure title is prominent */
+}

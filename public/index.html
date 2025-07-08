@@ -3,6 +3,8 @@
 <head>
 	<title>Johnny Airlines</title>
 	<link rel="stylesheet" href="maincss.css">
+	<link rel="stylesheet" href="https://unpkg.com/swiper/swiper-bundle.min.css" />
+	<link rel="stylesheet" href="carousel.css" />
 	<meta name="keywords" content="Johnny Airlines, Johnny, Airlines, Banana, Clicker, Banana Clicker, Town,Ynnhoj, Town of Ynnhoj">
 	<script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-8719412072312909"
     crossorigin="anonymous"></script>
@@ -11,104 +13,132 @@
 <body>
 	<div class="logo"><a href="https://johnny-airlines.co.uk"><img src="LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
 	<div class="title">Johnny Airlines</div>
-	<grid-container>
-		<grid-item>
-			<a href="button/button.html">
-			<u>Button</u>
-			<p>Just click the button. I wonder how many clicks we can get.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="update/">
-			<u>UPCOMING UPDATE</u>
-			<p>A sneak peek at accounts and the new big update.Credits to Oliver for art.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="AI/">
-			<u>Johnny AI</u>
-			<p>A chatbot and image generator.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="Whack A James/index.html">
-			<u>Whack A James</u>
-			<p>Whack James as many times as you can. 100 is the best possible score.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="demo/index.html">
-			<u>Voice Chat(Work in Progress)</u>
-			<p style="font-size:20px">A simple voice chat with avatar selection(Currently Broken). Choose a room name for all fo you and your friends to join.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="scratch.html">
-				<u>Scratch Games</u>
-				<div class="div">Lots of fun scratch games</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="banana/banana clicker.html">
-				<u>Banana Clicker</u>
-				<div class="div">BANANAS!</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="chat/chat.html">
-				<u>Johnny Airlines Chat</u>
-				<div class="div">The official Johnny Airlines Chat.</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="calculator/calculator.html">
-			<u>Calculator</u>
-			<p>Simple Calculator</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="games/snake.html">
-			<u>Snake</u>
-			<div class="div">This game is a fun game to play for all ages.WASD or arrow keys</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="support.html">
-				<u>Bug Report</u>
-				<div class="div">Report a Bug here</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="games/oxo.html">
-				<u>OXO</u>
-				<div class="div">This game is a fun 2 player game starting with O.</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="games/tennis.html">
-			<u>Tennis</u>
-			<div class="div">This game is a fun 1 player game where you move your paddle (which is the rightone) with the arrow keys to bounce the ball.</div>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="py/Guess num.html">
-			<u>Guess the number</u>
-			<p>In this game you have to try and guess a number between 1 and 100.</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="py/passwordGen.html">
-			<u>Password Generator</u>
-			<p>This simple program will generate a secure password for you.<br>Credit goes to Kacper Z</p>
-			</a>
-		</grid-item>
-		<grid-item>
-			<a href="py/EncDec.html">
-			<u>Encrypter and decrypter</u>
-			<p>This simple program will encrypt or decrypt something with a key.</p>
-			</a>
-		</grid-item>
-	</grid-container>
+
+	<!-- Swiper -->
+	<div class="swiper-container mySwiper">
+		<div class="swiper-wrapper">
+			<div class="swiper-slide">
+				<a href="button/button.html">
+					<img src="https://picsum.photos/seed/button/400/300" alt="Button Placeholder">
+					<u>Button</u>
+					<p>Just click the button. I wonder how many clicks we can get.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="update/">
+					<img src="https://picsum.photos/seed/update/400/300" alt="Upcoming Update Placeholder">
+					<u>UPCOMING UPDATE</u>
+					<p>A sneak peek at accounts and the new big update.Credits to Oliver for art.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="AI/">
+					<img src="https://picsum.photos/seed/ai/400/300" alt="Johnny AI Placeholder">
+					<u>Johnny AI</u>
+					<p>A chatbot and image generator.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="Whack A James/index.html">
+					<img src="https://picsum.photos/seed/whackajames/400/300" alt="Whack A James Placeholder">
+					<u>Whack A James</u>
+					<p>Whack James as many times as you can. 100 is the best possible score.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="demo/index.html">
+					<img src="https://picsum.photos/seed/voicechat/400/300" alt="Voice Chat Placeholder">
+					<u>Voice Chat(Work in Progress)</u>
+					<p style="font-size:20px">A simple voice chat with avatar selection(Currently Broken). Choose a room name for all fo you and your friends to join.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="scratch.html">
+					<img src="https://picsum.photos/seed/scratch/400/300" alt="Scratch Games Placeholder">
+					<u>Scratch Games</u>
+					<div class="div">Lots of fun scratch games</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="banana/banana clicker.html">
+					<img src="https://picsum.photos/seed/banana/400/300" alt="Banana Clicker Placeholder">
+					<u>Banana Clicker</u>
+					<div class="div">BANANAS!</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="chat/chat.html">
+					<img src="https://picsum.photos/seed/chat/400/300" alt="Johnny Airlines Chat Placeholder">
+					<u>Johnny Airlines Chat</u>
+					<div class="div">The official Johnny Airlines Chat.</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="calculator/calculator.html">
+					<img src="https://picsum.photos/seed/calculator/400/300" alt="Calculator Placeholder">
+					<u>Calculator</u>
+					<p>Simple Calculator</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="games/snake.html">
+					<img src="https://picsum.photos/seed/snake/400/300" alt="Snake Placeholder">
+					<u>Snake</u>
+					<div class="div">This game is a fun game to play for all ages.WASD or arrow keys</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="support.html">
+					<img src="https://picsum.photos/seed/support/400/300" alt="Bug Report Placeholder">
+					<u>Bug Report</u>
+					<div class="div">Report a Bug here</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="games/oxo.html">
+					<img src="https://picsum.photos/seed/oxo/400/300" alt="OXO Placeholder">
+					<u>OXO</u>
+					<div class="div">This game is a fun 2 player game starting with O.</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="games/tennis.html">
+					<img src="https://picsum.photos/seed/tennis/400/300" alt="Tennis Placeholder">
+					<u>Tennis</u>
+					<div class="div">This game is a fun 1 player game where you move your paddle (which is the rightone) with the arrow keys to bounce the ball.</div>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="py/Guess num.html">
+					<img src="https://picsum.photos/seed/guessnum/400/300" alt="Guess the Number Placeholder">
+					<u>Guess the number</u>
+					<p>In this game you have to try and guess a number between 1 and 100.</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="py/passwordGen.html">
+					<img src="https://picsum.photos/seed/passwordgen/400/300" alt="Password Generator Placeholder">
+					<u>Password Generator</u>
+					<p>This simple program will generate a secure password for you.<br>Credit goes to Kacper Z</p>
+				</a>
+			</div>
+			<div class="swiper-slide">
+				<a href="py/EncDec.html">
+					<img src="https://picsum.photos/seed/encdec/400/300" alt="Encrypter/Decrypter Placeholder">
+					<u>Encrypter and decrypter</u>
+					<p>This simple program will encrypt or decrypt something with a key.</p>
+				</a>
+			</div>
+		</div>
+		<!-- Add Pagination -->
+		<div class="swiper-pagination"></div>
+		<!-- Add Navigation -->
+		<div class="swiper-button-next"></div>
+		<div class="swiper-button-prev"></div>
+	</div>
+
+	<script src="https://unpkg.com/swiper/swiper-bundle.min.js"></script>
 	<script src="index.js"></script>
+	<script src="carousel.js"></script>
 	<a href="T&C.html" class="footer">Website Terms and Conditions</a>
 </html>
