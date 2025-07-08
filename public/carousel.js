@@ -1,5 +1,6 @@
 // Initialize Swiper
 var swiper = new Swiper(".mySwiper", {
+  slidesPerView: 1.5, // Show 1 full slide and parts of the next/prev
   spaceBetween: 30,
   centeredSlides: true,
   autoplay: {
