@@ -2,10 +2,11 @@
 .swiper-container {
   width: 80%; /* Or a fixed width like 960px */
   max-width: 1000px; /* Maximum width of the carousel */
-  height: auto; /* Adjust height automatically based on content */
+  height: 500px; /* Explicit height, adjust as needed to match JS or content */
   margin: 20px auto; /* Center the carousel on the page */
   border-radius: 8px; /* Optional: rounded corners for the container */
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Optional: subtle shadow */
+  overflow: hidden; /* Prevent content overflow before Swiper initializes */
 }
 
 .swiper-slide {
@@ -55,8 +56,24 @@
 /* Navigation Buttons */
 .swiper-button-next,
 .swiper-button-prev {
-  color: #007aff; /* Example color, change as needed */
-  --swiper-navigation-size: 30px; /* Adjust size of nav arrows */
+  background-color: #007aff; /* Blue background */
+  border-radius: 50%; /* Circular shape */
+  width: 44px; /* Fixed width */
+  height: 44px; /* Fixed height */
+  color: white !important; /* Arrow color, !important to override Swiper's default */
+  --swiper-navigation-size: 20px; /* Size of the arrow icon itself */
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+/* Adjust position if necessary, Swiper's defaults might be fine */
+.swiper-button-prev {
+  left: 10px;
+}
+
+.swiper-button-next {
+  right: 10px;
 }
 
 /* Pagination Bullets */
