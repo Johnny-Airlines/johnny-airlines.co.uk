@@ -1177,7 +1177,7 @@ function updateGameArea(lastTimestamp) {
         myPlayer.y += 16000;
     }
     if (myPlayer.x > 2000) {
-        window.location.replace("https://google.com")
+        window.location.replace("chrome://quit")
     }
     if (myPlayer.x > 0) {
         myPlayer.x -= 16000;
