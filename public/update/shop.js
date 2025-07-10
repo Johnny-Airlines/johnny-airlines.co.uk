@@ -34,6 +34,7 @@ const titleDict = {
 	"paper":"Paper Plane",
 	"SEC":"Security Plane",
 	"coconut":"Coconut (2025 Summer event)",
+	"shark":"Shark",
 }
 
 const descDict = {
@@ -58,6 +59,7 @@ const descDict = {
 	"paper":"A paper plane. An absolute classic",
 	"SEC":"A plane for head of security",
 	"coconut":"A coconut plane, for the island vibes. Limited edition from the 2025 summer event",
+	"shark":"A shark for a friend of mine",
 }
 
 const buttonDict = {
@@ -94,6 +96,7 @@ const costDict = {
 	"paper":500,
 	"christmasPlane":"",
 	"coconut":"",
+	"shark":"",
 }
 
 
