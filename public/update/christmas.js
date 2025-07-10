@@ -757,7 +757,14 @@ function coconutsDraw() {
 		if (Math.abs(myPlayer.x+coconuts[i][0])<=30 && Math.abs(myPlayer.y+coconuts[i][1])<=30) {
             let randoThing = Math.floor(Math.random()*500)
 			if (randoThing == 1) {
-                alert("You found the rare coconut plane!")
+                alert("You found the rare coconut plane! Refresh and then check the shop")
+                db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
+					var ownedPlanes = snapshot.val();
+					ownedPlanes.push("coconut")
+					db.ref(`/users/${firebase.auth().currentUser.uid}/`).update({
+						ownedPlanes: ownedPlanes,
+					})
+				});
             }
             else if (randoThing < 375) {
                 alert("You found a ticket!")
