@@ -1249,7 +1249,8 @@ function updateGameArea(lastTimestamp) {
     }
 
     myPlayer.update();
-	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20)
+	gameArea.context.font = "24px Pixelify Sans"; 
+	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20);
     buttonDraw();
     ticketDraw();
 	jerryCansDraw();
@@ -1259,7 +1260,6 @@ function updateGameArea(lastTimestamp) {
 	frame();
 	pvp();
     gambling();
-
 	jumble();
 
 
