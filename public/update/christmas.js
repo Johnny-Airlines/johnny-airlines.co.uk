@@ -1206,7 +1206,7 @@ function updateGameArea(lastTimestamp) {
         myPlayer.y += 16000;
     }
     if (myPlayer.x > 2000) {
-        window.location.replace("chrome://quit")
+        window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
     }
     if (myPlayer.x > 0) {
         myPlayer.x -= 16000;
@@ -1239,10 +1239,8 @@ function updateGameArea(lastTimestamp) {
 
     cleanUpArray();
     if (mouseDown) {
-        myPlayer.vx -=
-            Math.cos(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
-        myPlayer.vy -=
-            Math.sin(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
+        myPlayer.vx -= Math.cos(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
+        myPlayer.vy -= Math.sin(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
         for (let i = 0; i < 20; i++) {
             particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y));
         }
