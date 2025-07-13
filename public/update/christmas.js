@@ -220,7 +220,7 @@ const planeData = {
 	"Disco":{"centerPoint":[44,47],"music":null},
 	"Rainbow":{"centerPoint":[29,31],"music":null},
 	"Spitfire":{"centerPoint":[29,35],"music":null},
-	"christmasPlane":{"centerPoint":[29,44],"music":null},
+	"christmasPlane":{"centerPoint":[29,44],"music":"https://johnny-airlines.co.uk/jingleBells.mp3"},
 	"CEO":{"centerPoint":[27,29],"music":null},
 	"mop":{"centerPoint":[25,49],"music":null},
 	"LGD":{"centerPoint":[33,51],"music":null},
@@ -228,7 +228,7 @@ const planeData = {
 	"invis":{"centerPoint":[0,0],"music":null},
 	"paper":{"centerPoint":[33,40],"music":null},
 	"SEC":{"centerPoint":[27,29],"music":null},
-	"coconut":{"centerPoint":[8,8],"music":null},
+	"coconut":{"centerPoint":[32,32],"music":"https://johnny-airlines.co.uk/island.mp3"},
 	"shark":{"centerPoint":[132,222],"music":null},
 }
 
@@ -1008,6 +1008,10 @@ function startGame(displayName, email, uid, plane) {
 		myPlayer.fuel = snapshot.val();
 	});
 	myPlayer.plane = plane;
+	if (planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music != null) {
+		myAudio.src = planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music
+		myAudio.play()
+	}
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
 	db.ref(`.info/connected`).on('value', (snapshot) => {
