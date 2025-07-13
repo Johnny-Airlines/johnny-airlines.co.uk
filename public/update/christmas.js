@@ -420,10 +420,17 @@ class p {
 		ctx.rotate(this.angle);
 		var planeimg = new Image();
 		planeimg.src = this.plane;
-		ctx.drawImage(
+		/*ctx.drawImage(
 			planeimg,
 			-this.size / 2,
 			-this.size / 2,
+			planeimg.width,
+			planeimg.height,
+		);*/
+		ctx.drawImage(
+			planeimg,
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
 			planeimg.width,
 			planeimg.height,
 		);
