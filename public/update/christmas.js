@@ -394,7 +394,14 @@ class p {
 			-this.size / 2,
 			planeimg.width,
 			planeimg.height,
-		);
+		);/*
+		ctx.drawImage(
+			planeimg,
+			-planeimg.width / 2,
+			-planeimg.height / 2,
+			planeimg.width,
+			planeimg.height,
+		);*/
 		ctx.restore();
 		ctx.font = "24px Pixelify Sans";
 		ctx.textAlign = "center";
@@ -1310,6 +1317,7 @@ function updateGameArea(lastTimestamp) {
 	pvp();
 	gambling();
 	jumble();
+	summerEventWelcomeText();
 
 
 	myPlayer.planeDraw();
