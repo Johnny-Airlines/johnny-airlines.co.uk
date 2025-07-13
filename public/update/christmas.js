@@ -151,9 +151,9 @@ jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
 const coconutImage = new Image();
-coconutImage.src = "../coconut.png";
+coconutImage.src = "../coconutSmall.png";
 const coconutIconImage = new Image();
-coconutIconImage.src = "../coconut.png";
+coconutIconImage.src = "../coconutSmall.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
@@ -206,6 +206,31 @@ var dieNum2 = 6;
 var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
+
+const planeData = {
+    "Plane":{"centerPoint":[33,30],"music":null},
+    "colour_planes/Blue":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Brown":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Purple":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Green":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Grey":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Pink":{"centerPoint":[33,30],"music":null},
+	"colour_planes/White":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Yellow":{"centerPoint":[33,30],"music":null},
+	"Disco":{"centerPoint":[44,47],"music":null},
+	"Rainbow":{"centerPoint":[29,31],"music":null},
+	"Spitfire":{"centerPoint":[29,35],"music":null},
+	"christmasPlane":{"centerPoint":[29,44],"music":null},
+	"CEO":{"centerPoint":[27,29],"music":null},
+	"mop":{"centerPoint":[25,49],"music":null},
+	"LGD":{"centerPoint":[33,51],"music":null},
+	"purple":{"centerPoint":[38,47],"music":null},
+	"invis":{"centerPoint":[0,0],"music":null},
+	"paper":{"centerPoint":[33,40],"music":null},
+	"SEC":{"centerPoint":[27,29],"music":null},
+	"coconut":{"centerPoint":[8,8],"music":null},
+	"shark":{"centerPoint":[132,222],"music":null},
+}
 
 //Particle Variables
 var particleConfig = {
@@ -354,10 +379,17 @@ class p {
 		ctx.rotate(this.angle);
 		var planeimg = new Image();
 		planeimg.src = this.plane;
-		ctx.drawImage(
+		/*ctx.drawImage(
 			planeimg,
 			-this.size / 2,
 			-this.size / 2,
+			planeimg.width,
+			planeimg.height,
+		);*/
+		ctx.drawImage(
+			planeimg,
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
 			planeimg.width,
 			planeimg.height,
 		);
@@ -394,14 +426,7 @@ class p {
 			-this.size / 2,
 			planeimg.width,
 			planeimg.height,
-		);/*
-		ctx.drawImage(
-			planeimg,
-			-planeimg.width / 2,
-			-planeimg.height / 2,
-			planeimg.width,
-			planeimg.height,
-		);*/
+		);
 		ctx.restore();
 		ctx.font = "24px Pixelify Sans";
 		ctx.textAlign = "center";
