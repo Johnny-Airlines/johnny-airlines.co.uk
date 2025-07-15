@@ -100,8 +100,8 @@ document.addEventListener("keydown", (key) => {
 			document.getElementById("message-btn").click();
 		}
 		if (keysPressed[k] == 80 && !chatFocus) {
-			--mouseDown;
-			--myPlayer.mouseDown;
+			mouseDown = 0;
+			myPlayer.mouseDown = false;
 		}
 	}
 });
@@ -179,6 +179,16 @@ die6.src = "../die/6.png"
 const diceImages = [die1,die2,die3,die4,die5,die6];
 const jumbleImg = new Image();
 jumbleImg.src = "../jumble.png";
+const windowShutImg = new Image();
+windowShutImg.src = "../Whack A James/ws.png";
+const windowOpenImg = new Image();
+windowOpenImg.src = "../Whack A James/wo.png";
+const jamesHappyImg = new Image();
+jamesHappyImg.src = "../Whack A James/jh.png";
+const jamesSadImg = new Image();
+jamesSadImg.src = "../Whack A James/js.png";
+const cloudsImg = new Image();
+cloudsImg.src = "./clouds.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -210,6 +220,7 @@ var dieNum2 = 6;
 var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
+var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -764,8 +775,9 @@ function interact() {
 			});
 		} else {
 			alert("You can only try once per day! Come back tommorow");
-		}
+		} 
 	} else {
+
 		if (myPlayer.fuel > 1.5) {
 			myPlayer.fuel -= 1.5;
 			myPlayer.acceleration = 10;
@@ -1004,6 +1016,48 @@ function jumble() {
 
 }
 
+function whackAJames() {
+	ctx = gameArea.context;
+	for (let i = 0; i < 3; i++) {
+		for (let j = 0; j < 3; j++) {
+			if (whackAJamesLayout[i][j] == "jamesSadImg" || whackAJamesLayout[i][j] == "jamesHappyImg") {
+				drawImageAtFixedPosition(windowOpenImg,4460+i*159.8,5010+j*145.7,159.8,145.7);
+				drawImageAtFixedPosition(eval(whackAJamesLayout[i][j]),4460+i*159.8+20,5010+j*145.7+5,79.5*1.5,88.7*1.5);
+			} else {
+				drawImageAtFixedPosition(windowShutImg,4460+i*159.8,5010+j*145.7,159.8,145.7);
+			}
+		}
+	}
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(
+		4950+myPlayer.x+gameArea.canvas.width/2,
+		5010+myPlayer.y+gameArea.canvas.height/2,
+		310,
+		110,
+	)
+	ctx.fillStyle = "#2f3699";
+	ctx.fillRect(
+		4955+myPlayer.x+gameArea.canvas.width/2,
+		5015+myPlayer.y+gameArea.canvas.height/2,
+		300,
+		100,
+	)
+	ctx.font = "64px Pixelify Sans";
+	ctx.fillStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.fillText("PLAY",4955+152+myPlayer.x+gameArea.canvas.width/2,5015+64+myPlayer.y+gameArea.canvas.height/2)
+	ctx.textAlign = "left"
+	ctx.font = "24px Pixelify Sans";
+	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","NON FUNCTIONAL, however is coming soon"]
+	for (let i = 0; i < 6; i++) {
+		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
+	}
+}
+function cloudsDraw() {
+	ctx = gameArea.context;
+	drawImageAtFixedPosition(cloudsImg, 0, 0, 16000, 16000);
+}
+
 //Start Game
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
@@ -1237,6 +1291,8 @@ function pvp() {
 
 function summerEventWelcomeText() {
 	ctx = gameArea.context
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#000000";
 	ctx.font = "24px Pixelify Sans";
 	ctx.fillText(
 		"Welcome to the summer event, chill to some summer vibes,",
@@ -1332,6 +1388,7 @@ function updateGameArea(lastTimestamp) {
 	pvp();
 	gambling();
 	jumble();
+	whackAJames();
 	summerEventWelcomeText();
 
 
@@ -1369,6 +1426,8 @@ function updateGameArea(lastTimestamp) {
 		}
 
 	}
+
+	//cloudsDraw();
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
