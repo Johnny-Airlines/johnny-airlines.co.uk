@@ -221,6 +221,8 @@ var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
 var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
+var cloudPos = [8000,8000];
+var cloudDirection = [Math.floor(Math.random()*10)-5,Math.floor(Math.random()*10)-5]
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -1055,7 +1057,20 @@ function whackAJames() {
 }
 function cloudsDraw() {
 	ctx = gameArea.context;
-	drawImageAtFixedPosition(cloudsImg, 0, 0, 16000, 16000);
+	ctx.globalAlpha = 0.4;
+	drawImageAtFixedPosition(cloudsImg, cloudPos[0]-16000, cloudPos[1]-16000, 32000, 32000);
+	ctx.globalAlpha = 1;
+	cloudPos[0] += cloudDirection[0];
+	cloudPos[1] += cloudDirection[1];
+	if (cloudPos[0] > 16000) {
+		cloudPos -= 16000;
+	} else if (cloudPos[0] < 0) {
+		cloudPos[0] += 16000;
+	} else if (cloudPos[1] > 16000) {
+		cloudPos[1] -= 16000;
+	} else if (cloudPos[1] < 0) {
+		cloudPos[1] += 16000
+	}
 }
 
 //Start Game
@@ -1374,8 +1389,9 @@ function updateGameArea(lastTimestamp) {
 			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y));
 		}
 	}
-
+	
 	myPlayer.update();
+	cloudsDraw();
 	gameArea.context.font = "24px Pixelify Sans"; 
 	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20);
 	buttonDraw();
