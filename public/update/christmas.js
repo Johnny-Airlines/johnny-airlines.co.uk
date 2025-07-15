@@ -1016,7 +1016,6 @@ function jumble() {
 
 }
 
-<<<<<<< HEAD
 function whackAJames() {
 	ctx = gameArea.context;
 	for (let i = 0; i < 3; i++) {
@@ -1053,11 +1052,10 @@ function whackAJames() {
 	for (let i = 0; i < 6; i++) {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
 	}
-=======
+}
 function cloudsDraw() {
 	ctx = gameArea.context;
 	drawImageAtFixedPosition(cloudsImg, 0, 0, 16000, 16000);
->>>>>>> 872e9c6199ed4e450f0eb135b6764865a702f327
 }
 
 //Start Game
