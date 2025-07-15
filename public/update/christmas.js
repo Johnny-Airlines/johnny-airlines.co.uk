@@ -247,6 +247,7 @@ const planeData = {
 	"SEC":{"centerPoint":[27,29],"music":null},
 	"coconut":{"centerPoint":[32,32],"music":"https://johnny-airlines.co.uk/island.mp3"},
 	"shark":{"centerPoint":[132,222],"music":null},
+	"OG":{"centerPoint":[27,29],"music":null},
 }
 
 //Particle Variables
