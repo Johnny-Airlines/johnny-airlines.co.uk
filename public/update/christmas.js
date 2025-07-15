@@ -92,12 +92,16 @@ document.addEventListener("keydown", (key) => {
 		if (keysPressed[k] == 70 && !chatFocus && prisonCmdId == "N/A") {
 			missileShoot();
 		}
-		if (keysPressed[k] == 191) {
+		if (keysPressed[k] == 191 && !chatFocus) {
 			document.getElementById("message-input").focus();
 			document.getElementById("message-input").select();
 		}
 		if (keysPressed[k] == 13) {
 			document.getElementById("message-btn").click();
+		}
+		if (keysPressed[k] == 80 && !chatFocus) {
+			--mouseDown;
+			--myPlayer.mouseDown;
 		}
 	}
 });
