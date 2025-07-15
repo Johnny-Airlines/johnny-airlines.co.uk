@@ -179,6 +179,8 @@ die6.src = "../die/6.png"
 const diceImages = [die1,die2,die3,die4,die5,die6];
 const jumbleImg = new Image();
 jumbleImg.src = "../jumble.png";
+const cloudsImg = new Image();
+cloudsImg.src = "./clouds.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -1004,6 +1006,11 @@ function jumble() {
 
 }
 
+function cloudsDraw() {
+	ctx = gameArea.context;
+	drawImageAtFixedPosition(cloudsImg, 0, 0, 16000, 16000);
+}
+
 //Start Game
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
@@ -1369,6 +1376,8 @@ function updateGameArea(lastTimestamp) {
 		}
 
 	}
+
+	cloudsDraw();
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
