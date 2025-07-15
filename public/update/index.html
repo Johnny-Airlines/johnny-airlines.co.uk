@@ -31,6 +31,7 @@
                 <button class="tablink" style="grid-area: Profile" onclick="openCity('Profile', this, 'red')" id="defaultOpen">Profile</button>
                 <button class="tablink" style="grid-area: Shop" onclick="openCity('Shop', this, 'green')">Shop</button>
                 <button class="tablink" style="grid-area: Info" onclick="openCity('Info', this, 'blue')">Info</button>
+                <button class="tablink" style="grid-area: Controls" onclick="openCity('Controls', this, 'red')">Controls</button>
                 <div id="Profile" class="tabcontent">
                     <div style="position: relative;display: grid;grid-template-areas: &quot;img dname dnameEdit&quot; &quot;img uname uname &quot; &quot;img ticket ticket&quot;;width: fit-content;">
                         <img id="overlaypfp" src="" style="grid-area: img" />
@@ -75,9 +76,23 @@
                 </div>
                 <div id="Info" class="tabcontent">
 					<h1>Info</h1>
-                    <p>	
+                    <p id="infomaintext">	
 						Welcome to Johnny Airlines.
 						This is an immersive experience where you can socialize, earn and have lots of fun. Fly around meeting people and even call them. Search the map playing various games to earn tickets. These tickets can be spent on new planes. For those of you who like a good fight you can go to the PvP zone and shoot and bomb at your enemies in a high adrenaline format. 	
+					</p>
+                </div>
+                <div id="Controls" class="tabcontent">
+					<h1>Controls</h1>
+                    <p>	
+						Movement: Hold mouse down in the direction you whish to go<br>
+						Interact: Space <br>
+						Drop Bomb: Q <br>
+						Shoot: E <br>
+						Missile Shoot: F <br>
+						Chat: / <br>
+                        Send message: Enter <br>
+                        
+                        Sometimes the game will not register when you release the mouse button, if this happens you can press "p" to stop the glitch.
 					</p>
                 </div>
             </div>

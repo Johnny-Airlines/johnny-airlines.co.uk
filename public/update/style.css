@@ -73,7 +73,7 @@ html {
   cursor: pointer;
   padding: 14px 16px;
   font-size: 17px;
-  width: 25%;
+  width: 15%;
 }
 
 .tablink:hover {
@@ -93,3 +93,4 @@ html {
 #Profile {background-color:red;}
 #Shop {background-color:green;}
 #Info {background-color:blue;}
+#Controls {background-color:red;}

@@ -92,12 +92,16 @@ document.addEventListener("keydown", (key) => {
 		if (keysPressed[k] == 70 && !chatFocus && prisonCmdId == "N/A") {
 			missileShoot();
 		}
-		if (keysPressed[k] == 191) {
+		if (keysPressed[k] == 191 && !chatFocus) {
 			document.getElementById("message-input").focus();
 			document.getElementById("message-input").select();
 		}
 		if (keysPressed[k] == 13) {
 			document.getElementById("message-btn").click();
+		}
+		if (keysPressed[k] == 80 && !chatFocus) {
+			--mouseDown;
+			--myPlayer.mouseDown;
 		}
 	}
 });
@@ -183,6 +187,8 @@ const jamesHappyImg = new Image();
 jamesHappyImg.src = "../Whack A James/jh.png";
 const jamesSadImg = new Image();
 jamesSadImg.src = "../Whack A James/js.png";
+const cloudsImg = new Image();
+cloudsImg.src = "./clouds.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -1010,6 +1016,7 @@ function jumble() {
 
 }
 
+<<<<<<< HEAD
 function whackAJames() {
 	ctx = gameArea.context;
 	for (let i = 0; i < 3; i++) {
@@ -1046,6 +1053,11 @@ function whackAJames() {
 	for (let i = 0; i < 6; i++) {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
 	}
+=======
+function cloudsDraw() {
+	ctx = gameArea.context;
+	drawImageAtFixedPosition(cloudsImg, 0, 0, 16000, 16000);
+>>>>>>> 872e9c6199ed4e450f0eb135b6764865a702f327
 }
 
 //Start Game
@@ -1173,25 +1185,6 @@ function startGame(displayName, email, uid, plane) {
 		});
 	}
 
-	/*
-	db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
-		if (snapshot.val().state == "offline") {
-			try {
-				bullets.forEach((bullet)=>{
-					if (bullet.player == player.id) {
-						db.ref(`bullets/${bullet.key}`).remove();
-					}
-				})
-			}
-			catch (e) {
-				console.log("huh")
-			}
-
-			db.ref(`players/${player.id}`).remove()
-		}
-	})*/
-
-
 	playersRef.on("value", (snapshot) => {
 		players = snapshot.val();
 		for (const playerId in players) {
@@ -1199,29 +1192,23 @@ function startGame(displayName, email, uid, plane) {
 			if (player.id != myPlayer.id) {
 				const playerInstance = new p();
 				Object.assign(playerInstance, player);
-				playerInstance.draw();
-				ctx = gameArea.context;
-				ctx.drawImage(
-					otherPlayerPoints,
-					Math.floor(
-						gameArea.canvas.width -
-						218 -
-						(playerInstance.x / 16000) * 200,
-					) - 5,
-					Math.floor((-playerInstance.y / 16000) * 200) - 7,
-					10,
-					10,
-				);
-				if (playerInstance.mouseDown) {
-					particles.push(
-						new Particle(
-							-1 * playerInstance.x,
-							-1 * playerInstance.y,
-						),
-					);
-				}
-			}
+				db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
+					if (snapshot.val().state == "offline") {
+						try {
+							bullets.forEach((bullet)=>{
+								if (bullet.player == player.id) {
+									db.ref(`bullets/${bullet.key}`).remove();
+								}
+							})
+						}
+						catch (e) {
+							console.log("huh")
+						}
 
+						db.ref(`players/${player.id}`).remove()
+					}
+				})
+			}
 		}
 	});
 	// Draw all players on the canvas
@@ -1411,6 +1398,38 @@ function updateGameArea(lastTimestamp) {
 	boostbar();
 	miniMap();
 	sendPlayerToDB(myPlayer);
+
+	for (const playerId in players) {
+		let player = players[playerId];
+		if (player.id != myPlayer.id) {
+			const playerInstance = new p();
+			Object.assign(playerInstance, player);
+			playerInstance.draw();
+			ctx = gameArea.context;
+			ctx.drawImage(
+				otherPlayerPoints,
+				Math.floor(
+					gameArea.canvas.width -
+					218 -
+					(playerInstance.x / 16000) * 200,
+				) - 5,
+				Math.floor((-playerInstance.y / 16000) * 200) - 7,
+				10,
+				10,
+			);
+			if (playerInstance.mouseDown) {
+				particles.push(
+					new Particle(
+						-1 * playerInstance.x,
+						-1 * playerInstance.y,
+					),
+				);
+			}
+		}
+
+	}
+
+	cloudsDraw();
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
