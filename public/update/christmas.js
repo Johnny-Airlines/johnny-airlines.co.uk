@@ -1125,25 +1125,6 @@ function startGame(displayName, email, uid, plane) {
 		});
 	}
 
-	/*
-	db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
-		if (snapshot.val().state == "offline") {
-			try {
-				bullets.forEach((bullet)=>{
-					if (bullet.player == player.id) {
-						db.ref(`bullets/${bullet.key}`).remove();
-					}
-				})
-			}
-			catch (e) {
-				console.log("huh")
-			}
-
-			db.ref(`players/${player.id}`).remove()
-		}
-	})*/
-
-
 	playersRef.on("value", (snapshot) => {
 		players = snapshot.val();
 		for (const playerId in players) {
@@ -1151,29 +1132,23 @@ function startGame(displayName, email, uid, plane) {
 			if (player.id != myPlayer.id) {
 				const playerInstance = new p();
 				Object.assign(playerInstance, player);
-				playerInstance.draw();
-				ctx = gameArea.context;
-				ctx.drawImage(
-					otherPlayerPoints,
-					Math.floor(
-						gameArea.canvas.width -
-						218 -
-						(playerInstance.x / 16000) * 200,
-					) - 5,
-					Math.floor((-playerInstance.y / 16000) * 200) - 7,
-					10,
-					10,
-				);
-				if (playerInstance.mouseDown) {
-					particles.push(
-						new Particle(
-							-1 * playerInstance.x,
-							-1 * playerInstance.y,
-						),
-					);
-				}
-			}
+				db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
+					if (snapshot.val().state == "offline") {
+						try {
+							bullets.forEach((bullet)=>{
+								if (bullet.player == player.id) {
+									db.ref(`bullets/${bullet.key}`).remove();
+								}
+							})
+						}
+						catch (e) {
+							console.log("huh")
+						}
 
+						db.ref(`players/${player.id}`).remove()
+					}
+				})
+			}
 		}
 	});
 	// Draw all players on the canvas
@@ -1360,6 +1335,36 @@ function updateGameArea(lastTimestamp) {
 	boostbar();
 	miniMap();
 	sendPlayerToDB(myPlayer);
+
+	for (const playerId in players) {
+		let player = players[playerId];
+		if (player.id != myPlayer.id) {
+			const playerInstance = new p();
+			Object.assign(playerInstance, player);
+			playerInstance.draw();
+			ctx = gameArea.context;
+			ctx.drawImage(
+				otherPlayerPoints,
+				Math.floor(
+					gameArea.canvas.width -
+					218 -
+					(playerInstance.x / 16000) * 200,
+				) - 5,
+				Math.floor((-playerInstance.y / 16000) * 200) - 7,
+				10,
+				10,
+			);
+			if (playerInstance.mouseDown) {
+				particles.push(
+					new Particle(
+						-1 * playerInstance.x,
+						-1 * playerInstance.y,
+					),
+				);
+			}
+		}
+
+	}
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
