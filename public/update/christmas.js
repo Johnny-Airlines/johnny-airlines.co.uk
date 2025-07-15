@@ -100,8 +100,8 @@ document.addEventListener("keydown", (key) => {
 			document.getElementById("message-btn").click();
 		}
 		if (keysPressed[k] == 80 && !chatFocus) {
-			--mouseDown;
-			--myPlayer.mouseDown;
+			mouseDown = 0;
+			myPlayer.mouseDown = false;
 		}
 	}
 });
@@ -1427,7 +1427,7 @@ function updateGameArea(lastTimestamp) {
 
 	}
 
-	cloudsDraw();
+	//cloudsDraw();
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
