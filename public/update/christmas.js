@@ -944,7 +944,7 @@ function isValidCommand(cmd) {
 		for (let player in players) {
 			unames.push(players[player]["username"])
 		}
-		if (unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo") {
+		if ((unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo") || (cmdArgs[1] == "all" && cmdArgs[0]=="kill")) {
 			return true;
 		}
 	}
@@ -956,6 +956,10 @@ function isValidCommand(cmd) {
 
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.split(" ")
+	if (cmdArgs == "kill all" && myPlayer.username == "frazeldazel" && myPlayer.username == "johnnyairlinesceo") {
+		myPlayer.x = 20000
+		db.ref(`cmds/${cmdId}`).remove()
+	}
 	if (cmdArgs[1] == myPlayer.username) {
 		if (cmdArgs[0] == "tp") {
 			console.log(cmdArgs)
