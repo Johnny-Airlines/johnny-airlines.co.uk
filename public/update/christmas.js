@@ -593,7 +593,7 @@ function dropBomb() {
 }
 
 function shoot() {
-	if ((Date.now() - lastShot) > 250) {
+	if ((Date.now() - lastShot) > 100) {
 		lastShot = Date.now()
 		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
@@ -1357,7 +1357,7 @@ function updateGameArea(lastTimestamp) {
 		myPlayer.y += 16000;
 	}
 	if (myPlayer.x > 2000) {
-		window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+		window.location.href = "https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4"
 	}
 	if (myPlayer.x > 0) {
 		myPlayer.x -= 16000;
