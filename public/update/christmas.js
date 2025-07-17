@@ -103,6 +103,9 @@ document.addEventListener("keydown", (key) => {
 			mouseDown = 0;
 			myPlayer.mouseDown = false;
 		}
+		if (keysPressed[k] == 76 && !chatFocus) {
+			cloudsOn = cloudsOn ? false : true;
+		}
 	}
 });
 document.addEventListener("keyup", (key) => {
@@ -223,6 +226,7 @@ var lastJumbleSolve = 0;
 var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
 var cloudPos = [8000,8000];
 var cloudDirection = [Math.floor(Math.random()*10)-5,Math.floor(Math.random()*10)-5]
+var cloudsOn = true;
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -1057,21 +1061,23 @@ function whackAJames() {
 	}
 }
 function cloudsDraw() {
-	ctx = gameArea.context;
-	ctx.globalAlpha = 0.4;
-	drawImageAtFixedPosition(cloudsImg, cloudPos[0]-16000, cloudPos[1]-16000, 32000, 32000);
-	ctx.globalAlpha = 1;
-	cloudPos[0] += cloudDirection[0];
-	cloudPos[1] += cloudDirection[1];
-	if (cloudPos[0] > 16000) {
-		cloudPos -= 16000;
-	} else if (cloudPos[0] < 0) {
-		cloudPos[0] += 16000;
-	} else if (cloudPos[1] > 16000) {
-		cloudPos[1] -= 16000;
-	} else if (cloudPos[1] < 0) {
-		cloudPos[1] += 16000
-	}
+	if (cloudsOn) {
+		ctx = gameArea.context;
+		ctx.globalAlpha = 0.4;
+		drawImageAtFixedPosition(cloudsImg, cloudPos[0]-16000, cloudPos[1]-16000, 32000, 32000);
+		ctx.globalAlpha = 1;
+		cloudPos[0] += cloudDirection[0];
+		cloudPos[1] += cloudDirection[1];
+		if (cloudPos[0] > 16000) {
+			cloudPos -= 16000;
+		} else if (cloudPos[0] < 0) {
+			cloudPos[0] += 16000;
+		} else if (cloudPos[1] > 16000) {
+			cloudPos[1] -= 16000;
+		} else if (cloudPos[1] < 0) {
+			cloudPos[1] += 16000
+		}
+		}
 }
 
 //Start Game
@@ -1443,8 +1449,6 @@ function updateGameArea(lastTimestamp) {
 		}
 
 	}
-
-	//cloudsDraw();
 
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
