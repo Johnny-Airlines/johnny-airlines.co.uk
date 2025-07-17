@@ -1357,7 +1357,7 @@ function updateGameArea(lastTimestamp) {
 		myPlayer.y += 16000;
 	}
 	if (myPlayer.x > 2000) {
-		window.location.href = "https://www.youtube.com/watch?v=dQw4w9WgXcQ"
+		window.location.href = "https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4"
 	}
 	if (myPlayer.x > 0) {
 		myPlayer.x -= 16000;
