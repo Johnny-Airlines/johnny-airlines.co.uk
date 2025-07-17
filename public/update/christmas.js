@@ -593,7 +593,7 @@ function dropBomb() {
 }
 
 function shoot() {
-	if ((Date.now() - lastShot) > 250) {
+	if ((Date.now() - lastShot) > 100) {
 		lastShot = Date.now()
 		let key = db.ref().child('bullets').push().key;
 		let bullet = new Bullet(
