@@ -112,7 +112,7 @@ function loadShop() {
         ownedPlanes.forEach((plane) => {
             buttonDict[plane] = "Equip"
 			if (!planesInShop.includes(plane)) {
-				console.log(plane)
+				//console.log(plane)
 				let planeElement = `<img width="66px" src="https://johnny-airlines.co.uk/${plane}.png" onclick="hoverOverShopItem('${plane}')"/>`
 				document.getElementById("Planes").innerHTML += planeElement
 			}
