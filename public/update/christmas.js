@@ -115,7 +115,15 @@ document.addEventListener("keyup", (key) => {
 onmousemove = function (e) {
 	var diffX = e.clientX - gameArea.canvas.width / 2;
 	var diffY = e.clientY - gameArea.canvas.height / 2;
-	myPlayer.angle = Math.atan2(diffY, diffX) + Math.PI / 2;
+	try {
+		myPlayer.angle = Math.atan2(diffY, diffX) + Math.PI / 2;
+	} catch (e) {
+		if (e.message = 'can\'t access property "angle", myPlayer is undefined') {
+			console.log("Welcome to Johnny Airlines!");
+		} else {
+			throw e;
+		}
+	}
 };
 //Mousedown detection
 let mouseDown = 0;
@@ -151,8 +159,6 @@ const bulletImg = new Image();
 bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
-const speechBubbleImg = new Image();
-speechBubbleImg.src = "../speechBubble.png";
 const jerryCanImage = new Image();
 jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
