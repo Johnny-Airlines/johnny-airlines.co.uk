@@ -230,6 +230,9 @@ var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
 var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
+var isPlayingWAJ = false;
+var WAJscore = 0;
+var WAJtime = 0;
 var cloudPos = [8000,8000];
 var cloudDirection = [Math.floor(Math.random()*10)-5,Math.floor(Math.random()*10)-5]
 var cloudsOn = true;
@@ -788,7 +791,52 @@ function interact() {
 			});
 		} else {
 			alert("You can only try once per day! Come back tommorow");
-		} 
+		}
+	} else if (playerCollisionCheck(4950,5260,5010,5120)) {
+		if (isPlayingWAJ) {
+			alert("You are currently playing, go Whack James!")
+		}
+		else {
+			isPlayingWAJ = true
+			alert("YAY lets Whack James! Hover over James and press Space");
+			db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
+				db.ref(`users/${myPlayer.id}/`).update({
+					tickets: snapshot.val()-1
+				});	
+			});
+			WAJtime = 60;
+			WAJscore = 0;
+			let timerTracker = setInterval(() => {
+				WAJtime -= 1;
+			},1000)
+			setTimeout(() => {
+				clearInterval(timerTracker);
+				let ticketsEarnt = Math.ceil(Math.pow(1.5,WAJscore/10)-1);
+				alert(`You scored ${WAJscore}, you earnt ${ticketsEarnt}`)
+				WAJtime = 60;
+				tickets = tickets + ticketsEarnt
+				db.ref(`users/${myPlayer.id}`).update({
+					tickets,
+				});
+			},60000)
+		}
+	} else if (playerCollisionCheck(4460,4934.4,5010,5447.1)) {
+		if (isPlayingWAJ) {
+			let attackedLocation = [0,0];
+			for (let i = 0; i < 3; i++) {
+				for (let j = 0; j < 3; j++) {
+					if (playerCollisionCheck(4460+i*159.8,4460+(i+1)*159.8,5010+j*145.7,5010+(j+1)*145.7)) {
+						attackedLocation = [i,j];
+					}
+				}
+			}
+			let target = whackAJamesLayout[attackedLocation[0]][attackedLocation[1]];
+			if (target == "jamesSadImg") {
+				WAJscore += 1;
+				whackAJamesLayout[attackedLocation[0]][attackedLocation[1]] = "windowShutImg";
+				whackAJamesLayout[Math.floor(Math.random()*3)][Math.floor(Math.random()*3)] = "jamesSadImg";
+			}
+		}
 	} else {
 
 		if (myPlayer.fuel > 1.5) {
@@ -943,14 +991,14 @@ function ticketDraw() {
 function isValidCommand(cmd) {
 	let cmdArgs = cmd.split(" ")
 	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
-		if (cmdArgs[1] == "frazeldazel" || cmdArgs[1] == "johnnyairlinesceo") {
+		if (cmdArgs[1] == "frazeldazel" || cmdArgs[1] == "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") {
 			return false;
 		}
 		let unames = []
 		for (let player in players) {
 			unames.push(players[player]["username"])
 		}
-		if ((unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo") || (cmdArgs[1] == "all" && cmdArgs[0]=="kill")) {
+		if ((unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") || (cmdArgs[1] == "all" && cmdArgs[0]=="kill")) {
 			return true;
 		}
 	}
@@ -962,7 +1010,7 @@ function isValidCommand(cmd) {
 
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.split(" ")
-	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo") {
+	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") {
 		myPlayer.x = 20000
 		db.ref(`cmds/${cmdId}`).remove()
 	}
@@ -1065,8 +1113,8 @@ function whackAJames() {
 	ctx.fillText("PLAY",4955+152+myPlayer.x+gameArea.canvas.width/2,5015+64+myPlayer.y+gameArea.canvas.height/2)
 	ctx.textAlign = "left"
 	ctx.font = "24px Pixelify Sans";
-	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","NON FUNCTIONAL, however is coming soon"]
-	for (let i = 0; i < 6; i++) {
+	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","NON FUNCTIONAL, however is coming soon","",`Points: ${WAJscore}`,`Time remaining: ${WAJtime}`]
+	for (let i = 0; i < 9; i++) {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
 	}
 }
@@ -1380,7 +1428,7 @@ function updateGameArea(lastTimestamp) {
 	}
 
 	// Special shortcuts for special people
-	if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2")){
+	if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2" || myPlayer.id == "c6UqdfQ5T4XE2092p0Eh5JPLuIy2")){
 		if (keysPressed.includes(66)) {
 			myPlayer.vx *= 1.1;
 			myPlayer.vy *= 1.1;
