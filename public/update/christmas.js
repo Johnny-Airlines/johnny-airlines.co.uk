@@ -818,6 +818,7 @@ function interact() {
 				db.ref(`users/${myPlayer.id}`).update({
 					tickets,
 				});
+				isPlayingWAJ = false;
 			},60000)
 		}
 	} else if (playerCollisionCheck(4460,4934.4,5010,5447.1)) {
