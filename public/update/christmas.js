@@ -1113,8 +1113,8 @@ function whackAJames() {
 	ctx.fillText("PLAY",4955+152+myPlayer.x+gameArea.canvas.width/2,5015+64+myPlayer.y+gameArea.canvas.height/2)
 	ctx.textAlign = "left"
 	ctx.font = "24px Pixelify Sans";
-	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","NON FUNCTIONAL, however is coming soon","",`Points: ${WAJscore}`,`Time remaining: ${WAJtime}`]
-	for (let i = 0; i < 9; i++) {
+	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","",`Points: ${WAJscore}`,`Time remaining: ${WAJtime}`]
+	for (let i = 0; i < 8; i++) {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
 	}
 }
