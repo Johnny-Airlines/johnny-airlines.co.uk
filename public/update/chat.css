@@ -70,6 +70,7 @@ button {
     border: 5px aliceblue solid;
     bottom: 0%;
     width: 390px;
+	background-color: rgba(0,0,0,0.5);
 }
 
 .footer {
