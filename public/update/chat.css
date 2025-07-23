@@ -58,11 +58,11 @@ button {
 }
 
 .sent {
-    color: red;
+    color: #fffb00;
 }
 
 .sent span {
-    color: red;
+    color: #fffb00;
 }
 
 .chatCont {
