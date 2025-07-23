@@ -1175,7 +1175,7 @@ function cloudsDraw() {
 		cloudPos[0] += cloudDirection[0];
 		cloudPos[1] += cloudDirection[1];
 		if (cloudPos[0] > 16000) {
-			cloudPos -= 16000;
+			cloudPos[0] -= 16000;
 		} else if (cloudPos[0] < 0) {
 			cloudPos[0] += 16000;
 		} else if (cloudPos[1] > 16000) {
