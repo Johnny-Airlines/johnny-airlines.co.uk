@@ -1059,8 +1059,14 @@ function isValidCommand(cmd) {
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.split(" ")
 	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] == "hmmmm") {
-		myPlayer.x = 20000
-		db.ref(`cmds/${cmdId}`).remove()
+		if (cmdArgs[0] == "kill") {
+			myPlayer.x = 20000
+			db.ref(`cmds/${cmdId}`).remove()
+		}
+		if (cmdArgs[0] == "sendMessage") {
+			dialogue(cmdArgs[2],false,0);
+			db.ref(`cmds/${cmdId}`).remove();	
+		}
 	}
 	if (cmdArgs[1] == myPlayer.username) {
 		if (cmdArgs[0] == "tp") {
@@ -1091,6 +1097,7 @@ function executeCommand(cmdId, cmd) {
 		}
 		if (cmdArgs[0] == "sendMessage") {
 			dialogue(cmdArgs[2],false,0);
+			db.ref(`cmds/${cmdId}`).remove();
 		}
 
 	}
