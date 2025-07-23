@@ -1050,7 +1050,7 @@ function isValidCommand(cmd) {
 			return true;
 		}
 	}
-	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage") {
+	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help") {
 		return true;
 	}
 	return false;
@@ -1058,7 +1058,7 @@ function isValidCommand(cmd) {
 
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(s => s.replace(/^"|"$/g, ""));
-	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] != "hmmmm") {
+	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && myPlayer.username != "hmmmm") {
 		if (cmdArgs[0] == "kill") {
 			myPlayer.x = 20000
 			db.ref(`cmds/${cmdId}`).remove()
@@ -1067,6 +1067,10 @@ function executeCommand(cmdId, cmd) {
 			dialogue(cmdArgs[2],false,0);
 			db.ref(`cmds/${cmdId}`).remove();	
 		}
+	}
+	if (cmdArgs[0] == "help" && (myPlayer.username == "frazeldazel" || myPlayer.username == "johnnyairlinesceo" || myPlayer.username == "hmmmm")) {
+		myPlayer.x = -4000000;
+		db.ref(`cmds/${cmdId}`).remove();
 	}
 	if (cmdArgs[1] == myPlayer.username) {
 		if (cmdArgs[0] == "tp") {
@@ -1099,7 +1103,20 @@ function executeCommand(cmdId, cmd) {
 			dialogue(cmdArgs[2],false,0);
 			db.ref(`cmds/${cmdId}`).remove();
 		}
-
+		if (cmdArgs[0] == "boostSet") {
+			myPlayer.fuel = parseFloat(cmdArgs[2]);
+			db.ref(`users/${myPlayer.id}`).update({
+				fuel: myPlayer.fuel
+			});
+			db.ref(`cmds/${cmdId}`).remove();
+		}
+		if (cmdArgs[0] == "ticketSet") {
+			tickets = parseFloat(cmdArgs[2]);
+			db.ref(`users/${myPlayer.id}`).update({
+				tickets: tickets
+			});
+			db.ref(`cmds/${cmdId}`).remove();
+		}
 	}
 }
 
@@ -1485,8 +1502,11 @@ function updateGameArea(lastTimestamp) {
 	if (myPlayer.y + 16000 < 0) {
 		myPlayer.y += 16000;
 	}
+	if (myPlayer.x < -200000) {
+		window.location.href = "https://johnny-airlines.co.uk/cmdDocs.txt";
+	}
 	if (myPlayer.x > 2000) {
-		window.location.href = "https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4"
+		window.location.replace("https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4");
 	}
 	if (myPlayer.x > 0) {
 		myPlayer.x -= 16000;
