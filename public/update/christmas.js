@@ -805,6 +805,7 @@ function interact() {
 			let win = (Math.floor(Math.random() * 20)+1 == 1)
 			if (win) {
 				dieNum2 = 7 - dieNum1;
+				dialogue("YOU WON! Well done! You got 10 tickets!",false,0)
 				db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
 					db.ref(`users/${myPlayer.id}/`).update({
 						tickets: snapshot.val()+10
