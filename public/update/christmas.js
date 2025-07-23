@@ -1057,7 +1057,7 @@ function isValidCommand(cmd) {
 }
 
 function executeCommand(cmdId, cmd) {
-	let cmdArgs = cmd.split(" ")
+	let cmdArgs = cmd.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(s => s.replace(/^"|"$/g, ""));
 	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] != "hmmmm") {
 		if (cmdArgs[0] == "kill") {
 			myPlayer.x = 20000
