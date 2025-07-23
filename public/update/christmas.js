@@ -1058,7 +1058,7 @@ function isValidCommand(cmd) {
 
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.split(" ")
-	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] == "hmmmm") {
+	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] != "hmmmm") {
 		if (cmdArgs[0] == "kill") {
 			myPlayer.x = 20000
 			db.ref(`cmds/${cmdId}`).remove()
