@@ -1050,7 +1050,7 @@ function isValidCommand(cmd) {
 			return true;
 		}
 	}
-	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release") {
+	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage") {
 		return true;
 	}
 	return false;
@@ -1058,7 +1058,7 @@ function isValidCommand(cmd) {
 
 function executeCommand(cmdId, cmd) {
 	let cmdArgs = cmd.split(" ")
-	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") {
+	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && cmdArgs[1] == "hmmmm") {
 		myPlayer.x = 20000
 		db.ref(`cmds/${cmdId}`).remove()
 	}
@@ -1088,6 +1088,9 @@ function executeCommand(cmdId, cmd) {
 			db.ref(`cmds/${prisonCmdId}`).remove()
 			db.ref(`cmds/${cmdId}`).remove()
 			prisonCmdId = "N/A"
+		}
+		if (cmdArgs[0] == "sendMessage") {
+			dialogue(cmdArgs[2],false,0);
 		}
 
 	}
