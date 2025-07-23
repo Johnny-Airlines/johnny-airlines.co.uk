@@ -96,8 +96,13 @@ document.addEventListener("keydown", (key) => {
 			document.getElementById("message-input").focus();
 			document.getElementById("message-input").select();
 		}
-		if (keysPressed[k] == 13) {
+		if (keysPressed[k] == 13 && chatFocus) {
 			document.getElementById("message-btn").click();
+		}
+		if (keysPressed[k] == 13 && !chatFocus) {
+			if (isDialogueOpen) {
+				isDialogueOpen = false;
+			}
 		}
 		if (keysPressed[k] == 80 && !chatFocus) {
 			mouseDown = 0;
@@ -236,6 +241,8 @@ var WAJtime = 0;
 var cloudPos = [8000,8000];
 var cloudDirection = [Math.floor(Math.random()*10)-5,Math.floor(Math.random()*10)-5]
 var cloudsOn = true;
+var isDialogueOpen = false;
+var dialogueMsg = "";
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -586,6 +593,45 @@ function drawImageAtFixedPosition(image,x,y,width,height) {
 	);
 }
 
+function dialogue(message, isPrompt, dismissTime) {
+	dialogueMsg = message;
+	isDialogueOpen = true;
+	if (dismissTime != 0) {
+		setTimeout(()=>{isDialogueOpen = false},dismissTime);
+	}
+}
+
+function dialogueDraw() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#948c82"
+	ctx.fillRect(
+		gameArea.canvas.width / 2 - 505,
+		gameArea.canvas.height / 2 - 105,
+		1010,
+		210,
+	);
+	ctx.fillStyle = "#fcf1e3"
+	ctx.fillRect(
+		gameArea.canvas.width / 2 - 500,
+		gameArea.canvas.height / 2 - 100,
+		1000,
+		200,
+	);
+	ctx.font = "24px Pixelify Sans";
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#000000";
+	ctx.fillText(
+		dialogueMsg,
+		gameArea.canvas.width / 2,
+		gameArea.canvas.height / 2 - 35,
+	);
+	ctx.fillText(
+		"Press Enter to dismiss this message",
+		gameArea.canvas.width / 2,
+		gameArea.canvas.height / 2,
+	);
+}
+
 function dropBomb() {
 	if ((Date.now() - lastBomb) > 500) {
 		lastBomb = Date.now()
@@ -781,24 +827,24 @@ function interact() {
 				db.ref(`users/${myPlayer.id}`).update({
 					tickets,
 				});
-				alert("Correct, you get 5 tickets, come back again tommorow!")
+				dialogue("Correct, you get 5 tickets, come back again tommorow!",false,10000)
 			} else {
-				alert("WRONG. Try again tommorow!")
+				dialogue("WRONG. Try again tommorow!",false,10000)
 			}
 			lastJumbleSolve = daysSinceEpoch();
 			db.ref(`lastJumbleSolve/${myPlayer.id}/`).update({
 				lastJumbleSolve,
 			});
 		} else {
-			alert("You can only try once per day! Come back tommorow");
+			dialogue("You can only try once per day! Come back tommorow!",false,10000)
 		}
 	} else if (playerCollisionCheck(4950,5260,5010,5120)) {
 		if (isPlayingWAJ) {
-			alert("You are currently playing, go Whack James!")
+			dialogue("You are currently playing, go Whack James!",false,5000)
 		}
 		else {
 			isPlayingWAJ = true
-			alert("YAY lets Whack James! Hover over James and press Space");
+			dialogue("YAY lets Whack James! Hover over James and press Space",false,0)
 			db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
 				db.ref(`users/${myPlayer.id}/`).update({
 					tickets: snapshot.val()-1
@@ -812,7 +858,7 @@ function interact() {
 			setTimeout(() => {
 				clearInterval(timerTracker);
 				let ticketsEarnt = Math.ceil(Math.pow(1.5,WAJscore/10)-1);
-				alert(`You scored ${WAJscore}, you earnt ${ticketsEarnt}`)
+				dialogue(`You scored ${WAJscore}, you earnt ${ticketsEarnt}`,false,0)
 				WAJtime = 60;
 				tickets = tickets + ticketsEarnt
 				db.ref(`users/${myPlayer.id}`).update({
@@ -905,7 +951,7 @@ function coconutsDraw() {
 		if (Math.abs(myPlayer.x+coconuts[i][0])<=30 && Math.abs(myPlayer.y+coconuts[i][1])<=30) {
 			let randoThing = Math.floor(Math.random()*500)
 			if (randoThing == 1) {
-				alert("You found the rare coconut plane! Refresh and then check the shop")
+				dialogue("You found the rare coconut plane! Refresh and then check the shop",false,0)
 				db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
 					var ownedPlanes = snapshot.val();
 					ownedPlanes.push("coconut")
@@ -915,14 +961,14 @@ function coconutsDraw() {
 				});
 			}
 			else if (randoThing < 375) {
-				alert("You found a ticket!")
+				dialogue("You found a ticket!", false, 10000);
 				tickets = tickets + 1
 				db.ref(`users/${myPlayer.id}`).update({
 					tickets,
 				});
 			}
 			else {
-				alert("Aww man, this coconut has nothing in it.")
+				dialogue("Aww man, this coconut has nothing in it.",false,10000)
 			}
 			coconuts[i] = [Math.floor(Math.random()*14000),Math.floor(Math.random()*14000)]
 			db.ref(`coconuts/${i+1}`).update({
@@ -1136,7 +1182,7 @@ function cloudsDraw() {
 		} else if (cloudPos[1] < 0) {
 			cloudPos[1] += 16000
 		}
-		}
+	}
 }
 
 //Start Game
@@ -1397,6 +1443,19 @@ function summerEventWelcomeText() {
 function updateGameArea(lastTimestamp) {
 	let currentTime = Date.now()
 	let fps = (1/((currentTime-lastTimestamp)/1000))
+	
+	if (isDialogueOpen) {
+		dialogueDraw();
+		if ((Date.now()-currentTime)<(1000/30)) {
+			setTimeout(() => {
+				updateGameArea(currentTime)
+			}, (1000/30)-(Date.now()-currentTime));
+			return;
+		}
+		else {
+			updateGameArea(currentTime)
+		}
+	}
 
 	gameArea.clear();
 	myPlayer.x += myPlayer.vx;
@@ -1442,7 +1501,7 @@ function updateGameArea(lastTimestamp) {
 					command,
 				});
 			} else {
-				alert("Invalid command")
+				dialogue("Invalid command",false,2000)
 			}
 		}
 	}
