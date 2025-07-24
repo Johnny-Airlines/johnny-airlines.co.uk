@@ -1,4 +1,4 @@
-//(function(){ "use strict"
+(function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
 	authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -1697,4 +1697,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-//})();
+})();
