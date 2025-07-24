@@ -7,3 +7,4 @@ release [userName]
 boostSet [userName] [amount]
 ticketSet [userName] [amount]
 sendPrompt [username] [message] In order for multiple word messages to work you must enclose the message in "" e.g. sendMessage all "hey there", In addition the message the user returns will be sent to all admins, not just the admin who sent the prompt 
+
