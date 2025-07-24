@@ -1,4 +1,4 @@
-(function(){ "use strict"
+//(function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
 	authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -77,44 +77,100 @@ document.getElementById("message-input").addEventListener("blur", (event) => { c
 //Key detection
 let keysPressed = [];
 document.addEventListener("keydown", (key) => {
-	keysPressed.push(key.keyCode);
+	keysPressed.push(key.key);
 	keysPressed = [...new Set(keysPressed)];
 	for (let k in keysPressed) {
-		if (keysPressed[k] == 32 && !chatFocus) {
-			interact();
-		}
-		if (keysPressed[k] == 81 && !chatFocus && prisonCmdId == "N/A") {
-			dropBomb();
-		}
-		if (keysPressed[k] == 69 && !chatFocus && prisonCmdId == "N/A") {
-			shoot();
-		}
-		if (keysPressed[k] == 70 && !chatFocus && prisonCmdId == "N/A") {
-			missileShoot();
-		}
-		if (keysPressed[k] == 191 && !chatFocus) {
-			document.getElementById("message-input").focus();
-			document.getElementById("message-input").select();
-		}
-		if (keysPressed[k] == 13 && chatFocus) {
-			document.getElementById("message-btn").click();
-		}
-		if (keysPressed[k] == 13 && !chatFocus) {
-			if (isDialogueOpen) {
+		if (isDialogueOpen) {
+			if (keysPressed[k] == "Enter" && !chatFocus) {
 				isDialogueOpen = false;
+				if (isDialoguePrompt) {
+					if (dialoguePromptUse == "changeDisplayName") {
+						if (dialoguePrompt == "") {
+							dialogue("Your display name can not be nothing",false,0)					
+						} else {
+							updateDisplayName(dialoguePrompt)
+						}
+					}
+					if (dialoguePromptUse == "jumble") {
+						if (dialoguePrompt.toUpperCase() == jumbleData.currentJumble) {
+							tickets = tickets + 5
+							db.ref(`users/${myPlayer.id}`).update({
+								tickets,
+							});
+							dialogue("Correct, you get 5 tickets, come back again tommorow!",false,10000)
+						} else {
+							dialogue("WRONG. Try again tommorow!",false,10000)
+						}
+
+					}
+					if (dialoguePromptUse == "sendCommand") {
+						if (isValidCommand(dialoguePrompt)) {
+							db.ref(`cmds`).push({
+								command: dialoguePrompt,
+							});
+						} else {
+							dialogue("Invalid command",false,2000)
+						}
+					}
+					if (dialoguePromptUse == "sendPromptCMD") {
+						let unames = []
+						for (let player in players) {
+							unames.push(players[player]["username"])
+						}
+						["hmmmm","johnnyairlinesceo","frazeldazel"].forEach((person) => {
+							if (unames.includes(person)) {
+								let command = `sendMessage ${person} "${dialoguePrompt}"`
+								db.ref(`cmds`).push({
+									command,
+								});
+							};
+						});
+					}
+				}
+				isDialoguePrompt = false;
+				dialoguePrompt = "";
+			}
+			if (isDialoguePrompt) {
+				if (keysPressed[k] == "Backspace") {
+					dialoguePrompt = dialoguePrompt.slice(0,dialoguePrompt.length-1);
+				} else if (keysPressed[k].length == 1){
+					dialoguePrompt = `${dialoguePrompt}${keysPressed[k]}`
+				}
+				keysPressed.splice(keysPressed.indexOf(keysPressed[k]),1)
 			}
 		}
-		if (keysPressed[k] == 80 && !chatFocus) {
-			mouseDown = 0;
-			myPlayer.mouseDown = false;
-		}
-		if (keysPressed[k] == 76 && !chatFocus) {
-			cloudsOn = cloudsOn ? false : true;
+		else {
+			if (keysPressed[k] == " " && !chatFocus) {
+				interact();
+			}
+			if (keysPressed[k] == "q" && !chatFocus && prisonCmdId == "N/A") {
+				dropBomb();
+			}
+			if (keysPressed[k] == "e" && !chatFocus && prisonCmdId == "N/A") {
+				shoot();
+			}
+			if (keysPressed[k] == "f" && !chatFocus && prisonCmdId == "N/A") {
+				missileShoot();
+			}
+			if (keysPressed[k] == "/" && !chatFocus) {
+				document.getElementById("message-input").focus();
+				document.getElementById("message-input").select();
+			}
+			if (keysPressed[k] == "Enter" && chatFocus) {
+				document.getElementById("message-btn").click();
+			}
+			if (keysPressed[k] == "p" && !chatFocus) {
+				mouseDown = 0;
+				myPlayer.mouseDown = false;
+			}
+			if (keysPressed[k] == "l" && !chatFocus) {
+				cloudsOn = cloudsOn ? false : true;
+			}
 		}
 	}
 });
 document.addEventListener("keyup", (key) => {
-	keysPressed = keysPressed.filter((item) => item !== key.keyCode);
+	keysPressed = keysPressed.filter((item) => item !== key.key);
 });
 //Mousemove detection
 onmousemove = function (e) {
@@ -243,6 +299,10 @@ var cloudDirection = [Math.floor(Math.random()*10)-5,Math.floor(Math.random()*10
 var cloudsOn = true;
 var isDialogueOpen = false;
 var dialogueMsg = "";
+var dialoguePrompt = "";
+var isDialoguePrompt = false;
+var dialoguePromptUse = "";
+var isDialoguePromptCursorTimer = 0;
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -596,6 +656,7 @@ function drawImageAtFixedPosition(image,x,y,width,height) {
 function dialogue(message, isPrompt, dismissTime) {
 	dialogueMsg = message;
 	isDialogueOpen = true;
+	isDialoguePrompt = isPrompt;
 	if (dismissTime != 0) {
 		setTimeout(()=>{isDialogueOpen = false},dismissTime);
 	}
@@ -625,11 +686,41 @@ function dialogueDraw() {
 		gameArea.canvas.width / 2,
 		gameArea.canvas.height / 2 - 35,
 	);
-	ctx.fillText(
-		"Press Enter to dismiss this message",
-		gameArea.canvas.width / 2,
-		gameArea.canvas.height / 2,
-	);
+	if (isDialoguePrompt) {
+		isDialoguePromptCursorTimer += 1;
+		isDialoguePromptCursorTimer = isDialoguePromptCursorTimer > 20 ? 0 : isDialoguePromptCursorTimer;
+		ctx.fillStyle = "#000000"
+		ctx.fillRect(
+			gameArea.canvas.width / 2 - (dialoguePrompt.length * 6 + 5)-50,
+			gameArea.canvas.height / 2 - 15 - 2.5,
+			(dialoguePrompt.length * 12 + 10)+100,
+			30,
+		);
+		ctx.fillStyle = "#ffffff"
+		ctx.fillRect(
+			gameArea.canvas.width / 2 - (dialoguePrompt.length * 6)-50,
+			gameArea.canvas.height / 2 - 12.5 - 2.5,
+			(dialoguePrompt.length * 12)+100,
+			25,
+		);
+		ctx.fillStyle = "#000000"
+		ctx.fillText(
+			`${dialoguePrompt} ${isDialoguePromptCursorTimer > 10 ? "|" : " "}`,
+			gameArea.canvas.width / 2,
+			gameArea.canvas.height / 2,
+		);
+		ctx.fillText(
+			"Press Enter to submit",
+			gameArea.canvas.width / 2,
+			gameArea.canvas.height / 2 + 35,
+		);
+	} else {
+		ctx.fillText(
+			"Press Enter to dismiss this message",
+			gameArea.canvas.width / 2,
+			gameArea.canvas.height / 2,
+		);
+	}
 }
 
 function dropBomb() {
@@ -680,12 +771,17 @@ function missileShoot() {
 		db.ref(`bullets/${key}`).set(bullet);
 	}
 }
-
-function updateDisplayName() {
+document.getElementById("changeDisplayName").addEventListener("click",updateDisplayNamePrompt);
+function updateDisplayNamePrompt() {
+	document.getElementById("closebtn").click();
+	dialogue("Enter new name here:",true,0)
+	dialoguePromptUse = "changeDisplayName"
+}
+function updateDisplayName(name) {
 	firebase
 		.auth()
 		.currentUser.updateProfile({
-			displayName: prompt(""),
+			displayName: name,
 		})
 		.then(() => {
 			myPlayer.displayName = firebase.auth().currentUser.displayName;
@@ -822,16 +918,8 @@ function interact() {
 		},1000)
 	} else if (playerCollisionCheck(2116+16*4,2116+74*4,5129+22*4,5129+40*4)) {
 		if (daysSinceEpoch() > lastJumbleSolve) {
-			let guess = prompt("Guess: ")
-			if (guess.toUpperCase() == jumbleData.currentJumble) {
-				tickets = tickets + 5
-				db.ref(`users/${myPlayer.id}`).update({
-					tickets,
-				});
-				dialogue("Correct, you get 5 tickets, come back again tommorow!",false,10000)
-			} else {
-				dialogue("WRONG. Try again tommorow!",false,10000)
-			}
+			dialogue("Guess:", true, 0);
+			dialoguePromptUse = "jumble";
 			lastJumbleSolve = daysSinceEpoch();
 			db.ref(`lastJumbleSolve/${myPlayer.id}/`).update({
 				lastJumbleSolve,
@@ -1050,7 +1138,7 @@ function isValidCommand(cmd) {
 			return true;
 		}
 	}
-	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help") {
+	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help" || cmdArgs[0] == "sendPrompt") {
 		return true;
 	}
 	return false;
@@ -1101,6 +1189,11 @@ function executeCommand(cmdId, cmd) {
 		}
 		if (cmdArgs[0] == "sendMessage") {
 			dialogue(cmdArgs[2],false,0);
+			db.ref(`cmds/${cmdId}`).remove();
+		}
+		if (cmdArgs[0] == "sendPrompt") {
+			dialogue(cmdArgs[2],true,0);
+			dialoguePromptUse = "sendPromptCMD"
 			db.ref(`cmds/${cmdId}`).remove();
 		}
 		if (cmdArgs[0] == "boostSet") {
@@ -1519,22 +1612,18 @@ function updateGameArea(lastTimestamp) {
 	}
 
 	// Special shortcuts for special people
-	if (keysPressed.includes(16) && !chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2" || myPlayer.id == "c6UqdfQ5T4XE2092p0Eh5JPLuIy2")){
-		if (keysPressed.includes(66)) {
+	if (!chatFocus && (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262" || myPlayer.id == "XSI66btuWOb4LWYkdfrmSUAa4KK2" || myPlayer.id == "c6UqdfQ5T4XE2092p0Eh5JPLuIy2")){
+		if (keysPressed.includes("B")) {
+			keysPressed.splice(keysPressed.indexOf("B"),1)
 			myPlayer.vx *= 1.1;
 			myPlayer.vy *= 1.1;
 		}
-		if (keysPressed.includes(67)) {
-			keysPressed.splice(keysPressed.indexOf(67),1)
-			let command = prompt("Command: ")
-			if (isValidCommand(command)) {
-				db.ref(`cmds`).push({
-					command,
-				});
-			} else {
-				dialogue("Invalid command",false,2000)
-			}
+		if (keysPressed.includes("C")) {
+			keysPressed.splice(keysPressed.indexOf("C"),1)
+			dialogue("Command: ", true, 0);
+			dialoguePromptUse = "sendCommand";
 		}
+		keysPressed.splice(keysPressed.indexOf("Shift"),1)
 	}
 
 	cleanUpArray();
@@ -1608,4 +1697,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-})();
+//})();
