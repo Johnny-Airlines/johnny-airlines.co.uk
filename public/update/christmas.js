@@ -1069,8 +1069,8 @@ function coconutsDraw() {
 }
 
 function ticketDraw() {
-	if (Math.abs(myPlayer.x+ticketX) <= 40 && Math.abs(myPlayer.y+ticketY) <= 46) {
-		//alert("You found a ticket!")
+	if (Math.abs(myPlayer.x+ticketX) <= 250 && Math.abs(myPlayer.y+ticketY) <= 140) {
+		dialogue("You got the ticket! Well done!",false,0)
 		tickets = tickets + 1
 		db.ref(`users/${myPlayer.id}`).update({
 			tickets,
