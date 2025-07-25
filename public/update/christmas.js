@@ -1443,7 +1443,7 @@ function flappyPlaneDraw() {
 				FPheight = 128;
 				FPspeed = 0;
 				clearInterval(pipeSpawner);
-				let ticketsEarnt = Math.ceil(Math.pow(1.5,FPpoints/10)-1);
+				let ticketsEarnt = Math.round(Math.pow(1.5,FPpoints/10)-1);
 				dialogue(`You scored ${FPpoints}, you earnt ${ticketsEarnt}`,false,0);
 				tickets = tickets + ticketsEarnt
 				db.ref(`users/${myPlayer.id}`).update({
