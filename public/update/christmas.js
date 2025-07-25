@@ -1000,7 +1000,7 @@ function interact() {
 			FPpoints = 0;
 			let pipesSpawned = 0;
 			pipeSpawner = setInterval(() => {
-				FPpipeLocations.push([22,Math.floor(Math.random()*(256-48-32))+48+32])
+				FPpipeLocations.push([22,Math.floor(Math.random()*(256-16-24-16-24))+16+24])
 				pipesSpawned += 1;
 				if (pipesSpawned == 4) {
 					clearInterval(pipeSpawner);
@@ -1434,7 +1434,7 @@ function flappyPlaneDraw() {
 		FPpipeLocations[index][0] += 2;
 			if (pipeData[0] > (1024-11*2)) {
 				FPpipeLocations[index][0] -= (1024-11*4);
-				FPpipeLocations[index][1] = Math.floor(Math.random()*(256-48-32))+48+32
+				FPpipeLocations[index][1] = Math.floor(Math.random()*(256-16-24-16-24))+16+24
 				FPpoints += 1;
 			}
 			if (((Math.abs(pipeData[1]-FPheight) > 12+17*2) && (Math.abs((1024-96-36)-pipeData[0]) < 36+11*2)) || FPheight < 0 || FPheight > 256) {
