@@ -259,6 +259,12 @@ const jamesSadImg = new Image();
 jamesSadImg.src = "../Whack A James/js.png";
 const cloudsImg = new Image();
 cloudsImg.src = "./clouds.png";
+const skylineImg = new Image();
+skylineImg.src = "./skyline.png";
+const pipeImg = new Image();
+pipeImg.src = "./pipe.png";
+const FPImg = new Image();
+FPImg.src = Math.floor(Math.random()*2) == 1 ? "./red.png" : "./blue.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -303,6 +309,13 @@ var dialoguePrompt = "";
 var isDialoguePrompt = false;
 var dialoguePromptUse = "";
 var isDialoguePromptCursorTimer = 0;
+var isPlayingFP = false;
+var FPbgLocation = 0;
+var FPpipeLocations = [];
+var FPheight = 128;
+var FPspeed = 0;
+var FPpoints = 0;
+let pipeSpawner;
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -705,7 +718,7 @@ function dialogueDraw() {
 		);
 		ctx.fillStyle = "#000000"
 		ctx.fillText(
-			`${dialoguePrompt} ${isDialoguePromptCursorTimer > 10 ? "|" : " "}`,
+			`${dialoguePrompt}${isDialoguePromptCursorTimer > 10 ? "|" : " "}`,
 			gameArea.canvas.width / 2,
 			gameArea.canvas.height / 2,
 		);
@@ -834,14 +847,14 @@ function miniMap() {
 	ctx.drawImage(
 		playerPoint,
 		Math.floor(gameArea.canvas.width - 218 - (myPlayer.x / 16000) * 200) - 5,
-		Math.floor((-myPlayer.y / 16000) * 200) - 7,
+		Math.floor((-myPlayer.y / 16000) * 200) - 5,
 		10,
 		10,
 	);
 	ctx.drawImage(
 		ticketImage,
 		Math.floor(gameArea.canvas.width - 218 + (ticketX / 16000) * 200) - 5,
-		Math.floor((ticketY / 16000)*200)-7,
+		Math.floor((ticketY / 16000)*200)-5,
 		10,
 		10,
 	);
@@ -933,7 +946,7 @@ function interact() {
 		}
 		else {
 			isPlayingWAJ = true
-			dialogue("YAY lets Whack James! Hover over James and press Space",false,0)
+			dialogue("Lets Whack James! Hover over James and press Space",false,0)
 			db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
 				db.ref(`users/${myPlayer.id}/`).update({
 					tickets: snapshot.val()-1
@@ -972,6 +985,33 @@ function interact() {
 				whackAJamesLayout[attackedLocation[0]][attackedLocation[1]] = "windowShutImg";
 				whackAJamesLayout[Math.floor(Math.random()*3)][Math.floor(Math.random()*3)] = "jamesSadImg";
 			}
+		}
+	} else if (playerCollisionCheck(2200,2200+310,1756,1756+110)) {
+		if (isPlayingFP) {
+			dialogue("You are already playing Flappy Plane",false,0);
+		} else {
+			isPlayingFP = true;
+			dialogue("Lets play Flappy Plane!",false,0)
+			db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
+				db.ref(`users/${myPlayer.id}/`).update({
+					tickets: snapshot.val()-1
+				});	
+			});
+			FPpoints = 0;
+			let pipesSpawned = 0;
+			pipeSpawner = setInterval(() => {
+				FPpipeLocations.push([22,Math.floor(Math.random()*(256-48-32))+48+32])
+				pipesSpawned += 1;
+				if (pipesSpawned == 4) {
+					clearInterval(pipeSpawner);
+				}
+			},256/60*1000);
+		}
+	} else if (playerCollisionCheck(2200+310,2200+310+310,1756,1756+110)) {
+		if (isPlayingFP) {
+			FPspeed = 2.5;
+		} else {
+			dialogue("You need to start playing before using this button!",false,0);
 		}
 	} else {
 
@@ -1286,6 +1326,134 @@ function whackAJames() {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
 	}
 }
+
+function pipeDraw(pipeX,pipeY,pipeGap) {
+	ctx = gameArea.context;
+	pipeX += 11*4/2;
+	ctx.drawImage(
+		pipeImg,
+		0, 0,
+		11, pipeY/4 - pipeGap/2,
+		2200+1024-pipeX + myPlayer.x + gameArea.canvas.width / 2,
+		1500+256-pipeY+pipeGap*4/2 + myPlayer.y + gameArea.canvas.height / 2,
+		11*4,
+		(pipeY/4 - pipeGap/2)*4,
+	);
+	ctx.save();
+	ctx.scale(1,-1);
+	ctx.drawImage(
+		pipeImg,
+		0, 0,
+		11, 256/4 - (pipeY/4 + pipeGap/2),
+		2200+1024-pipeX + myPlayer.x + gameArea.canvas.width / 2,
+		-(1500+256-pipeY-pipeGap*4/2 + myPlayer.y + gameArea.canvas.height / 2),
+		11*4,
+		(256/4 - (pipeY/4 + pipeGap/2))*4,
+	);
+	ctx.restore();
+}
+
+function flappyPlaneDraw() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(
+		2200+myPlayer.x+gameArea.canvas.width/2,
+		1756+myPlayer.y+gameArea.canvas.height/2,
+		310,
+		110,
+	)
+	ctx.fillStyle = "#2f3699";
+	ctx.fillRect(
+		2205+myPlayer.x+gameArea.canvas.width/2,
+		1761+myPlayer.y+gameArea.canvas.height/2,
+		300,
+		100,
+	)
+	ctx.font = "64px Pixelify Sans";
+	ctx.fillStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.fillText("PLAY",2200+152+myPlayer.x+gameArea.canvas.width/2,1756+64+myPlayer.y+gameArea.canvas.height/2)
+	ctx.fillStyle = "#000000";
+	ctx.fillRect(
+		2200+310+myPlayer.x+gameArea.canvas.width/2,
+		1756+myPlayer.y+gameArea.canvas.height/2,
+		310,
+		110,
+	)
+	ctx.fillStyle = "#2f3699";
+	ctx.fillRect(
+		2205+310+myPlayer.x+gameArea.canvas.width/2,
+		1761+myPlayer.y+gameArea.canvas.height/2,
+		300,
+		100,
+	)
+	ctx.font = "64px Pixelify Sans";
+	ctx.fillStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.fillText("UP",2200+152+310+myPlayer.x+gameArea.canvas.width/2,1756+64+myPlayer.y+gameArea.canvas.height/2)
+	ctx.textAlign = "left"
+	ctx.font = "24px Pixelify Sans";
+	let texts = ["Flappy Plane","Cost: 1 ticket", `Points: ${FPpoints}`];
+	for (let i = 0; i < 3; i++) {
+		ctx.fillText(texts[i],2200+310*2+myPlayer.x+gameArea.canvas.width/2,1756+24+24*i+myPlayer.y+gameArea.canvas.height/2)
+	}
+	if (isPlayingFP) {
+		FPbgLocation = FPbgLocation + 0.255;
+	}
+	const sx = FPbgLocation % 256;
+	const cropWidth = Math.min(256,256-sx);
+	ctx.save();
+	ctx.scale(4,4);
+	ctx.drawImage(
+		skylineImg,
+		sx, 0,
+		cropWidth, 64,
+		(2200 + myPlayer.x + gameArea.canvas.width / 2)/4,
+		(1500 + myPlayer.y + gameArea.canvas.height / 2)/4,
+		cropWidth, 64
+	)
+	if (cropWidth < 256) {
+		ctx.drawImage(
+			skylineImg,
+			0, 0,
+			256 - cropWidth, 64,
+			cropWidth + (2200 + myPlayer.x + gameArea.canvas.width / 2)/4,
+			(1500 + myPlayer.y + gameArea.canvas.height / 2)/4,
+			256 - cropWidth, 64
+		)
+	}
+	ctx.restore();
+	drawImageAtFixedPosition(FPImg,2200+96,1500+256-FPheight-17,36*2,17*2);
+	if (isPlayingFP) {
+		FPheight += FPspeed;
+		FPspeed -= 0.075;
+	}
+	FPpipeLocations.forEach((pipeData,index) => {
+		pipeDraw(pipeData[0],pipeData[1],24);
+		if (isPlayingFP) {
+		FPpipeLocations[index][0] += 2;
+			if (pipeData[0] > (1024-11*2)) {
+				FPpipeLocations[index][0] -= (1024-11*4);
+				FPpipeLocations[index][1] = Math.floor(Math.random()*(256-48-32))+48+32
+				FPpoints += 1;
+			}
+			if (((Math.abs(pipeData[1]-FPheight) > 12+17*2) && (Math.abs((1024-96-36)-pipeData[0]) < 36+11*2)) || FPheight < 0 || FPheight > 256) {
+				isPlayingFP = false;
+				FPpipeLocations = [];
+				FPheight = 128;
+				FPspeed = 0;
+				clearInterval(pipeSpawner);
+				let ticketsEarnt = Math.ceil(Math.pow(1.5,FPpoints/10)-1);
+				dialogue(`You scored ${FPpoints}, you earnt ${ticketsEarnt}`,false,0);
+				tickets = tickets + ticketsEarnt
+				db.ref(`users/${myPlayer.id}`).update({
+					tickets,
+				});
+			}
+		}
+	});
+}
+
 function cloudsDraw() {
 	if (cloudsOn) {
 		ctx = gameArea.context;
@@ -1650,6 +1818,7 @@ function updateGameArea(lastTimestamp) {
 	gambling();
 	jumble();
 	whackAJames();
+	flappyPlaneDraw();
 	summerEventWelcomeText();
 
 
