@@ -265,6 +265,8 @@ const pipeImg = new Image();
 pipeImg.src = "./pipe.png";
 const FPImg = new Image();
 FPImg.src = Math.floor(Math.random()*2) == 1 ? "./red.png" : "./blue.png";
+const bananaImg = new Image();
+bananaImg.src = "../banana/banana.png";
 //CHRISTMAS
 const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
@@ -316,6 +318,7 @@ var FPheight = 128;
 var FPspeed = 0;
 var FPpoints = 0;
 let pipeSpawner;
+var bananaClickerData = {"bananas":0};
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -1166,7 +1169,7 @@ function ticketDraw() {
 
 function isValidCommand(cmd) {
 	let cmdArgs = cmd.split(" ")
-	if (cmdArgs[0] == "tp" || cmdArgs[0] == "kill") {
+	if (cmdArgs[0] == "kill") {
 		if (cmdArgs[1] == "frazeldazel" || cmdArgs[1] == "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") {
 			return false;
 		}
@@ -1178,7 +1181,7 @@ function isValidCommand(cmd) {
 			return true;
 		}
 	}
-	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help" || cmdArgs[0] == "sendPrompt") {
+	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help" || cmdArgs[0] == "sendPrompt" || cmdArgs[0] == "tp") {
 		return true;
 	}
 	return false;
@@ -1454,6 +1457,15 @@ function flappyPlaneDraw() {
 	});
 }
 
+function bananaClickerDraw() {
+	ctx = gameArea.context;
+	drawImageAtFixedPosition(bananaImg,12300,6100,400,400);
+	ctx.font = "128px Pixelify Sans";
+	ctx.fillStyle = "#000000";
+	ctx.textAlign = "center";
+	ctx.fillText(bananaClickerData.bananas,12500+myPlayer.x+gameArea.canvas.width/2,6500+128+myPlayer.y+gameArea.canvas.height/2)
+};
+
 function cloudsDraw() {
 	if (cloudsOn) {
 		ctx = gameArea.context;
@@ -1473,6 +1485,105 @@ function cloudsDraw() {
 		}
 	}
 }
+
+function pvp() {
+	ctx = gameArea.context
+	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	if (pvpOn) {
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
+		ctx.strokeStyle = "#555555";
+		ctx.lineWidth = 13;
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , Math.PI*3/2 , Math.PI*3/2+myPlayer.health*Math.PI*2/100 );
+		ctx.strokeStyle = "#ff0000";
+		ctx.lineWidth = 8;
+		ctx.stroke();
+
+		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
+	}
+	bullets.forEach((bullet) => {
+		bullet.draw()
+		if (bullet.player == myPlayer.id) {
+			bullet.update();
+		}
+		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
+			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
+				if (bullet.isRocket) {
+					myPlayer.health -= 10
+					console.log("huh")
+				} else {
+					myPlayer.health -= 3
+				}
+				if (myPlayer.health <= 0) {
+					db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+						if (snapshot.val() > 0) {
+							db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
+								db.ref(`users/${bullet.player}/`).update({
+									tickets: snapshot2.val()+1
+								});
+							}).then(()=>{
+								db.ref(`users/${myPlayer.id}/`).update({
+									tickets: snapshot.val()-1
+								});
+								location.reload()
+							});
+						}
+					})			
+				}
+
+			});
+		}
+	})
+	bombs.forEach((bomb) => {
+		bomb.update();
+		bomb.draw();
+		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
+			myPlayer.health -= 10
+			if (myPlayer.health <= 0) {
+				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+					if (snapshot.val() > 0) {
+						db.ref(`users/${bomb.player}/tickets`).once('value', (snapshot2) => {
+							db.ref(`users/${bomb.player}/`).update({
+								tickets: snapshot2.val()+1
+							});
+						}).then(()=>{
+							db.ref(`users/${myPlayer.id}/`).update({
+								tickets: snapshot.val()-1
+							});
+							location.reload()
+						});
+					}
+				})	
+			}
+		}
+	});
+}
+
+function summerEventWelcomeText() {
+	ctx = gameArea.context
+	ctx.textAlign = "center";
+	ctx.fillStyle = "#000000";
+	ctx.font = "24px Pixelify Sans";
+	ctx.fillText(
+		"Welcome to the summer event, chill to some summer vibes,",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8000 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+	ctx.fillText(
+		"collect coconuts for tickets",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8024 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+	ctx.fillText(
+		"and perhaps find the new rare plane in a coconut.",
+		8050 + myPlayer.x + gameArea.canvas.width / 2,
+		8048 + myPlayer.y + gameArea.canvas.height / 2,
+	);
+
+}
+
 
 //Start Game
 function startGame(displayName, email, uid, plane) {
@@ -1582,6 +1693,16 @@ function startGame(displayName, email, uid, plane) {
 	db.ref(`lastJumbleSolve/${myPlayer.id}/lastJumbleSolve`).on("value", (snapshot) => {
 		lastJumbleSolve = snapshot.val();
 	});
+	db.ref(`bananaClicker/${myPlayer.id}/`).once("value").then((snapshot) => {
+		if (snapshot.val() == null) {
+			db.ref(`bananaClicker/${myPlayer.id}/`).set({
+				bananas: 0
+			});
+		} 
+	});
+	db.ref(`bananaClicker/${myPlayer.id}/`).on("value", (snapshot) => {
+		bananaClickerData = snapshot.val();
+	});
 	for (let i = 0; i < 20; i++) {
 		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
 			jerryCans[i][0] = snapshot.val();
@@ -1630,103 +1751,6 @@ function startGame(displayName, email, uid, plane) {
 	updateGameArea(Date.now());
 }
 
-function pvp() {
-	ctx = gameArea.context
-	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
-	if (pvpOn) {
-		ctx.beginPath();
-		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
-		ctx.strokeStyle = "#555555";
-		ctx.lineWidth = 13;
-		ctx.stroke();
-		ctx.beginPath();
-		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , Math.PI*3/2 , Math.PI*3/2+myPlayer.health*Math.PI*2/100 );
-		ctx.strokeStyle = "#ff0000";
-		ctx.lineWidth = 8;
-		ctx.stroke();
-
-		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
-	}
-	bullets.forEach((bullet) => {
-		bullet.draw()
-		if (bullet.player == myPlayer.id) {
-			bullet.update();
-		}
-		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
-			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
-				if (bullet.isRocket) {
-					myPlayer.health -= 10
-					console.log("huh")
-				} else {
-					myPlayer.health -= 3
-				}
-				if (myPlayer.health <= 0) {
-					db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-						if (snapshot.val() > 0) {
-							db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
-								db.ref(`users/${bullet.player}/`).update({
-									tickets: snapshot2.val()+1
-								});
-							}).then(()=>{
-								db.ref(`users/${myPlayer.id}/`).update({
-									tickets: snapshot.val()-1
-								});
-								location.reload()
-							});
-						}
-					})			
-				}
-
-			});
-		}
-	})
-	bombs.forEach((bomb) => {
-		bomb.update();
-		bomb.draw();
-		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
-			myPlayer.health -= 10
-			if (myPlayer.health <= 0) {
-				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
-					if (snapshot.val() > 0) {
-						db.ref(`users/${bomb.player}/tickets`).once('value', (snapshot2) => {
-							db.ref(`users/${bomb.player}/`).update({
-								tickets: snapshot2.val()+1
-							});
-						}).then(()=>{
-							db.ref(`users/${myPlayer.id}/`).update({
-								tickets: snapshot.val()-1
-							});
-							location.reload()
-						});
-					}
-				})	
-			}
-		}
-	});
-}
-
-function summerEventWelcomeText() {
-	ctx = gameArea.context
-	ctx.textAlign = "center";
-	ctx.fillStyle = "#000000";
-	ctx.font = "24px Pixelify Sans";
-	ctx.fillText(
-		"Welcome to the summer event, chill to some summer vibes,",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8000 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-	ctx.fillText(
-		"collect coconuts for tickets",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8024 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-	ctx.fillText(
-		"and perhaps find the new rare plane in a coconut.",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8048 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-
-}
 
 //Update Game Area
 function updateGameArea(lastTimestamp) {
@@ -1819,6 +1843,7 @@ function updateGameArea(lastTimestamp) {
 	jumble();
 	whackAJames();
 	flappyPlaneDraw();
+	bananaClickerDraw();
 	summerEventWelcomeText();
 
 
