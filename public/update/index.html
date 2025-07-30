@@ -1,56 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
-    <head>
-        <title>UPDATE</title>
-        <link rel="stylesheet" href="style.css" />
-        <link rel="stylesheet" href="../maincss.css" />
-        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
-        <script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
-        <link rel="stylesheet" href="chat.css" />
+	<head>
+		<title>UPDATE</title>
+		<link rel="stylesheet" href="style.css" />
+		<link rel="stylesheet" href="../maincss.css" />
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
+		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<link rel="stylesheet" href="chat.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 		<link href="https://fonts.googleapis.com/css2?family=Pixelify+Sans:wght@400..700&display=swap" rel="stylesheet">
-    </head>
-    <body>
-        <div style="position: absolute;display: grid;grid-template-areas: &quot;img dname dname dname dname&quot; &quot;img uname uname uname uname&quot; &quot;img ticket ticket tnum unset&quot; &quot;img menu menu menu menu&quot;;">
-            <img id="pfp" src="" style="grid-area: img" />
-            <p style="font-size: 30px; grid-area: dname; margin: 0px" id="dname"></p>
-            <p style="font-size: 15px; grid-area: uname; margin: 0" id="uname"></p>
-            <div style="grid-area: ticket; width: 50px; height: 28px">
-                <img src="/Ticket.png" style="width: inherit"/>
-            </div>
-            <p id="ticketDisplay" style="grid-area:tnum; margin:0;height:28px;" ></p>
-            <span style="font-size: 30px; cursor: pointer; grid-area: menu" id="navOpen">&#9776;</span>
-        </div>
+		<style>
+			#controls {
+				position: fixed;
+				bottom: 20px;
+				right: 20px;
+				display: flex;
+				flex-direction: column;
+				gap: 15px;
+				z-index: 10; /* make sure it’s on top */
+			}
 
-        <div id="myNav" class="overlay">
-            <a href="javascript:void(0)" class="closebtn" id="closebtn" onclick="closeNav()">&times;</a>
-            <div class="overlay-content">
-                <button class="tablink" style="grid-area: Profile" onclick="openCity('Profile', this, 'red')" id="defaultOpen">Profile</button>
-                <button class="tablink" style="grid-area: Shop" onclick="openCity('Shop', this, 'green')">Shop</button>
-                <button class="tablink" style="grid-area: Info" onclick="openCity('Info', this, 'blue')">Info</button>
-                <button class="tablink" style="grid-area: Controls" onclick="openCity('Controls', this, 'red')">Controls</button>
-                <div id="Profile" class="tabcontent">
-                    <div style="position: relative;display: grid;grid-template-areas: &quot;img dname dnameEdit&quot; &quot;img uname uname &quot; &quot;img ticket ticket&quot;;width: fit-content;">
-                        <img id="overlaypfp" src="" style="grid-area: img" />
-                        <p style="font-size: 30px;grid-area: dname;margin: 0px;"id="overlaydname"></p>
-                        <p style="font-size: 15px; grid-area: uname; margin: 0" id="overlayuname"></p>
-                        <div style="grid-area: ticket">
-                            <img src="/Ticket.png" style="width: 50px; height: 28px; float: left"/>
-                            <p id="overlayticketDisplay" style="margin: 0"></p>
-                        </div>
-                        <svg id="changeDisplayName" style="grid-area: dnameEdit; height: 41px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-                            <path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/>
-                        </svg>
+			.control-button {
+				width: 60px;
+				height: 60px;
+				border-radius: 50%;
+				border: none;
+				background-color: rgba(255, 255, 255, 0.5);
+				font-size: 20px;
+				font-weight: bold;
+				color: black;
+				user-select: none;
+				touch-action: manipulation;
+			}
+		</style>
+	</head>
+	<body>
+		<div style="position: absolute;display: grid;grid-template-areas: &quot;img dname dname dname dname&quot; &quot;img uname uname uname uname&quot; &quot;img ticket ticket tnum unset&quot; &quot;img menu menu menu menu&quot;;">
+			<img id="pfp" src="" style="grid-area: img" />
+			<p style="font-size: 30px; grid-area: dname; margin: 0px" id="dname"></p>
+			<p style="font-size: 15px; grid-area: uname; margin: 0" id="uname"></p>
+			<div style="grid-area: ticket; width: 50px; height: 28px">
+				<img src="/Ticket.png" style="width: inherit"/>
+			</div>
+			<p id="ticketDisplay" style="grid-area:tnum; margin:0;height:28px;" ></p>
+			<span style="font-size: 30px; cursor: pointer; grid-area: menu" id="navOpen">&#9776;</span>
+		</div>
+
+		<div id="myNav" class="overlay">
+			<a href="javascript:void(0)" class="closebtn" id="closebtn" onclick="closeNav()">&times;</a>
+			<div class="overlay-content">
+				<button class="tablink" style="grid-area: Profile" onclick="openCity('Profile', this, 'red')" id="defaultOpen">Profile</button>
+				<button class="tablink" style="grid-area: Shop" onclick="openCity('Shop', this, 'green')">Shop</button>
+				<button class="tablink" style="grid-area: Info" onclick="openCity('Info', this, 'blue')">Info</button>
+				<button class="tablink" style="grid-area: Controls" onclick="openCity('Controls', this, 'red')">Controls</button>
+				<div id="Profile" class="tabcontent">
+					<div style="position: relative;display: grid;grid-template-areas: &quot;img dname dnameEdit&quot; &quot;img uname uname &quot; &quot;img ticket ticket&quot;;width: fit-content;">
+						<img id="overlaypfp" src="" style="grid-area: img" />
+						<p style="font-size: 30px;grid-area: dname;margin: 0px;"id="overlaydname"></p>
+						<p style="font-size: 15px; grid-area: uname; margin: 0" id="overlayuname"></p>
+						<div style="grid-area: ticket">
+							<img src="/Ticket.png" style="width: 50px; height: 28px; float: left"/>
+							<p id="overlayticketDisplay" style="margin: 0"></p>
+						</div>
+						<svg id="changeDisplayName" style="grid-area: dnameEdit; height: 41px" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+							<path d="M410.3 231l11.3-11.3-33.9-33.9-62.1-62.1L291.7 89.8l-11.3 11.3-22.6 22.6L58.6 322.9c-10.4 10.4-18 23.3-22.2 37.4L1 480.7c-2.5 8.4-.2 17.5 6.1 23.7s15.3 8.5 23.7 6.1l120.3-35.4c14.1-4.2 27-11.8 37.4-22.2L387.7 253.7 410.3 231zM160 399.4l-9.1 22.7c-4 3.1-8.5 5.4-13.3 6.9L59.4 452l23-78.1c1.4-4.9 3.8-9.4 6.9-13.3l22.7-9.1v32c0 8.8 7.2 16 16 16h32zM362.7 18.7L348.3 33.2 325.7 55.8 314.3 67.1l33.9 33.9 62.1 62.1 33.9 33.9 11.3-11.3 22.6-22.6 14.5-14.5c25-25 25-65.5 0-90.5L453.3 18.7c-25-25-65.5-25-90.5 0zm-47.4 168l-144 144c-6.2 6.2-16.4 6.2-22.6 0s-6.2-16.4 0-22.6l144-144c6.2-6.2 16.4-6.2 22.6 0s6.2 16.4 0 22.6z"/>
+						</svg>
 						<button onclick="firebase.auth().signOut()">Sign out</button>
-                    </div>
-                </div>
+					</div>
+				</div>
 
-                <div id="Shop" class="tabcontent">
-                    <h1>Shop</h1>
-                    <div style="float: left; width: 70%" id="Planes">
-                        <img style="width:66px;" src="/Plane.png" onclick="hoverOverShopItem('Plane')"/>
+				<div id="Shop" class="tabcontent">
+					<h1>Shop</h1>
+					<div style="float: left; width: 70%" id="Planes">
+						<img style="width:66px;" src="/Plane.png" onclick="hoverOverShopItem('Plane')"/>
 						<img style="width:66px;" src="/colour_planes/Blue.png" onclick="hoverOverShopItem('colour_planes/Blue')"/>
 						<img style="width:66px;" src="/colour_planes/Brown.png" onclick="hoverOverShopItem('colour_planes/Brown')"/>
 						<img style="width:66px;" src="/colour_planes/Purple.png" onclick="hoverOverShopItem('colour_planes/Purple')"/>
@@ -62,86 +86,130 @@
 						<img style="width:66px;" src="/Disco.png" onclick="hoverOverShopItem('Disco')"/>
 						<img style="width:66px;" src="/Spitfire.png" onclick="hoverOverShopItem('Spitfire')"/>
 						<img style="width:87px;" src="/Rainbow.png" onclick="hoverOverShopItem('Rainbow')"/>
-                        <img style="width:87px;" src="/paper.png" onclick="hoverOverShopItem('paper')"/>
+						<img style="width:87px;" src="/paper.png" onclick="hoverOverShopItem('paper')"/>
 						<img style="width:64px;" src="/coconut.png" onclick="hoverOverShopItem('coconut')"/>
 						<img style="width:66px;" src="/christmasPlane.png" onclick="hoverOverShopItem('christmasPlane')"/>
-                    </div>
-                    <div style="float: right;border: 10px aliceblue solid;text-align: center; width: 20%">
-                        <h2 id="shopItemTitle">Default Plane</h2>
-                        <img style="width:66px;" id="shopItemImg" src="/Plane.png"/>
-                        <p id="shopItemDesc">The default plane</p>
-                        <button id="shopBuyButton">Equip</button>
-                    </div>
-                </div>
-                <div id="Info" class="tabcontent">
+					</div>
+					<div style="float: right;border: 10px aliceblue solid;text-align: center; width: 20%">
+						<h2 id="shopItemTitle">Default Plane</h2>
+						<img style="width:66px;" id="shopItemImg" src="/Plane.png"/>
+						<p id="shopItemDesc">The default plane</p>
+						<button id="shopBuyButton">Equip</button>
+					</div>
+				</div>
+				<div id="Info" class="tabcontent">
 					<h1>Info</h1>
-                    <p id="infomaintext">	
-						Welcome to Johnny Airlines.
-						This is an immersive experience where you can socialize, earn and have lots of fun. Fly around meeting people and even call them. Search the map playing various games to earn tickets. These tickets can be spent on new planes. For those of you who like a good fight you can go to the PvP zone and shoot and bomb at your enemies in a high adrenaline format. 	
+					<p id="infomaintext">	
+					Welcome to Johnny Airlines.
+					This is an immersive experience where you can socialize, earn and have lots of fun. Fly around meeting people and even call them. Search the map playing various games to earn tickets. These tickets can be spent on new planes. For those of you who like a good fight you can go to the PvP zone and shoot and bomb at your enemies in a high adrenaline format. 	
 					</p>
-                </div>
-                <div id="Controls" class="tabcontent">
+				</div>
+				<div id="Controls" class="tabcontent">
 					<h1>Controls</h1>
-                    <p>	
-						Movement: Hold mouse down in the direction you whish to go<br>
-						Interact: Space <br>
-						Drop Bomb: Q <br>
-						Shoot: E <br>
-						Missile Shoot: F <br>
-						Chat: / <br>
-                        Send message: Enter <br>
-                        Clouds Toggle: L <br>
-                        
-                        Sometimes the game will not register when you release the mouse button, if this happens you can press "p" to stop the glitch.
+					<p>	
+					Movement: Hold mouse down in the direction you whish to go<br>
+					Interact: Space <br>
+					Drop Bomb: Q <br>
+					Shoot: E <br>
+					Missile Shoot: F <br>
+					Chat: / <br>
+					Send message: Enter <br>
+					Clouds Toggle: L <br>
+
+					Sometimes the game will not register when you release the mouse button, if this happens you can press "p" to stop the glitch.
 					</p>
-                </div>
-            </div>
-        </div>
+				</div>
+			</div>
+		</div>
 
-        <div class="chatCont">
-            <div id="chat">
-                <ul id="messages"></ul>
-            </div>
-            <div class="footer">
-                <input id="message-input" type="text" />
-                <button id="message-btn">Send</button>
-            </div>
-        </div>
+		<div class="chatCont" id="chatCont">
+			<div id="chat">
+				<ul id="messages"></ul>
+			</div>
+			<div class="footer">
+				<input id="message-input" type="text" />
+				<button id="message-btn">Send</button>
+			</div>
+		</div>
+		<div id="controls">
+			<button id="btnA" class="control-button" onTouchStart="simulateKeyPress('Enter')">Enter</button>
+			<button id="btnB" class="control-button" onTouchStart="simulateKeyPress(' ')">Interact</button>
+			<button id="btnC" class="control-button" onTouchStart="toggleFullscreen()">Toggle Fullscreen</button>
+		</div>
 
-        <script>
-            function openNav() {
-                document.getElementById("myNav").style.height = "80%";
-                document.getElementById("myNav").style.width = "90%";
-                document.getElementById("myNav").style.top = "50%";
-                document.getElementById("myNav").style.left = "50%";
-            }
 
-            function closeNav() {
-                document.getElementById("myNav").style.height = "0%";
-                document.getElementById("myNav").style.width = "0%";
-                document.getElementById("myNav").style.top = "0%";
-                document.getElementById("myNav").style.left = "0%";
-            }
-            document.getElementById("navOpen").addEventListener("click", openNav);
+		<script>
+			function openNav() {
+				document.getElementById("myNav").style.height = "80%";
+				document.getElementById("myNav").style.width = "90%";
+				document.getElementById("myNav").style.top = "50%";
+				document.getElementById("myNav").style.left = "50%";
+			}
 
-            function openCity(tabName, elmnt, color) {
-                var i, tabcontent, tablinks;
-                tabcontent = document.getElementsByClassName("tabcontent");
-                for (i = 0; i < tabcontent.length; i++) {
-                    tabcontent[i].style.display = "none";
-                }
-                tablinks = document.getElementsByClassName("tablink");
-                for (i = 0; i < tablinks.length; i++) {
-                    tablinks[i].style.backgroundColor = "";
-                }
-                document.getElementById(tabName).style.display = "block";
-                elmnt.style.backgroundColor = color;
-            }
-            // Get the element with id="defaultOpen" and click on it
-            document.getElementById("defaultOpen").click(); 
-        </script>
-        <script src="./christmas.js"></script>
-        <script src="./chat.js"></script>
-        <script src="./shop.js"></script>
-    </body>
+			function closeNav() {
+				document.getElementById("myNav").style.height = "0%";
+				document.getElementById("myNav").style.width = "0%";
+				document.getElementById("myNav").style.top = "0%";
+				document.getElementById("myNav").style.left = "0%";
+			}
+			document.getElementById("navOpen").addEventListener("click", openNav);
+
+			function openCity(tabName, elmnt, color) {
+				var i, tabcontent, tablinks;
+				tabcontent = document.getElementsByClassName("tabcontent");
+				for (i = 0; i < tabcontent.length; i++) {
+					tabcontent[i].style.display = "none";
+				}
+				tablinks = document.getElementsByClassName("tablink");
+				for (i = 0; i < tablinks.length; i++) {
+					tablinks[i].style.backgroundColor = "";
+				}
+				document.getElementById(tabName).style.display = "block";
+				elmnt.style.backgroundColor = color;
+			}
+			// Get the element with id="defaultOpen" and click on it
+			document.getElementById("defaultOpen").click();
+
+			function simulateKeyPress(key) {
+				const down = new KeyboardEvent('keydown', { key });
+				const up = new KeyboardEvent('keyup', { key });
+
+				document.dispatchEvent(down);
+				setTimeout(() => document.dispatchEvent(up), 1000);
+			}
+			var isFullscreen = false;
+			function goFullscreen() {
+				const elem = document.documentElement;
+
+				if (elem.requestFullscreen) {
+					elem.requestFullscreen();
+				} else if (elem.webkitRequestFullscreen) { // Safari
+					elem.webkitRequestFullscreen();
+				} else if (elem.msRequestFullscreen) { // IE11
+					elem.msRequestFullscreen();
+				}
+				isFullscreen = true;
+			}
+			function exitFullscreen() {
+				if (document.exitFullscreen) {
+					document.exitFullscreen();
+				} else if (document.webkitExitFullscreen) { // Safari
+					document.webkitExitFullscreen();
+				} else if (document.msExitFullscreen) { // IE11
+					document.msExitFullscreen();
+				}
+				isFullscreen = false;
+			}
+			function toggleFullscreen() {
+				if (isFullscreen) {
+					exitFullscreen();
+				} else {
+					goFullscreen();
+				}
+			}
+		</script>
+		<script src="./christmas.js"></script>
+		<script src="./chat.js"></script>
+		<script src="./shop.js"></script>
+	</body>
 </html>
