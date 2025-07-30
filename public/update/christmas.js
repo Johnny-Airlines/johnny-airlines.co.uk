@@ -1,4 +1,4 @@
-(function(){ "use strict"
+//(function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
 	authDomain: "johnnyairlinescouk.firebaseapp.com",
@@ -191,16 +191,95 @@ let mouseDown = 0;
 const myAudio = document.createElement("audio");
 myAudio.src = "../island.mp3";
 window.onmousedown = (e) => {
-	++mouseDown;
-	++myPlayer.mouseDown;
+	mouseDown = 1;
+	myPlayer.mouseDown = 1;
 	myAudio.play()
 }
 window.onmouseup = () => {
-	--mouseDown;
-	--myPlayer.mouseDown;
+	mouseDown = 0;
+	myPlayer.mouseDown = 0;
 };
 
+//MOBILE SUPPORT
+const isMobile = window.matchMedia('(pointer: coarse)').matches;
+let joystickActive = false;
+let joystickCenter = { x: 0, y: 0 };
+let joystickTouch = { x: 0, y: 0 };
+let joystickRadius = 50; // max drag radius
+if (isMobile) {
+	window.addEventListener('touchstart', handleTouchStart, { passive: false });
+	window.addEventListener('touchmove', handleTouchMove, { passive: false });
+	window.addEventListener('touchend', handleTouchEnd, { passive: false });
+	document.getElementById("chatCont").remove();
+} else {
+	document.getElementById("controls").remove();
+}
+function handleTouchStart(e) {
+	e.preventDefault();
+	const touch = e.touches[0];
+	const rect = gameArea.canvas.getBoundingClientRect();
+	const x = touch.clientX - rect.left;
+	const y = touch.clientY - rect.top;
 
+	// Only activate joystick if touch is on left half
+	if (x < gameArea.canvas.width / 2) {
+		joystickActive = true;
+		joystickCenter.x = x;
+		joystickCenter.y = y;
+		joystickTouch.x = x;
+		joystickTouch.y = y;
+		mouseDown = 1;
+		myPlayer.mouseDown = 1;
+		myAudio.play();
+	}
+}
+
+function handleTouchMove(e) {
+	if (!joystickActive) return;
+	const touch = e.touches[0];
+	const rect = gameArea.canvas.getBoundingClientRect();
+	let x = touch.clientX - rect.left;
+	let y = touch.clientY - rect.top;
+
+
+	// Limit drag distance to joystickRadius
+	const dx = x - joystickCenter.x;
+	const dy = y - joystickCenter.y;
+	const distance = Math.hypot(dx, dy);
+	myPlayer.angle = Math.atan2(dy, dx) + Math.PI / 2;
+
+
+	if (distance > joystickRadius) {
+		const angle = Math.atan2(dy, dx);
+		x = joystickCenter.x + Math.cos(angle) * joystickRadius;
+		y = joystickCenter.y + Math.sin(angle) * joystickRadius;
+	}
+
+	joystickTouch.x = x;
+	joystickTouch.y = y;
+}
+
+function handleTouchEnd(e) {
+	joystickActive = false;
+	mouseDown = 0;
+	myPlayer.mouseDown = 0;
+}
+function drawJoystick(ctx) {
+	if (!joystickActive) return;
+
+	// Base circle
+	ctx.beginPath();
+	ctx.strokeStyle = 'rgba(255, 255, 255, 0.3)';
+	ctx.lineWidth = 2;
+	ctx.arc(joystickCenter.x, joystickCenter.y, joystickRadius, 0, Math.PI * 2);
+	ctx.stroke();
+
+	// Thumb circle
+	ctx.beginPath();
+	ctx.fillStyle = 'rgba(255, 255, 255, 0.5)';
+	ctx.arc(joystickTouch.x, joystickTouch.y, 20, 0, Math.PI * 2);
+	ctx.fill();
+}
 
 //Images
 const plane = new Image();
@@ -322,8 +401,8 @@ var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 
 const planeData = {
-    "Plane":{"centerPoint":[33,30],"music":null},
-    "colour_planes/Blue":{"centerPoint":[33,30],"music":null},
+	"Plane":{"centerPoint":[33,30],"music":null},
+	"colour_planes/Blue":{"centerPoint":[33,30],"music":null},
 	"colour_planes/Brown":{"centerPoint":[33,30],"music":null},
 	"colour_planes/Purple":{"centerPoint":[33,30],"music":null},
 	"colour_planes/Green":{"centerPoint":[33,30],"music":null},
@@ -501,13 +580,13 @@ class p {
 			planeimg.width,
 			planeimg.height,
 		);*/
-		ctx.drawImage(
-			planeimg,
-			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
-			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
-			planeimg.width,
-			planeimg.height,
-		);
+			ctx.drawImage(
+				planeimg,
+				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
+				planeimg.width,
+				planeimg.height,
+			);
 		ctx.restore();
 		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
@@ -542,13 +621,13 @@ class p {
 			planeimg.width,
 			planeimg.height,
 		);*/
-		ctx.drawImage(
-			planeimg,
-			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
-			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
-			planeimg.width,
-			planeimg.height,
-		);
+			ctx.drawImage(
+				planeimg,
+				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
+				planeimg.width,
+				planeimg.height,
+			);
 		ctx.restore();
 		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
@@ -1441,7 +1520,7 @@ function flappyPlaneDraw() {
 	FPpipeLocations.forEach((pipeData,index) => {
 		pipeDraw(pipeData[0],pipeData[1],24);
 		if (isPlayingFP) {
-		FPpipeLocations[index][0] += 2;
+			FPpipeLocations[index][0] += 2;
 			if (pipeData[0] > (1024-11*2)) {
 				FPpipeLocations[index][0] -= (1024-11*4);
 				FPpipeLocations[index][1] = Math.floor(Math.random()*(256-16-24-16-24))+16+24
@@ -1763,7 +1842,7 @@ function startGame(displayName, email, uid, plane) {
 function updateGameArea(lastTimestamp) {
 	let currentTime = Date.now()
 	let fps = (1/((currentTime-lastTimestamp)/1000))
-	
+
 	if (isDialogueOpen) {
 		dialogueDraw();
 		if ((Date.now()-currentTime)<(1000/30)) {
@@ -1774,6 +1853,17 @@ function updateGameArea(lastTimestamp) {
 		}
 		else {
 			updateGameArea(currentTime)
+		}
+	}
+	if (joystickActive) {
+		const dx = joystickTouch.x - joystickCenter.x;
+		const dy = joystickTouch.y - joystickCenter.y;
+		const distance = Math.hypot(dx, dy);
+
+		if (distance > 5) { // deadzone
+			const speed = myPlayer.acceleration;
+			//myPlayer.vx -= (dx / joystickRadius) * speed;
+			//myPlayer.vy -= (dy / joystickRadius) * speed;
 		}
 	}
 
@@ -1833,7 +1923,7 @@ function updateGameArea(lastTimestamp) {
 			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y));
 		}
 	}
-	
+
 	myPlayer.update();
 	cloudsDraw();
 	gameArea.context.font = "24px DEFAULT FONT"; 
@@ -1888,7 +1978,7 @@ function updateGameArea(lastTimestamp) {
 		}
 
 	}
-
+	drawJoystick(ctx);
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
 			updateGameArea(currentTime)
@@ -1898,4 +1988,4 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
-})();
+//})();
