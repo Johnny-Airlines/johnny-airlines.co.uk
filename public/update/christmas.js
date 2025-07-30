@@ -35,8 +35,8 @@ firebase.auth().onAuthStateChanged((user) => {
 			user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
 		const photoURL = user.photoURL;
 		let PixelFont = new FontFace(
-			"Pixelify Sans",
-			"url('./PixelFont.ttf')"
+			"DEFAULT FONT",
+			"url('./Jersey15-Regular.ttf')"
 		);
 		PixelFont.load().then((font) => {
 			document.fonts.add(font)
@@ -319,6 +319,7 @@ var FPspeed = 0;
 var FPpoints = 0;
 let pipeSpawner;
 var bananaClickerData = {"bananas":0};
+var lastBananaClick = Date.now();
 
 const planeData = {
     "Plane":{"centerPoint":[33,30],"music":null},
@@ -508,7 +509,7 @@ class p {
 			planeimg.height,
 		);
 		ctx.restore();
-		ctx.font = "24px Pixelify Sans";
+		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
 		ctx.fillStyle = "#00FFBA";
 		ctx.fillText(
@@ -516,7 +517,7 @@ class p {
 			gameArea.canvas.width / 2,
 			gameArea.canvas.height / 2 - 35,
 		);
-		ctx.font = "12px Pixelify Sans";
+		ctx.font = "12px DEFAULT FONT";
 		ctx.fillText(
 			this.username,
 			gameArea.canvas.width / 2,
@@ -549,7 +550,7 @@ class p {
 			planeimg.height,
 		);
 		ctx.restore();
-		ctx.font = "24px Pixelify Sans";
+		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
 		ctx.fillStyle = "#932121";
 		ctx.fillText(
@@ -557,7 +558,7 @@ class p {
 			-this.x + myPlayer.x + gameArea.canvas.width / 2,
 			-this.y + myPlayer.y + gameArea.canvas.height / 2 - 35,
 		);
-		ctx.font = "12px Pixelify Sans";
+		ctx.font = "12px DEFAULT FONT";
 		ctx.fillText(
 			this.username,
 			-this.x + myPlayer.x + gameArea.canvas.width / 2,
@@ -694,7 +695,7 @@ function dialogueDraw() {
 		1000,
 		200,
 	);
-	ctx.font = "24px Pixelify Sans";
+	ctx.font = "24px DEFAULT FONT";
 	ctx.textAlign = "center";
 	ctx.fillStyle = "#000000";
 	ctx.fillText(
@@ -812,7 +813,7 @@ function updateDisplayName(name) {
 function buttonDraw() {
 	ctx = gameArea.context;
 	drawImageAtFixedPosition(btn,12249,3249,800,800)
-	ctx.font = "250px Pixelify Sans";
+	ctx.font = "250px DEFAULT FONT";
 	ctx.textAlign = "center";
 	ctx.fillStyle = "#000000";
 	db.ref("clicks").on("value", (snapshot) => {
@@ -1015,6 +1016,12 @@ function interact() {
 			FPspeed = 2.5;
 		} else {
 			dialogue("You need to start playing before using this button!",false,0);
+		}
+	} else if (playerCollisionCheck(12300,12300+400,6100,6100+400)) {
+		if ((Date.now() - lastBananaClick) > 1000) { 
+			bananaClickerData.bananas += 1;
+			db.ref(`bananaClicker/${myPlayer.id}`).update(bananaClickerData);
+			lastBananaClick = Date.now();
 		}
 	} else {
 
@@ -1283,7 +1290,7 @@ function gambling() {
 function jumble() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
-	ctx.font = "32px Pixelify Sans";
+	ctx.font = "32px DEFAULT FONT";
 	ctx.textAlign = "center";
 	drawImageAtFixedPosition(jumbleImg,2116,5129,360,360);
 	jumbleData.scramble[Symbol.iterator]().forEach((letter, index) => {
@@ -1318,12 +1325,12 @@ function whackAJames() {
 		300,
 		100,
 	)
-	ctx.font = "64px Pixelify Sans";
+	ctx.font = "64px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText("PLAY",4955+152+myPlayer.x+gameArea.canvas.width/2,5015+64+myPlayer.y+gameArea.canvas.height/2)
 	ctx.textAlign = "left"
-	ctx.font = "24px Pixelify Sans";
+	ctx.font = "24px DEFAULT FONT";
 	let texts = ["Whack a James","Costs 1 Ticket per Attempt","Hit James to earn points", "Points translate into tickets", "60 secs to get as many points as possible","",`Points: ${WAJscore}`,`Time remaining: ${WAJtime}`]
 	for (let i = 0; i < 8; i++) {
 		ctx.fillText(texts[i],4955+myPlayer.x+gameArea.canvas.width/2,5140+24*i+myPlayer.y+gameArea.canvas.height/2)
@@ -1372,7 +1379,7 @@ function flappyPlaneDraw() {
 		300,
 		100,
 	)
-	ctx.font = "64px Pixelify Sans";
+	ctx.font = "64px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText("PLAY",2200+152+myPlayer.x+gameArea.canvas.width/2,1756+64+myPlayer.y+gameArea.canvas.height/2)
@@ -1390,12 +1397,12 @@ function flappyPlaneDraw() {
 		300,
 		100,
 	)
-	ctx.font = "64px Pixelify Sans";
+	ctx.font = "64px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText("UP",2200+152+310+myPlayer.x+gameArea.canvas.width/2,1756+64+myPlayer.y+gameArea.canvas.height/2)
 	ctx.textAlign = "left"
-	ctx.font = "24px Pixelify Sans";
+	ctx.font = "24px DEFAULT FONT";
 	let texts = ["Flappy Plane","Cost: 1 ticket", `Points: ${FPpoints}`];
 	for (let i = 0; i < 3; i++) {
 		ctx.fillText(texts[i],2200+310*2+myPlayer.x+gameArea.canvas.width/2,1756+24+24*i+myPlayer.y+gameArea.canvas.height/2)
@@ -1460,7 +1467,7 @@ function flappyPlaneDraw() {
 function bananaClickerDraw() {
 	ctx = gameArea.context;
 	drawImageAtFixedPosition(bananaImg,12300,6100,400,400);
-	ctx.font = "128px Pixelify Sans";
+	ctx.font = "128px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.textAlign = "center";
 	ctx.fillText(bananaClickerData.bananas,12500+myPlayer.x+gameArea.canvas.width/2,6500+128+myPlayer.y+gameArea.canvas.height/2)
@@ -1565,7 +1572,7 @@ function summerEventWelcomeText() {
 	ctx = gameArea.context
 	ctx.textAlign = "center";
 	ctx.fillStyle = "#000000";
-	ctx.font = "24px Pixelify Sans";
+	ctx.font = "24px DEFAULT FONT";
 	ctx.fillText(
 		"Welcome to the summer event, chill to some summer vibes,",
 		8050 + myPlayer.x + gameArea.canvas.width / 2,
@@ -1829,7 +1836,7 @@ function updateGameArea(lastTimestamp) {
 	
 	myPlayer.update();
 	cloudsDraw();
-	gameArea.context.font = "24px Pixelify Sans"; 
+	gameArea.context.font = "24px DEFAULT FONT"; 
 	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20);
 	buttonDraw();
 	ticketDraw();
