@@ -1,5 +1,6 @@
 import firebaseConfig from "../fConfig.js"
 firebase.initializeApp(firebaseConfig);
+sessionStorage.clear();
 
 // Database reference
 const db = firebase.database();
