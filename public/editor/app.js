@@ -1,4 +1,4 @@
-ronaco.editor.setTheme('vs-dark')
+monaco.editor.setTheme('vs-dark')
 
 var editor = monaco.editor.create(document.getElementById('container'), {
 	value: ['def x():', '\tprint("hey")', ''].join('\n'),
