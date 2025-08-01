@@ -1,4 +1,4 @@
-ronaco.editor.setTheme('vs-dark')
+monaco.editor.setTheme('vs-dark')
 
 var editor = monaco.editor.create(document.getElementById('container'), {
 	value: ['def x():', '\tprint("hey")', ''].join('\n'),
@@ -64,14 +64,30 @@ async function listFiles() {
 			throw new Error(`Response status: ${response.status}`)
 		}
 		let files = await response.text()
-		files = files.slice(1,-1)
-		files = files.replace(/'/g,"");
-		files = files.split(",");
+		files = JSON.parse(files);
 		return files;
 	} catch(e) {
 		console.error(e.message);
 	}
 }
 
+async function getFile() {
+	
+}
+
+async function updateSelector() {
+	const filesList = await listFiles();
+	document.getElementById("fileSelector").innerHTML = "";
+	filesList.forEach((file) => {
+		document.getElementById("fileSelector").innerHTML += `<option value="${file}">${file}</option>`;
+		console.log(file);
+	});
+}
+
+
+
 document.getElementById("sendFileBtn").addEventListener("click", sendData);
 document.getElementById("runCodeBtn").addEventListener("click", runFile);
+document.getElementById("fileSelector").addEventListener("change",loadFile)
+updateSelector();
+

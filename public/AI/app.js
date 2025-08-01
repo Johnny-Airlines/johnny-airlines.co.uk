@@ -13,19 +13,18 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.database();
 
 async function query(data) {
-	const response = await fetch(
-		"https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-dev",
-		{
-			headers: {
-				Authorization: "Bearer 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",
-				"Content-Type": "application/json",
-			},
-			method: "POST",
-			body: JSON.stringify(data),
+	const url = `http://api.johnny-airlines.co.uk:5000/genImg/${data}`
+	try {
+		const response = await fetch(url);
+		if (!response.ok) {
+			throw new Error(`Response status: ${response.status}`)
 		}
-	);
-	const result = await response.blob();
-	return result;
+
+		let json = await response.json();
+		return json;
+	} catch (error) {
+		console.error(error.message);
+	}
 }
 
 msgBtnImg = document.getElementById("msg-btn-img")
@@ -45,7 +44,9 @@ function img_gen() {
 		.catch(error => {
 			console.error("Error fetching IP address:", error)
 		});
-	query({"inputs": document.getElementById("msg-input-img").value}).then((response) => {
-		document.getElementById("image").src = URL.createObjectURL(response);
+	query(document.getElementById("msg-input-img").value).then((response) => {
+		console.log(response);
+		let url = response.data[0].url;
+		document.getElementById("image").src = url;
 	});
 }
