@@ -13,7 +13,7 @@ firebase.initializeApp(firebaseConfig)
 const db = firebase.database();
 
 async function query(data) {
-	const url = `https://api.johnny-airlines.co.uk:5000/genImg/${data}`
+	const url = `https://api.johnny-airlines.co.uk/genImg/${data}`
 	try {
 		const response = await fetch(url);
 		if (!response.ok) {
