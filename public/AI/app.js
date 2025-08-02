@@ -44,6 +44,10 @@ function img_gen() {
 		.catch(error => {
 			console.error("Error fetching IP address:", error)
 		});
+	if (document.getElementById("msg-input-img").value.toLowerCase() == "tristan") {
+		document.getElementById("image").src = "../tristan.png"
+		return;
+	}
 	query(document.getElementById("msg-input-img").value).then((response) => {
 		console.log(response);
 		let url = response.data[0].url;
