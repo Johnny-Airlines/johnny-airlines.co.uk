@@ -80,6 +80,9 @@ chessboardhtml.addEventListener("click", (evt) => {
 				stockfish({fen:fen(),depth:depth}).then((data)=>{
 					console.log(data)
 					console.log(data.move)
+					if (data.winChance == 100) {
+						alert("Stockfish won")
+					}
 					conversionArray = ["a","b","c","d","e","f","g","h"]
 					x1 = conversionArray.indexOf(data.move.charAt(0));
 					y1 = 8-parseInt(data.move.charAt(1));
@@ -88,7 +91,8 @@ chessboardhtml.addEventListener("click", (evt) => {
 					board[y2][x2] = board[y1][x1];
 					board[y1][x1] = "";
 					updateBoard();
-					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2)
+					
 				})
 				.catch((e)=> {
 					console.log(e)
