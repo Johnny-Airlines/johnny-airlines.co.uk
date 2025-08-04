@@ -51,10 +51,12 @@
 		<div id="myNav" class="overlay">
 			<a href="javascript:void(0)" class="closebtn" id="closebtn" onclick="closeNav()">&times;</a>
 			<div class="overlay-content">
+				<div class="navbar">
 				<button class="tablink" style="grid-area: Profile" onclick="openCity('Profile', this, 'red')" id="defaultOpen">Profile</button>
 				<button class="tablink" style="grid-area: Shop" onclick="openCity('Shop', this, 'green')">Shop</button>
 				<button class="tablink" style="grid-area: Info" onclick="openCity('Info', this, 'blue')">Info</button>
 				<button class="tablink" style="grid-area: Controls" onclick="openCity('Controls', this, 'red')">Controls</button>
+				</div>
 				<div id="Profile" class="tabcontent">
 					<div style="position: relative;display: grid;grid-template-areas: &quot;img dname dnameEdit&quot; &quot;img uname uname &quot; &quot;img ticket ticket&quot;;width: fit-content;">
 						<img id="overlaypfp" src="" style="grid-area: img" />
