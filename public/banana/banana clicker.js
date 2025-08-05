@@ -87,7 +87,7 @@ function buyUpgrade(upgrade) {
         localStorage.setItem("cost", JSON.stringify(cost));
         upgrades[upgrade]++;
         localStorage.setItem("upgrades", JSON.stringify(upgrades));
-        bps = parseFloat(bps) + ubps[upgrade];
+        bps = Math.round((parseFloat(bps) + ubps[upgrade])*10)/10;
         localStorage.setItem("bps", bps);
         document.getElementById("score").innerHTML = score;
         document.getElementById("bps").innerHTML = bps;
@@ -100,7 +100,7 @@ function buyUpgrade(upgrade) {
 setInterval(passiveB, 1000);
 function passiveB()
 {
-	score = parseFloat(score) + parseFloat(bps);
+	score = Math.round((parseFloat(score) + parseFloat(bps))*10)/10;
 	localStorage.setItem("score", score);
 	document.getElementById("score").innerHTML = score;
 }
