@@ -11,15 +11,16 @@
         .row div {
             padding: 10px;
             border: 1px solid black;
-            height: 30px;
-            width: 30px;
+            height: 60px;
+            width: 60px;
             float: left;
+			font-size: 60px;
         }
         .row {
             clear: both;
         }
         .oxo {
-            
+           margin: 100px 
         }
     </style>
     </head>
@@ -27,28 +28,27 @@
 <div class="logo"><a href="https://johnny-airlines.co.uk"><img src="../LOGO.png" class="logoI"></a></div>
     <div class="oxo">
         <div class="row">
-            <div id="0_0" onclick="place(this)"></div>
-            <div id="1_0" onclick="place(this)"></div>
-            <div id="2_0" onclick="place(this)"></div>
+            <div class="tile" id="0_0" onclick="place(this)"></div>
+            <div class="tile" id="1_0" onclick="place(this)"></div>
+            <div class="tile" id="2_0" onclick="place(this)"></div>
         </div>
         <div class="row">
-            <div id="0_1" onclick="place(this)"></div>
-            <div id="1_1" onclick="place(this)"></div>
-            <div id="2_1"onclick="place(this)"></div>
+            <div class="tile" id="0_1" onclick="place(this)"></div>
+            <div class="tile" id="1_1" onclick="place(this)"></div>
+            <div class="tile" id="2_1"onclick="place(this)"></div>
         </div>
         <div class="row">
-            <div id="0_2" onclick="place(this)"></div>
-            <div id="1_2" onclick="place(this)"></div>
-            <div id="2_2" onclick="place(this)"></div>
+            <div class="tile" id="0_2" onclick="place(this)"></div>
+            <div class="tile" id="1_2" onclick="place(this)"></div>
+            <div class="tile" id="2_2" onclick="place(this)"></div>
         </div>
     </div>
     <script>
         var currentPlayer = "O";
-        var won = false;
         function place(box) {
-            if(box.innerText != "" || won) return;
+            if(box.innerText != "") return;
             box.innerText = currentPlayer;
-            currentPlayer == "O" ? currentPlayer = "X" : currentPlayer = "O";
+			currentPlayer = currentPlayer=="X" ? "O" : "X"
             checkGameBoard();       
         }
         function checkGameBoard() {
@@ -68,10 +68,14 @@
                         document.getElementById("2_0").innerText);
              }
         function checkWinner(first, second, third) {
-          if(first != "" && first == second && first == third) {
-               alert("I am the winner nah nah nah nah nah you are the loser!");
-               won = true;
-          }
+			if(first != "" && first == second && first == third) {
+				alert(`${first} wins!`);
+				var arr = Array.prototype.slice.call( document.getElementsByClassName("tile") )
+				arr.forEach((tile)=>{
+					tile.innerText = "";
+				})
+				currentPlayer = "O";
+			}
         }
     </script>
 </body>
