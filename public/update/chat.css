@@ -44,7 +44,7 @@ input {
     cursor: pointer;
 }
 
-button {
+button:not(.control-button) {
     background-color: #33cc33;
     border: none;
     color: #FFFFFF;
