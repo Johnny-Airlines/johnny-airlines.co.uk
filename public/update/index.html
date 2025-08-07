@@ -37,6 +37,7 @@
 		</style>
 	</head>
 	<body>
+		<input id="fakeInput" style="z-index:500;position:absolute;left:-999px" type="text"></input>
 		<div style="position: absolute;display: grid;grid-template-areas: &quot;img dname dname dname dname&quot; &quot;img uname uname uname uname&quot; &quot;img ticket ticket tnum unset&quot; &quot;img menu menu menu menu&quot;;">
 			<img id="pfp" src="" style="grid-area: img" />
 			<p style="font-size: 30px; grid-area: dname; margin: 0px" id="dname"></p>
@@ -134,6 +135,7 @@
 			</div>
 		</div>
 		<div id="controls">
+			<button id="keyboardBtn" class="control-button">Open keyboard</button>
 			<button id="btnA" class="control-button" onTouchStart="simulateKeyPress('Enter')">Enter</button>
 			<button id="btnB" class="control-button" onTouchStart="simulateKeyPress(' ')">Interact</button>
 			<button id="btnC" class="control-button" onTouchStart="toggleFullscreen()">Toggle Fullscreen</button>
@@ -155,6 +157,7 @@
 				document.getElementById("myNav").style.left = "0%";
 			}
 			document.getElementById("navOpen").addEventListener("click", openNav);
+			document.getElementById("navOpen").addEventListener("touchstart", openNav);
 
 			function openCity(tabName, elmnt, color) {
 				var i, tabcontent, tablinks;
@@ -171,7 +174,20 @@
 			}
 			// Get the element with id="defaultOpen" and click on it
 			document.getElementById("defaultOpen").click();
-
+			document.getElementById("keyboardBtn").addEventListener("touchstart", () => {
+				if (document.getElementById("keyboardBtn").innerHTML == "Open Keyboard") {
+					document.activeElement.blur();
+					document.getElementById("fakeInput").focus();
+					document.getElementById("keyboardBtn").innerHTML = "Close Keyboard";
+				}
+				else {
+					document.activeElement.blur();
+					document.getElementById("keyboardBtn").innerHTML = "Open Keyboard"
+				}
+			});
+			document.getElementById("fakeInput").addEventListener("input", (e) => {
+				simulateKeyPress(e.data)
+			});
 			function simulateKeyPress(key) {
 				const down = new KeyboardEvent('keydown', { key });
 				const up = new KeyboardEvent('keyup', { key });
