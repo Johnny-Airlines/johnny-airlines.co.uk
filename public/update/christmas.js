@@ -40,7 +40,15 @@ firebase.auth().onAuthStateChanged((user) => {
 		);
 		PixelFont.load().then((font) => {
 			document.fonts.add(font)
-			startGame(displayName, email, uid, photoURL);
+			let SkyFont = new FontFace(
+				"SKYFONT",
+				"url('./Skyfont-NonCommercial.otf')"
+			);
+			SkyFont.load().then((font) => {
+				document.fonts.add(font);
+				startGame(displayName, email, uid, photoURL);
+			});
+			
 		});
 	} else {
 		window.location.href = "../accounts.html";
@@ -399,6 +407,7 @@ var FPpoints = 0;
 let pipeSpawner;
 var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
+let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
@@ -904,6 +913,31 @@ function buttonDraw() {
 		);
 	});
 }
+
+function noticeboardDrawText(boardPos,realHeight,fontSize,x,y,text) { 
+	ctx = gameArea.context;
+	ctx.font = `${fontSize}px SKYFONT`;
+	ctx.textAlign = "left";
+	ctx.fillStyle = "#FFFFFF";
+	ctx.fillRect(boardPos.x + 1+x, boardPos.y-realHeight+realHeight*y, ctx.measureText(text).width-2,realHeight)
+	ctx.fillStyle = "#000000";
+	ctx.fillText(text,boardPos.x+x,boardPos.y+realHeight*y)
+}
+
+function noticeboard() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	let realHeight = 33;
+	let boardPos = {"x":7500,"y":8300};
+	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+	noticeboardDrawText(boardPos,realHeight,50,0,0,`Notice Board  Last update: ${noticeboardData.lastUpdate}`);
+	//noticeboardDrawText(boardPos,realHeight,0,1,`Last update: ${noticeboardData.lastUpdate}`);
+	realHeight = 40
+	noticeboardData.notices.forEach((notice,index) => {
+		noticeboardDrawText(boardPos,26,40,0,index+1,notice);
+	});
+};
 
 function boostbar() {
 	ctx = gameArea.context;
@@ -1789,6 +1823,12 @@ function startGame(displayName, email, uid, plane) {
 	db.ref(`bananaClicker/${myPlayer.id}/`).on("value", (snapshot) => {
 		bananaClickerData = snapshot.val();
 	});
+	db.ref(`noticeboard`).once("value").then((snapshot) => {
+		noticeboardData = snapshot.val();
+	});
+	db.ref(`noticeboard`).on("value", (snapshot) => {
+		noticeboardData = snapshot.val();
+	});
 	for (let i = 0; i < 20; i++) {
 		db.ref(`jerryCans/${i+1}/x`).on("value", (snapshot) => {
 			jerryCans[i][0] = snapshot.val();
@@ -1942,6 +1982,7 @@ function updateGameArea(lastTimestamp) {
 	flappyPlaneDraw();
 	bananaClickerDraw();
 	summerEventWelcomeText();
+	noticeboard();
 
 
 	myPlayer.planeDraw();
