@@ -457,6 +457,14 @@ var colorPalette = {
 		matter: [
 			{ r: 255, g: 255, b: 255 },
 		],
+	},
+	"tristan": {
+		"colorVariation": 0,
+		matter: [
+			{ r: 0, g: 204, b: 255 }, //Cyan
+			{ r: 0, g: 0, b: 102 },//DARK blue
+			{ r: 153, g: 0, b: 153},
+		]
 	}
 };
 var particleEffect = true;
@@ -1735,7 +1743,10 @@ function startGame(displayName, email, uid, plane) {
 		myAudio.play()
 	}
 	if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
-		myPlayer.contrailColour = "rainbow"
+		myPlayer.contrailColour = "tristan"
+	}
+	if (myPlayer.id == "Bszj2Ziw1ffbD9J4gw32LlJtIEq2") {
+		myPlayer.contrailColour = "tristan"
 	}
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
