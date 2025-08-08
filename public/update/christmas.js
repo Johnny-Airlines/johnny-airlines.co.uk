@@ -408,7 +408,7 @@ let pipeSpawner;
 var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
-let leaderboardData;
+let leaderboardData = null;
 
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
@@ -945,17 +945,103 @@ function noticeboardDrawText(boardPos,realHeight,fontSize,x,y,text) {
 function noticeboard() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
-	let realHeight = 33;
 	let boardPos = {"x":7500,"y":8300};
 	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
 	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
-	noticeboardDrawText(boardPos,realHeight,50,0,0,`Notice Board  Last update: ${noticeboardData.lastUpdate}`);
+	noticeboardDrawText(boardPos,33,50,0,0,`Notice Board  Last update: ${noticeboardData.lastUpdate}`);
 	//noticeboardDrawText(boardPos,realHeight,0,1,`Last update: ${noticeboardData.lastUpdate}`);
-	realHeight = 40
 	noticeboardData.notices.forEach((notice,index) => {
 		noticeboardDrawText(boardPos,26,40,0,index+1,notice);
 	});
 };
+
+function leaderboardsDraw() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	let boardPos = {"x":9000,"y":9000};
+	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
+	if (leaderboardData == null) {
+		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
+		return;
+	}
+	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
+	for (const property in leaderboardData.tickets) {
+		if (property != "exclusions") {
+			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].tickets).padEnd(7," ")}`)
+		}
+	}
+}
+
+function renameKeys(obj,start,end,increment) {
+	let keyValues;
+	if (increment) {
+		keyValues = Object.keys(obj).map(key => {
+			if (key > start && key < end && key != "exclusions") {
+				let newKey = key;
+				newKey = parseInt(key)+1 || key;
+				return { [newKey]: obj[key] };
+			} else {
+				return { [key]: obj[key] };
+			}
+		});
+	} else {
+			keyValues = Object.keys(obj).reverse().map(key => {
+			if (key > start && key < end && key != "exclusions") {
+				let newKey = key;
+				newKey = parseInt(key)-1;
+				return { [newKey]: obj[key] };
+			} else {
+				return { [key]: obj[key] };
+			}
+		});	
+	}
+	return Object.assign({}, ...keyValues);
+}
+
+
+function ticketsLeaderboardUpdate() {
+	if (leaderboardData == null) { return };
+	let leaderboardPosition = null;
+	for (const index in leaderboardData.tickets) {
+		if (index != "exclusions") {
+			if (leaderboardData.tickets[index].username == myPlayer.username) {
+				leaderboardPosition = index;
+			}
+		}
+	};
+	if (leaderboardPosition != null) {
+		for (const index in Object.keys(leaderboardData.tickets).reverse()) {
+			if (index != "exclusions") {
+				if (index < leaderboardPosition && leaderboardData.tickets[index] > tickets) {
+					delete leaderboardData.tickets[leaderboardPosition];
+					leaderboardData.tickets = renameKeys(leaderboardData.tickets,leaderboardPosition,index+1,false);
+					leaderboardData.tickets[index] = {};
+					leaderboardData.tickets[index].username = myPlayer.username;
+					leaderboardData.tickets[index].tickets = tickets;
+					db.ref(`/leaderboards`).update(leaderboardData);
+					return
+				}
+			}
+		}
+	} else {
+		leaderboardPosition = 5;
+	}
+	for (const index in leaderboardData.tickets) {
+		if (index != "exclusions") {
+			if (tickets > leaderboardData.tickets[index].tickets) {
+				delete leaderboardData.tickets[leaderboardPosition];
+				leaderboardData.tickets = renameKeys(leaderboardData.tickets,index-1,leaderboardPosition,true)
+				leaderboardData.tickets[index] = {};
+				leaderboardData.tickets[index].username = myPlayer.username;
+				leaderboardData.tickets[index].tickets = tickets;
+				db.ref(`/leaderboards`).update(leaderboardData);
+				return
+			}
+		}
+	}
+}
 
 function boostbar() {
 	ctx = gameArea.context;
@@ -1771,6 +1857,12 @@ function startGame(displayName, email, uid, plane) {
 			":" + snapshot.val();
 		tickets = snapshot.val();
 	});
+	db.ref(`leaderboards`).once("value").then((snapshot) => {
+		leaderboardData = snapshot.val();
+	});
+	db.ref(`leaderboards`).on("value", (snapshot) => {
+		leaderboardData = snapshot.val();
+	});
 	db.ref(`bombs`).on("child_added", (snapshot) => {
 		const bombData = snapshot.val();
 		const bomb = new Bomb(
@@ -2007,6 +2099,7 @@ function updateGameArea(lastTimestamp) {
 	bananaClickerDraw();
 	summerEventWelcomeText();
 	noticeboard();
+	leaderboardsDraw();
 
 
 	myPlayer.planeDraw();
