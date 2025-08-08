@@ -408,6 +408,7 @@ let pipeSpawner;
 var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
+let leaderboardData;
 
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
@@ -440,23 +441,30 @@ var particleConfig = {
 	particleNumber: 0,
 	maxParticleSize: 4,
 	maxSpeed: 1,
-	colorVariation: 50,
 };
 var colorPalette = {
-	bg: { r: 12, g: 9, b: 29 },
-	matter: [
-		{ r: 255, g: 0, b: 0 }, // darkPRPL
-		{ r: 78, g: 36, b: 42 }, // rockDust
-		{ r: 252, g: 178, b: 96 }, // solorFlare
-		{ r: 253, g: 238, b: 152 }, // totesASun
-	],
+	"default": {
+		"colorVariation": 50,
+		matter: [
+			{ r: 255, g: 0, b: 0 }, // darkPRPL
+			{ r: 78, g: 36, b: 42 }, // rockDust
+			{ r: 252, g: 178, b: 96 }, // solorFlare
+			{ r: 253, g: 238, b: 152 }, // totesASun
+		],
+	},
+	"rainbow": {
+		"colorVariation": 255791872360187236,
+		matter: [
+			{ r: 255, g: 255, b: 255 },
+		],
+	}
 };
 var particleEffect = true;
 var particles = [],
 	centerX = gameArea.canvas.width / 2,
 	centerY = gameArea.canvas.height / 2,
 	drawBg;
-var Particle = function (x, y) {
+var Particle = function (x, y, colour) {
 	// X Coordinate
 	this.x = x || 0;
 	// Y Coordinate
@@ -465,9 +473,10 @@ var Particle = function (x, y) {
 	this.r = Math.ceil(Math.random() * particleConfig.maxParticleSize);
 	// Color of the rock, given some randomness
 	this.c = colorVariation(
-		colorPalette.matter[
-			Math.floor(Math.random() * colorPalette.matter.length)
+		colorPalette[colour].matter[
+			Math.floor(Math.random() * colorPalette[colour].matter.length)
 		],
+		colorPalette[colour].colorVariation,
 		true,
 	);
 	// Speed of which the rock travels
@@ -480,21 +489,21 @@ drawBg = function (ctx, color) {
 	ctx.fillStyle = "rgb(" + color.r + "," + color.g + "," + color.b + ")";
 	ctx.fillRect(0, 0, canvas.width, canvas.height);
 };
-var colorVariation = function (color, returnString) {
-	var r, g, b, a, variation;
+var colorVariation = function (color, variation, returnString) {
+	var r, g, b, a;
 	r = Math.round(
-		Math.random() * particleConfig.colorVariation -
-		particleConfig.colorVariation / 2 +
+		Math.random() * variation -
+		variation / 2 +
 		color.r,
 	);
 	g = Math.round(
-		Math.random() * particleConfig.colorVariation -
-		particleConfig.colorVariation / 2 +
+		Math.random() * variation -
+		variation / 2 +
 		color.g,
 	);
 	b = Math.round(
-		Math.random() * particleConfig.colorVariation -
-		particleConfig.colorVariation / 2 +
+		Math.random() * variation -
+		variation / 2 +
 		color.b,
 	);
 	a = Math.random() + 0.5;
@@ -560,6 +569,7 @@ class p {
 		this.plane = "";
 		this.mouseDown = false;
 		this.health = 100;
+		this.contrailColour = "default";
 	}
 	update() {
 		ctx = gameArea.context;
@@ -1724,6 +1734,9 @@ function startGame(displayName, email, uid, plane) {
 		myAudio.src = planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music
 		myAudio.play()
 	}
+	if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
+		myPlayer.contrailColour = "rainbow"
+	}
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
 	db.ref(`.info/connected`).on('value', (snapshot) => {
@@ -1960,7 +1973,7 @@ function updateGameArea(lastTimestamp) {
 		myPlayer.vx -= Math.cos(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
 		myPlayer.vy -= Math.sin(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
 		for (let i = 0; i < 20; i++) {
-			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y));
+			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y,myPlayer.contrailColour));
 		}
 	}
 
@@ -2009,12 +2022,15 @@ function updateGameArea(lastTimestamp) {
 				10,
 			);
 			if (playerInstance.mouseDown) {
-				particles.push(
-					new Particle(
-						-1 * playerInstance.x,
-						-1 * playerInstance.y,
-					),
-				);
+				for (let i = 0; i < 20; i++) {
+					particles.push(
+						new Particle(
+							-1 * playerInstance.x,
+							-1 * playerInstance.y,
+							playerInstance.contrailColour,
+						),
+					);
+				}
 			}
 		}
 
