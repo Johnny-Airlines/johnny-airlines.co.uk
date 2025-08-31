@@ -1708,6 +1708,7 @@ function startGame(displayName, email, uid, plane) {
 		myAudio.src = planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music
 		myAudio.play()
 	}
+	db.ref(`users/${uid}/lastLogin`).set(Date.now());
 	
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
