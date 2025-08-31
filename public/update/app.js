@@ -197,7 +197,6 @@ onmousemove = function (e) {
 //Mousedown detection
 let mouseDown = 0;
 const myAudio = document.createElement("audio");
-myAudio.src = "../island.mp3";
 window.onmousedown = (e) => {
 	mouseDown = 1;
 	myPlayer.mouseDown = 1;
