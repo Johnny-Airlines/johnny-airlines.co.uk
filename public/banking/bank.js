@@ -6,6 +6,19 @@ sessionStorage.clear();
 const db = firebase.database();
 const dataRef = db.ref('users'); // Replace 'example' with your desired database reference
 
+function timeConverter(UNIX_timestamp){
+    var a = new Date(UNIX_timestamp);
+    var months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    var year = a.getFullYear();
+    var month = months[a.getMonth()];
+    var date = a.getDate();
+    var hour = a.getHours();
+    var min = a.getMinutes();
+    var sec = a.getSeconds();
+    var time = hour + ':' + min + ':' + sec + ' ' + date + ' ' + month + ' ' + year;
+    return time;
+}
+
 // Read data and populate the table
 dataRef.on('value', (snapshot) => {
 	const tableBody = document.querySelector('#msgs tbody');
@@ -14,7 +27,8 @@ dataRef.on('value', (snapshot) => {
 	snapshot.forEach((childSnapshot) => {
 		const row = document.createElement('tr');
 		const keyCell = document.createElement('td');
-		const usernameCell = document.createElement('td')
+		const usernameCell = document.createElement('td');
+		const lastLoginCell = document.createElement('td');
 		const fuelCell = document.createElement('td');
 		const ownedPlanesCell = document.createElement('td');
 		const ticketsCell = document.createElement('td');
@@ -24,6 +38,8 @@ dataRef.on('value', (snapshot) => {
 
 		keyCell.textContent = childSnapshot.key;
 		usernameCell.textContent = JSON.stringify(childSnapshot.val()["username"])
+		lastLoginCell.textContent = timeConverter(childSnapshot.val()["lastLogin"]);
+		lastLoginCell.style = "font-size:10px";
 
 		// FUEL
 		fuelCell.textContent = JSON.stringify(childSnapshot.val()["fuel"]);
@@ -93,6 +109,7 @@ dataRef.on('value', (snapshot) => {
 
 		row.appendChild(keyCell);
 		row.appendChild(usernameCell);
+		row.appendChild(lastLoginCell);
 		row.appendChild(ticketsCell);
 		row.appendChild(editInputTickets);
 		row.appendChild(fuelCell);
