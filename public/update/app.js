@@ -949,10 +949,50 @@ function noticeboard() {
 	});
 };
 
-function leaderboardsDraw() {
+function drawLeaderboard() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	let leaderboards = ["WAJ","tickets"]
+	let boardPos = {"x":7400,"y":8500};
+	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
+	if (leaderboardData == null) {
+		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
+		return;
+	}
+	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
+	for (const property in leaderboardData.tickets) {
+		if (property != "exclusions") {
+			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].tickets).padEnd(7," ")}`)
+		}
+	}
+
+}
+
+function ticketLeaderboardDraw() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
 	let boardPos = {"x":7400,"y":8500};
+	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
+	if (leaderboardData == null) {
+		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
+		return;
+	}
+	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
+	for (const property in leaderboardData.tickets) {
+		if (property != "exclusions") {
+			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].value).padEnd(7," ")}`)
+		}
+	}
+}
+
+function WAJLeaderboardDraw() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	let boardPos = {"x":4950,"y":5010};
 	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
 	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
 	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
@@ -968,6 +1008,7 @@ function leaderboardsDraw() {
 	}
 }
 
+
 function ticketsLeaderboardUpdate() {
 	db.ref(`users`).get().then((snapshot)=> {
 		var userData = snapshot.val();
@@ -981,7 +1022,7 @@ function ticketsLeaderboardUpdate() {
 		});	
 		var top5 = items.slice(0,5);
 		var newLeaderboardData = Object.fromEntries(
-			top5.map((element,index)=>[index+1,{"tickets":element[1],username:userData[element[0]].username}])
+			top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
 		);
 		newLeaderboardData.exclusions = leaderboardData.tickets.exclusions;
 		leaderboardData.tickets = newLeaderboardData;
@@ -1979,7 +2020,7 @@ function updateGameArea(lastTimestamp) {
 	flappyPlaneDraw();
 	bananaClickerDraw();
 	noticeboard();
-	leaderboardsDraw();
+	ticketLeaderboardDraw();
 
 
 	myPlayer.planeDraw();
