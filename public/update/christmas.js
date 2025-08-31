@@ -311,10 +311,6 @@ const jerryCanImage = new Image();
 jerryCanImage.src = "../jerryCan.png";
 const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
-const coconutImage = new Image();
-coconutImage.src = "../coconutSmall.png";
-const coconutIconImage = new Image();
-coconutIconImage.src = "../coconutSmall.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
 const rocketImg = new Image();
@@ -371,7 +367,6 @@ let bombs = [];
 let bullets = [];
 let tickets;
 var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
-var coconuts = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]]; 
 var ticketX = 0;
 var ticketY = 0;
 var safeX;
@@ -1040,15 +1035,6 @@ function miniMap() {
 			10,
 		)
 	}*/
-		for (let i = 0; i < 6; i++) {
-			ctx.drawImage(
-				coconutIconImage,
-				Math.floor(gameArea.canvas.width - 218 + (coconuts[i][0] / 16000) * 200) - 5,
-				Math.floor((coconuts[i][1] / 16000) * 200) - 7,
-				10,
-				10,
-			)
-		}
 }
 
 function towers() {
@@ -1248,40 +1234,6 @@ function jerryCansDraw() {
 			db.ref(`jerryCans/${i+1}`).update({
 				x: jerryCans[i][0],
 				y: jerryCans[i][1],
-			});
-		}
-	}
-}
-
-function coconutsDraw() {
-	for (var i = 0; i < 6; i++) {
-		drawImageAtFixedPosition(coconutImage,coconuts[i][0]-31,coconuts[i][1]-31,62,62);
-		if (Math.abs(myPlayer.x+coconuts[i][0])<=30 && Math.abs(myPlayer.y+coconuts[i][1])<=30) {
-			let randoThing = Math.floor(Math.random()*500)
-			if (randoThing == 1) {
-				dialogue("You found the rare coconut plane! Refresh and then check the shop",false,0)
-				db.ref(`/users/${firebase.auth().currentUser.uid}/ownedPlanes`).once("value", (snapshot) => {
-					var ownedPlanes = snapshot.val();
-					ownedPlanes.push("coconut")
-					db.ref(`/users/${firebase.auth().currentUser.uid}/`).update({
-						ownedPlanes: ownedPlanes,
-					})
-				});
-			}
-			else if (randoThing < 375) {
-				dialogue("You found a ticket!", false, 10000);
-				tickets = tickets + 1
-				db.ref(`users/${myPlayer.id}`).update({
-					tickets,
-				});
-			}
-			else {
-				dialogue("Aww man, this coconut has nothing in it.",false,10000)
-			}
-			coconuts[i] = [Math.floor(Math.random()*14000),Math.floor(Math.random()*14000)]
-			db.ref(`coconuts/${i+1}`).update({
-				x: coconuts[i][0],
-				y: coconuts[i][1],
 			});
 		}
 	}
@@ -1737,30 +1689,6 @@ function pvp() {
 	});
 }
 
-function summerEventWelcomeText() {
-	ctx = gameArea.context
-	ctx.textAlign = "center";
-	ctx.fillStyle = "#000000";
-	ctx.font = "24px DEFAULT FONT";
-	ctx.fillText(
-		"Welcome to the summer event, chill to some summer vibes,",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8000 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-	ctx.fillText(
-		"collect coconuts for tickets",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8024 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-	ctx.fillText(
-		"and perhaps find the new rare plane in a coconut.",
-		8050 + myPlayer.x + gameArea.canvas.width / 2,
-		8048 + myPlayer.y + gameArea.canvas.height / 2,
-	);
-
-}
-
-
 //Start Game
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
@@ -1899,14 +1827,6 @@ function startGame(displayName, email, uid, plane) {
 		});
 		db.ref(`jerryCans/${i+1}/y`).on("value", (snapshot) => {
 			jerryCans[i][1] = snapshot.val();
-		});
-	}
-	for (let i = 0; i < 6; i++) {
-		db.ref(`coconuts/${i+1}/x`).on("value", (snapshot) => {
-			coconuts[i][0] = snapshot.val();
-		});
-		db.ref(`coconuts/${i+1}/y`).on("value", (snapshot) => {
-			coconuts[i][1] = snapshot.val();
 		});
 	}
 
@@ -2049,7 +1969,6 @@ function updateGameArea(lastTimestamp) {
 	buttonDraw();
 	ticketDraw();
 	jerryCansDraw();
-	coconutsDraw();
 	towers();
 	prison();
 	frame();
@@ -2059,7 +1978,6 @@ function updateGameArea(lastTimestamp) {
 	whackAJames();
 	flappyPlaneDraw();
 	bananaClickerDraw();
-	summerEventWelcomeText();
 	noticeboard();
 	leaderboardsDraw();
 
