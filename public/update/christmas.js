@@ -958,7 +958,7 @@ function noticeboard() {
 function leaderboardsDraw() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
-	let boardPos = {"x":9000,"y":9000};
+	let boardPos = {"x":7400,"y":8500};
 	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
 	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
 	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
@@ -974,73 +974,25 @@ function leaderboardsDraw() {
 	}
 }
 
-function renameKeys(obj,start,end,increment) {
-	let keyValues;
-	if (increment) {
-		keyValues = Object.keys(obj).map(key => {
-			if (key > start && key < end && key != "exclusions") {
-				let newKey = key;
-				newKey = parseInt(key)+1 || key;
-				return { [newKey]: obj[key] };
-			} else {
-				return { [key]: obj[key] };
+function ticketsLeaderboardUpdate() {
+	db.ref(`users`).get().then((snapshot)=> {
+		var userData = snapshot.val();
+		var items = Object.keys(userData).map(function(key) {
+			if (!(leaderboardData.tickets.exclusions.includes(key))) {
+				return [key, userData[key].tickets];
 			}
 		});
-	} else {
-			keyValues = Object.keys(obj).reverse().map(key => {
-			if (key > start && key < end && key != "exclusions") {
-				let newKey = key;
-				newKey = parseInt(key)-1;
-				return { [newKey]: obj[key] };
-			} else {
-				return { [key]: obj[key] };
-			}
+		items.sort(function(first, second) {
+			return second[1] - first[1];
 		});	
-	}
-	return Object.assign({}, ...keyValues);
-}
-
-
-function ticketsLeaderboardUpdate() {
-	if (leaderboardData == null) { return };
-	let leaderboardPosition = null;
-	for (const index in leaderboardData.tickets) {
-		if (index != "exclusions") {
-			if (leaderboardData.tickets[index].username == myPlayer.username) {
-				leaderboardPosition = index;
-			}
-		}
-	};
-	if (leaderboardPosition != null) {
-		for (const index in Object.keys(leaderboardData.tickets).reverse()) {
-			if (index != "exclusions") {
-				if (index < leaderboardPosition && leaderboardData.tickets[index] > tickets) {
-					delete leaderboardData.tickets[leaderboardPosition];
-					leaderboardData.tickets = renameKeys(leaderboardData.tickets,leaderboardPosition,index+1,false);
-					leaderboardData.tickets[index] = {};
-					leaderboardData.tickets[index].username = myPlayer.username;
-					leaderboardData.tickets[index].tickets = tickets;
-					db.ref(`/leaderboards`).update(leaderboardData);
-					return
-				}
-			}
-		}
-	} else {
-		leaderboardPosition = 5;
-	}
-	for (const index in leaderboardData.tickets) {
-		if (index != "exclusions") {
-			if (tickets > leaderboardData.tickets[index].tickets) {
-				delete leaderboardData.tickets[leaderboardPosition];
-				leaderboardData.tickets = renameKeys(leaderboardData.tickets,index-1,leaderboardPosition,true)
-				leaderboardData.tickets[index] = {};
-				leaderboardData.tickets[index].username = myPlayer.username;
-				leaderboardData.tickets[index].tickets = tickets;
-				db.ref(`/leaderboards`).update(leaderboardData);
-				return
-			}
-		}
-	}
+		var top5 = items.slice(0,5);
+		var newLeaderboardData = Object.fromEntries(
+			top5.map((element,index)=>[index+1,{"tickets":element[1],username:userData[element[0]].username}])
+		);
+		newLeaderboardData.exclusions = leaderboardData.tickets.exclusions;
+		leaderboardData.tickets = newLeaderboardData;
+		db.ref(`leaderboards`).set(leaderboardData);
+	});
 }
 
 function boostbar() {
@@ -1828,12 +1780,7 @@ function startGame(displayName, email, uid, plane) {
 		myAudio.src = planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music
 		myAudio.play()
 	}
-	if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
-		myPlayer.contrailColour = "tristan"
-	}
-	if (myPlayer.id == "Bszj2Ziw1ffbD9J4gw32LlJtIEq2") {
-		myPlayer.contrailColour = "tristan"
-	}
+	
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
 	db.ref(`.info/connected`).on('value', (snapshot) => {
@@ -1856,6 +1803,7 @@ function startGame(displayName, email, uid, plane) {
 		document.getElementById("overlayticketDisplay").innerHTML =
 			":" + snapshot.val();
 		tickets = snapshot.val();
+		ticketsLeaderboardUpdate();
 	});
 	db.ref(`leaderboards`).once("value").then((snapshot) => {
 		leaderboardData = snapshot.val();
@@ -2077,6 +2025,20 @@ function updateGameArea(lastTimestamp) {
 		myPlayer.vy -= Math.sin(myPlayer.angle - Math.PI / 2) * myPlayer.acceleration;
 		for (let i = 0; i < 20; i++) {
 			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y,myPlayer.contrailColour));
+		}
+	}
+	
+	if (leaderboardData != null) {
+		if (myPlayer.username == leaderboardData.tickets[1].username) {
+			myPlayer.contrailColour = "rainbow";
+		} else {
+			myPlayer.contrailColour = "default";
+			if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
+				myPlayer.contrailColour = "tristan"
+			}
+			if (myPlayer.id == "Bszj2Ziw1ffbD9J4gw32LlJtIEq2") {
+				myPlayer.contrailColour = "tristan"
+			}
 		}
 	}
 
