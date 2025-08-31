@@ -408,7 +408,7 @@ let pipeSpawner;
 var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
-let leaderboardData;
+let leaderboardData = null;
 
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
@@ -945,17 +945,55 @@ function noticeboardDrawText(boardPos,realHeight,fontSize,x,y,text) {
 function noticeboard() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
-	let realHeight = 33;
 	let boardPos = {"x":7500,"y":8300};
 	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
 	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
-	noticeboardDrawText(boardPos,realHeight,50,0,0,`Notice Board  Last update: ${noticeboardData.lastUpdate}`);
+	noticeboardDrawText(boardPos,33,50,0,0,`Notice Board  Last update: ${noticeboardData.lastUpdate}`);
 	//noticeboardDrawText(boardPos,realHeight,0,1,`Last update: ${noticeboardData.lastUpdate}`);
-	realHeight = 40
 	noticeboardData.notices.forEach((notice,index) => {
 		noticeboardDrawText(boardPos,26,40,0,index+1,notice);
 	});
 };
+
+function leaderboardsDraw() {
+	ctx = gameArea.context;
+	ctx.fillStyle = "#000000";
+	let boardPos = {"x":7400,"y":8500};
+	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
+	if (leaderboardData == null) {
+		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
+		return;
+	}
+	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
+	for (const property in leaderboardData.tickets) {
+		if (property != "exclusions") {
+			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].tickets).padEnd(7," ")}`)
+		}
+	}
+}
+
+function ticketsLeaderboardUpdate() {
+	db.ref(`users`).get().then((snapshot)=> {
+		var userData = snapshot.val();
+		var items = Object.keys(userData).map(function(key) {
+			if (!(leaderboardData.tickets.exclusions.includes(key))) {
+				return [key, userData[key].tickets];
+			}
+		});
+		items.sort(function(first, second) {
+			return second[1] - first[1];
+		});	
+		var top5 = items.slice(0,5);
+		var newLeaderboardData = Object.fromEntries(
+			top5.map((element,index)=>[index+1,{"tickets":element[1],username:userData[element[0]].username}])
+		);
+		newLeaderboardData.exclusions = leaderboardData.tickets.exclusions;
+		leaderboardData.tickets = newLeaderboardData;
+		db.ref(`leaderboards`).set(leaderboardData);
+	});
+}
 
 function boostbar() {
 	ctx = gameArea.context;
@@ -1742,12 +1780,7 @@ function startGame(displayName, email, uid, plane) {
 		myAudio.src = planeData[plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].music
 		myAudio.play()
 	}
-	if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
-		myPlayer.contrailColour = "tristan"
-	}
-	if (myPlayer.id == "Bszj2Ziw1ffbD9J4gw32LlJtIEq2") {
-		myPlayer.contrailColour = "tristan"
-	}
+	
 	sendPlayerToDB(myPlayer);
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
 	db.ref(`.info/connected`).on('value', (snapshot) => {
@@ -1770,6 +1803,13 @@ function startGame(displayName, email, uid, plane) {
 		document.getElementById("overlayticketDisplay").innerHTML =
 			":" + snapshot.val();
 		tickets = snapshot.val();
+		ticketsLeaderboardUpdate();
+	});
+	db.ref(`leaderboards`).once("value").then((snapshot) => {
+		leaderboardData = snapshot.val();
+	});
+	db.ref(`leaderboards`).on("value", (snapshot) => {
+		leaderboardData = snapshot.val();
 	});
 	db.ref(`bombs`).on("child_added", (snapshot) => {
 		const bombData = snapshot.val();
@@ -1987,6 +2027,20 @@ function updateGameArea(lastTimestamp) {
 			particles.push(new Particle(-1 * myPlayer.x, -1 * myPlayer.y,myPlayer.contrailColour));
 		}
 	}
+	
+	if (leaderboardData != null) {
+		if (myPlayer.username == leaderboardData.tickets[1].username) {
+			myPlayer.contrailColour = "rainbow";
+		} else {
+			myPlayer.contrailColour = "default";
+			if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
+				myPlayer.contrailColour = "tristan"
+			}
+			if (myPlayer.id == "Bszj2Ziw1ffbD9J4gw32LlJtIEq2") {
+				myPlayer.contrailColour = "tristan"
+			}
+		}
+	}
 
 	myPlayer.update();
 	cloudsDraw();
@@ -2007,6 +2061,7 @@ function updateGameArea(lastTimestamp) {
 	bananaClickerDraw();
 	summerEventWelcomeText();
 	noticeboard();
+	leaderboardsDraw();
 
 
 	myPlayer.planeDraw();
