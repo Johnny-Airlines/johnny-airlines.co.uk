@@ -101,15 +101,23 @@ document.addEventListener("keydown", (key) => {
 					}
 					if (dialoguePromptUse == "jumble") {
 						if (dialoguePrompt.toUpperCase() == jumbleData.currentJumble) {
-							tickets = tickets + 5
+							if (daysSinceEpoch() == lastJumbleSolve + 1) {
+								jumbleStreak += 1;
+							}
+							tickets = tickets + 5 + jumbleStreak;
 							db.ref(`users/${myPlayer.id}`).update({
 								tickets,
 							});
-							dialogue("Correct, you get 5 tickets, come back again tommorow!",false,10000)
+							dialogue(`Correct, you get 5 tickets and an extra ${jumbleStreak} tickets for your streak! Come back again tommorow!`,false,10000)
 						} else {
-							dialogue("WRONG. Try again tommorow!",false,10000)
+							dialogue("WRONG. Try again tommorow!",false,10000);
+							jumbleStreak = 0;
 						}
-
+						lastJumbleSolve = daysSinceEpoch();
+						db.ref(`jumbleUserData/${myPlayer.id}/`).update({
+							lastJumbleSolve,
+							jumbleStreak,
+						});
 					}
 					if (dialoguePromptUse == "sendCommand") {
 						if (isValidCommand(dialoguePrompt)) {
@@ -379,6 +387,7 @@ var dieNum2 = 6;
 var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
+var jumbleStreak = 1;
 var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
 var isPlayingWAJ = false;
 var WAJscore = 0;
@@ -448,6 +457,12 @@ var colorPalette = {
 	},
 	"rainbow": {
 		"colorVariation": 255791872360187236,
+		matter: [
+			{ r: 255, g: 255, b: 255 },
+		],
+	},
+	"jumble": {
+		"colorVariation":0,
 		matter: [
 			{ r: 255, g: 255, b: 255 },
 		],
@@ -949,65 +964,28 @@ function noticeboard() {
 	});
 };
 
-function drawLeaderboard() {
+function drawLeaderboards() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
-	let leaderboards = ["WAJ","tickets"]
-	let boardPos = {"x":7400,"y":8500};
-	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
-	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
-	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
-	if (leaderboardData == null) {
-		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
-		return;
-	}
-	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
-	for (const property in leaderboardData.tickets) {
-		if (property != "exclusions") {
-			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].tickets).padEnd(7," ")}`)
+	let leaderboards = {"jumble":{"title":"Jumble Daily Streak","valueName":"Days","boardPos":{"x":2116+360+50,"y":5129+33}},"tickets":{"title":"Tickets","valueName":"tickets","boardPos":{"x":7400,"y":8500}}}
+	for (let leaderboard in leaderboards) {
+		let boardPos = leaderboards[leaderboard].boardPos;
+		boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
+		boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
+		noticeboardDrawText(boardPos,33,50,0,0,`${leaderboards[leaderboard].title} Leaderboard`);
+		if (leaderboardData == null) {
+			noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
+			return;
+		}
+		noticeboardDrawText(boardPos,26,40,0,1,`Pos Username          ${leaderboards[leaderboard].valueName}`)
+		for (const property in leaderboardData[leaderboard]) {
+			if (property != "exclusions") {
+				noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData[leaderboard][property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData[leaderboard][property].value).padEnd(leaderboards[leaderboard].valueName.length," ")}`)
+			}
 		}
 	}
 
 }
-
-function ticketLeaderboardDraw() {
-	ctx = gameArea.context;
-	ctx.fillStyle = "#000000";
-	let boardPos = {"x":7400,"y":8500};
-	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
-	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
-	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
-	if (leaderboardData == null) {
-		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
-		return;
-	}
-	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
-	for (const property in leaderboardData.tickets) {
-		if (property != "exclusions") {
-			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].value).padEnd(7," ")}`)
-		}
-	}
-}
-
-function WAJLeaderboardDraw() {
-	ctx = gameArea.context;
-	ctx.fillStyle = "#000000";
-	let boardPos = {"x":4950,"y":5010};
-	boardPos.x += myPlayer.x + gameArea.canvas.width / 2;
-	boardPos.y += myPlayer.y + gameArea.canvas.height / 2;
-	noticeboardDrawText(boardPos,33,50,0,0,`Tickets Leaderboard`);
-	if (leaderboardData == null) {
-		noticeboardDrawText(boardPos,26,40,0,1,"LOADING");
-		return;
-	}
-	noticeboardDrawText(boardPos,26,40,0,1,"Pos Username          Tickets")
-	for (const property in leaderboardData.tickets) {
-		if (property != "exclusions") {
-			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData.tickets[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData.tickets[property].tickets).padEnd(7," ")}`)
-		}
-	}
-}
-
 
 function ticketsLeaderboardUpdate() {
 	db.ref(`users`).get().then((snapshot)=> {
@@ -1029,6 +1007,31 @@ function ticketsLeaderboardUpdate() {
 		db.ref(`leaderboards`).set(leaderboardData);
 	});
 }
+
+function jumbleStreakLeaderboardUpdate() {
+	db.ref(`users`).get().then((snapshot)=>{
+		var userData = snapshot.val();
+		db.ref(`jumbleUserData`).get().then((snapshot)=> {
+			var jumbleData = snapshot.val();
+			var items = Object.keys(jumbleData).map(function(key) {
+				if (!(leaderboardData.jumble.exclusions.includes(key))) {
+					return [key, jumbleData[key].jumbleStreak];
+				}
+			});
+			items.sort(function(first, second) {
+				return second[1] - first[1];
+			});	
+			var top5 = items.slice(0,5);
+			var newLeaderboardData = Object.fromEntries(
+				top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
+			);
+			newLeaderboardData.exclusions = leaderboardData.jumble.exclusions;
+			leaderboardData.jumble = newLeaderboardData;
+			db.ref(`leaderboards`).set(leaderboardData);
+		});
+	});
+}
+
 
 function boostbar() {
 	ctx = gameArea.context;
@@ -1132,10 +1135,6 @@ function interact() {
 		if (daysSinceEpoch() > lastJumbleSolve) {
 			dialogue("Guess:", true, 0);
 			dialoguePromptUse = "jumble";
-			lastJumbleSolve = daysSinceEpoch();
-			db.ref(`lastJumbleSolve/${myPlayer.id}/`).update({
-				lastJumbleSolve,
-			});
 		} else {
 			dialogue("You can only try once per day! Come back tommorow!",false,10000)
 		}
@@ -1843,8 +1842,24 @@ function startGame(displayName, email, uid, plane) {
 		jumbleData = snapshot.val();
 		jumbleData.scramble = shuffle(jumbleData.currentJumble);
 	});
-	db.ref(`lastJumbleSolve/${myPlayer.id}/lastJumbleSolve`).on("value", (snapshot) => {
-		lastJumbleSolve = snapshot.val();
+	db.ref(`jumbleUserData/${myPlayer.id}/jumbleStreak`).on("value", (snapshot) => {
+		let temp = snapshot.val();
+		if (temp != null) {
+			jumbleStreak = temp;
+		}
+	});
+	db.ref(`jumbleUserData/${myPlayer.id}/lastJumbleSolve`).on("value", (snapshot) => {
+		let temp = snapshot.val();
+		if (temp != null) {
+			lastJumbleSolve = temp;
+			if (daysSinceEpoch() > lastJumbleSolve + 1) {
+				jumbleStreak = 0;
+				db.ref(`jumbleUserData/${myPlayer.id}/`).update({
+					jumbleStreak,
+				});
+			}
+			jumbleStreakLeaderboardUpdate();
+		}
 	});
 	db.ref(`bananaClicker/${myPlayer.id}/`).once("value").then((snapshot) => {
 		if (snapshot.val() == null) {
@@ -1992,6 +2007,8 @@ function updateGameArea(lastTimestamp) {
 	if (leaderboardData != null) {
 		if (myPlayer.username == leaderboardData.tickets[1].username) {
 			myPlayer.contrailColour = "rainbow";
+		} else if (myPlayer.username == leaderboardData.jumble[1].username) {
+			myPlayer.contrailColour = "jumble";
 		} else {
 			myPlayer.contrailColour = "default";
 			if (myPlayer.id == "Q4QyRltsO8OdbvxrzlY16xfAw262") {
@@ -2020,7 +2037,7 @@ function updateGameArea(lastTimestamp) {
 	flappyPlaneDraw();
 	bananaClickerDraw();
 	noticeboard();
-	ticketLeaderboardDraw();
+	drawLeaderboards();
 
 
 	myPlayer.planeDraw();
