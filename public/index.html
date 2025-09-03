@@ -110,6 +110,13 @@
 			</a>
 		</grid-item>
 	</grid-container>
+	<script>
+		if ("serviceWorker" in navigator) {
+			window.addEventListener("load", () => {
+				navigator.serviceWorker && navigator.serviceWorker.register("./sw.js");
+			});
+		}
+	</script>
 	<script src="index.js"></script>
 	<a href="T&C.html" class="footer">Website Terms and Conditions</a>
 </html>
