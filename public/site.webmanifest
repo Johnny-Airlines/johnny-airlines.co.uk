@@ -4,7 +4,6 @@
 	"description": "Johnny Airlines",
 	"id": "https://johnny-airlines.co.uk",
 	"categories": ["games","social","entertainment"],
-	"launch_handler": "auto",
 	"display": "standalone",
 	"orientation": "any",
 	"start_url": "./?utm_source=pwa_install",
@@ -12,6 +11,9 @@
 	"theme_color": "#000",
 	"background_color": "#000",
 	"lang": "en-GB",
+	"launch_handler": {
+		"client_mode": "auto"
+	},
 	"icons":[
 		{
 			"src": "android-chrome-36x36.png",
