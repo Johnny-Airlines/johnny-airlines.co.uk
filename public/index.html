@@ -22,23 +22,6 @@
 		<meta name="msapplication-config" content="./browserconfig.xml">
 		<meta name="theme-color" content="#000000">
 
-		<style>
-			.dialogBackground:has(dialog[open]) {
-				position:absolute;
-				top:0px;
-				left:0px;
-				background-color: rgb(255 255 255 / 30%);
-				backdrop-filter: blur(10px);
-				height:100%;
-				width:100%;
-				display:flex;
-				align-items:center;
-			}
-			dialog {
-				border-radius:5px;
-			}
-
-		</style>
 	</head>
 	<body>
 		<div class="logo"><a href="https://johnny-airlines.co.uk"><img src="LOGO.png" class="logoI" alt="Johnny Airlines Logo"></a></div>
@@ -141,34 +124,7 @@
 				</a>
 			</grid-item>
 		</grid-container>
-		<div class="dialogBackground">
-		<dialog id="notificationModal">
-			<p>Do you want notifications?</p>
-			<form method="dialog">
-				<button onclick="requestNotificationPermission()">Yes</button><button onclick="denyNotificationPermission()">No</button>
-			</form>
-		</dialog>
-		</div>
 		<script>
-			function requestNotificationPermission() {
-				Notification.requestPermission().then((permission) => {
-					//User accepted
-					const notification = new Notification("Thanks for enabling notifications!");
-				});
-			}
-
-			function denyNotificationPermission() {
-				Notification.permission = "denied";
-			}
-
-			if (!("Notification" in window)) {
-				// Check if the browser supports notifications
-			} else if (Notification.permission === "granted") {
-				// Check whether notification permissions have already been granted;
-			} else if (Notification.permission !== "denied") {
-				// We need to ask the user for permission
-				document.getElementById("notificationModal").show();
-			}
 			if ("serviceWorker" in navigator) {
 				window.addEventListener("load", () => {
 					navigator.serviceWorker && navigator.serviceWorker.register("./sw.js");
