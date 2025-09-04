@@ -1,0 +1,40 @@
+{
+	"name": "Johnny Airlines",
+	"short_name": "J Air",
+	"description": "Johnny Airlines",
+	"id": "https://johnny-airlines.co.uk",
+	"categories": ["games","social","entertainment"],
+	"display": "standalone",
+	"orientation": "any",
+	"start_url": "./?utm_source=pwa_install",
+	"scope": ".",
+	"theme_color": "#000",
+	"background_color": "#000",
+	"lang": "en-GB",
+	"launch_handler": {
+		"client_mode": "auto"
+	},
+	"icons":[
+		{
+			"src": "android-chrome-512x512.png",
+			"sizes": "512x512",
+			"type": "image/png",
+			"purpose": "any"
+		},
+		{
+			"src": "maskable_icon.png",
+			"sizes": "650x650",
+			"type": "image/png",
+			"purpose": "maskable"
+		}
+	],
+	"screenshots": [
+		{
+			"src": "screenshots/screenshot.png",
+			"sizes": "1877x888",
+			"type": "image/png",
+			"form_factor": "wide",
+			"label": "Home screen showing main navigation and featured content"
+		}
+	]
+}

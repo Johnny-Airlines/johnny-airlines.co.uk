@@ -6,7 +6,7 @@ firebase.auth().onAuthStateChanged((user) => {
     if (user) {
         loadShop();
     } else {
-        window.location.href = "https://johnny-airlines.co.uk/accounts.html";
+        window.location.href = "../accounts.html";
     }
 });
 
