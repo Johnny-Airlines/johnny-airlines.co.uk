@@ -978,10 +978,8 @@ function drawLeaderboards() {
 			return;
 		}
 		noticeboardDrawText(boardPos,26,40,0,1,`Pos Username          ${leaderboards[leaderboard].valueName}`)
-		for (const property in leaderboardData[leaderboard]) {
-			if (property != "exclusions") {
-				noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData[leaderboard][property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData[leaderboard][property].value).padEnd(leaderboards[leaderboard].valueName.length," ")}`)
-			}
+		for (const property in leaderboardData[leaderboard].top5) {
+			noticeboardDrawText(boardPos,26,40,0,parseInt(property)+1,`${property.padEnd(3," ")} ${String(leaderboardData[leaderboard].top5[property].username).padEnd(17," ").slice(0,17)} ${String(leaderboardData[leaderboard].top5[property].value).padEnd(leaderboards[leaderboard].valueName.length," ")}`)
 		}
 	}
 
@@ -1002,8 +1000,7 @@ function ticketsLeaderboardUpdate() {
 		var newLeaderboardData = Object.fromEntries(
 			top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
 		);
-		newLeaderboardData.exclusions = leaderboardData.tickets.exclusions;
-		leaderboardData.tickets = newLeaderboardData;
+		leaderboardData.tickets.top5 = newLeaderboardData;
 		db.ref(`leaderboards`).set(leaderboardData);
 	});
 }
@@ -1025,8 +1022,7 @@ function jumbleStreakLeaderboardUpdate() {
 			var newLeaderboardData = Object.fromEntries(
 				top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
 			);
-			newLeaderboardData.exclusions = leaderboardData.jumble.exclusions;
-			leaderboardData.jumble = newLeaderboardData;
+			leaderboardData.jumble.top5 = newLeaderboardData;
 			db.ref(`leaderboards`).set(leaderboardData);
 		});
 	});
