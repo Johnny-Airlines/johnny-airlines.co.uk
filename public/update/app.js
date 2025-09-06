@@ -102,21 +102,21 @@ document.addEventListener("keydown", (key) => {
 					if (dialoguePromptUse == "jumble") {
 						if (dialoguePrompt.toUpperCase() == jumbleData.currentJumble) {
 							if (daysSinceEpoch() == lastJumbleSolve + 1) {
-								jumbleStreak += 1;
+								leaderboardData.jumble.data[myPlayer.id].value += 1;
 							}
-							tickets = tickets + 5 + jumbleStreak;
+							tickets = tickets + 5 + leaderboardData.jumble.data[myPlayer.id].value;
 							db.ref(`users/${myPlayer.id}`).update({
 								tickets,
 							});
-							dialogue(`Correct, you get 5 tickets and an extra ${jumbleStreak} tickets for your streak! Come back again tommorow!`,false,10000)
+							dialogue(`Correct, you get 5 tickets and an extra ${leaderboardData.jumble.data[myPlayer.id].value} tickets for your streak! Come back again tommorow!`,false,10000)
 						} else {
 							dialogue("WRONG. Try again tommorow!",false,10000);
-							jumbleStreak = 0;
+							leaderboardData.jumble.data[myPlayer.id].value = 0;
 						}
 						lastJumbleSolve = daysSinceEpoch();
+						db.ref(`leaderboardData/`).set({leaderboardData});
 						db.ref(`jumbleUserData/${myPlayer.id}/`).update({
 							lastJumbleSolve,
-							jumbleStreak,
 						});
 					}
 					if (dialoguePromptUse == "sendCommand") {
@@ -387,7 +387,6 @@ var dieNum2 = 6;
 var diceRoll = null;
 var jumbleData = {currentJumble: "TESTING",scramble:"ITTSEGN", lastJumbleUpdate: 0};
 var lastJumbleSolve = 0;
-var jumbleStreak = 1;
 var whackAJamesLayout = [["windowShutImg","windowShutImg","windowShutImg"],["windowShutImg","windowShutImg","jamesSadImg"],["windowShutImg","windowShutImg","windowShutImg"]]
 var isPlayingWAJ = false;
 var WAJscore = 0;
@@ -1006,25 +1005,25 @@ function ticketsLeaderboardUpdate() {
 }
 
 function jumbleStreakLeaderboardUpdate() {
+	console.log(leaderboardData);
 	db.ref(`users`).get().then((snapshot)=>{
 		var userData = snapshot.val();
-		db.ref(`jumbleUserData`).get().then((snapshot)=> {
-			var jumbleData = snapshot.val();
-			var items = Object.keys(jumbleData).map(function(key) {
-				if (!(leaderboardData.jumble.exclusions.includes(key))) {
-					return [key, jumbleData[key].jumbleStreak];
-				}
-			});
-			items.sort(function(first, second) {
-				return second[1] - first[1];
-			});	
-			var top5 = items.slice(0,5);
-			var newLeaderboardData = Object.fromEntries(
-				top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
-			);
-			leaderboardData.jumble.top5 = newLeaderboardData;
-			db.ref(`leaderboards`).set(leaderboardData);
+		var jumbleData = leaderboardData.jumble.data;
+		
+		var items = Object.keys(jumbleData).map(function(key) {
+			if (!(leaderboardData.jumble.exclusions.includes(key))) {
+				return [key, jumbleData[key].value];
+			}
 		});
+		items.sort(function(first, second) {
+			return second[1] - first[1];
+		});	
+		var top5 = items.slice(0,5);
+		var newLeaderboardData = Object.fromEntries(
+			top5.map((element,index)=>[index+1,{"value":element[1],username:userData[element[0]].username}])
+		);
+		leaderboardData.jumble.top5 = newLeaderboardData;
+		db.ref(`leaderboards`).set(leaderboardData);
 	});
 }
 
@@ -1769,11 +1768,9 @@ function startGame(displayName, email, uid, plane) {
 		tickets = snapshot.val();
 		ticketsLeaderboardUpdate();
 	});
-	db.ref(`leaderboards`).once("value").then((snapshot) => {
-		leaderboardData = snapshot.val();
-	});
 	db.ref(`leaderboards`).on("value", (snapshot) => {
 		leaderboardData = snapshot.val();
+		jumbleStreakLeaderboardUpdate();
 	});
 	db.ref(`bombs`).on("child_added", (snapshot) => {
 		const bombData = snapshot.val();
@@ -1838,23 +1835,14 @@ function startGame(displayName, email, uid, plane) {
 		jumbleData = snapshot.val();
 		jumbleData.scramble = shuffle(jumbleData.currentJumble);
 	});
-	db.ref(`jumbleUserData/${myPlayer.id}/jumbleStreak`).on("value", (snapshot) => {
-		let temp = snapshot.val();
-		if (temp != null) {
-			jumbleStreak = temp;
-		}
-	});
 	db.ref(`jumbleUserData/${myPlayer.id}/lastJumbleSolve`).on("value", (snapshot) => {
 		let temp = snapshot.val();
 		if (temp != null) {
 			lastJumbleSolve = temp;
 			if (daysSinceEpoch() > lastJumbleSolve + 1) {
-				jumbleStreak = 0;
-				db.ref(`jumbleUserData/${myPlayer.id}/`).update({
-					jumbleStreak,
-				});
+				leaderboardData.jumble.data[myPlayer.id].value = 0;
+				db.ref(`leaderboardData`).set({leaderboardData});
 			}
-			jumbleStreakLeaderboardUpdate();
 		}
 	});
 	db.ref(`bananaClicker/${myPlayer.id}/`).once("value").then((snapshot) => {
