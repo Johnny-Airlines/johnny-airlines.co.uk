@@ -2001,9 +2001,9 @@ function updateGameArea(lastTimestamp) {
 	}
 	
 	if (leaderboardData != null) {
-		if (myPlayer.username == leaderboardData.tickets[1].username) {
+		if (myPlayer.username == leaderboardData.tickets.top5[1].username) {
 			myPlayer.contrailColour = "rainbow";
-		} else if (myPlayer.username == leaderboardData.jumble[1].username) {
+		} else if (myPlayer.username == leaderboardData.jumble.top5[1].username) {
 			myPlayer.contrailColour = "jumble";
 		} else {
 			myPlayer.contrailColour = "default";
