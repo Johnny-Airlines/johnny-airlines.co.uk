@@ -1,3 +1,13 @@
+//Use strict mode, IIFE to avoid anyone directly changing their own player data
+//Useful to disable for debugging
+let urlParams = new URLSearchParams(window.location.search);
+let debugMode = false
+for (const [key, value] of urlParams) {
+	if (key == "debug" && value == "true") {
+		debugMode = true
+		alert("Debug mode enabled, you can now access your player data in the console as 'myPlayer'")
+	}
+}
 (function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
@@ -1648,6 +1658,11 @@ function cloudsDraw() {
 	}
 }
 
+
+
+
+// PVP System is to be replaced with christmas boss.
+/* Old PVP system
 function pvp() {
 	ctx = gameArea.context
 	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
@@ -1721,13 +1736,90 @@ function pvp() {
 			}
 		}
 	});
-}
+}*/
+function christmasBoss() {
+	ctx = gameArea.context
+	//pvpOn - is player in pvp area, if so, show health and enable damage
+	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	if (pvpOn) {
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
+		ctx.strokeStyle = "#555555";
+		ctx.lineWidth = 13;
+		ctx.stroke();
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , Math.PI*3/2 , Math.PI*3/2+myPlayer.health*Math.PI*2/100 );
+		ctx.strokeStyle = "#ff0000";
+		ctx.lineWidth = 8;
+		ctx.stroke();
 
+		ctx.drawImage(heartImage,gameArea.canvas.width-182,250,110,90);
+	}
+	bullets.forEach((bullet) => {
+		bullet.draw()
+		if (bullet.player == myPlayer.id) {
+			bullet.update();
+		}
+		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
+			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
+				if (bullet.isRocket) {
+					myPlayer.health -= 10
+					console.log("huh")
+				} else {
+					myPlayer.health -= 3
+				}
+				if (myPlayer.health <= 0) {
+					db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+						if (snapshot.val() > 0) {
+							db.ref(`users/${bullet.player}/tickets`).once('value', (snapshot2) => {
+								db.ref(`users/${bullet.player}/`).update({
+									tickets: snapshot2.val()+1
+								});
+							}).then(()=>{
+								db.ref(`users/${myPlayer.id}/`).update({
+									tickets: snapshot.val()-1
+								});
+								location.reload()
+							});
+						}
+					})			
+				}
+
+			});
+		}
+	})
+	bombs.forEach((bomb) => {
+		bomb.update();
+		bomb.draw();
+		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
+			myPlayer.health -= 10
+			if (myPlayer.health <= 0) {
+				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
+					if (snapshot.val() > 0) {
+						db.ref(`users/${bomb.player}/tickets`).once('value', (snapshot2) => {
+							db.ref(`users/${bomb.player}/`).update({
+								tickets: snapshot2.val()+1
+							});
+						}).then(()=>{
+							db.ref(`users/${myPlayer.id}/`).update({
+								tickets: snapshot.val()-1
+							});
+							location.reload()
+						});
+					}
+				})	
+			}
+		}
+	});
+};
 //Start Game
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
 	gameArea.resize();
 	myPlayer = new p();
+	if (debugMode) {
+		window.myPlayer = myPlayer;
+	}
 	myPlayer.displayName = displayName;
 	myPlayer.username = email;
 	window.playerUsername = email;
@@ -2014,7 +2106,8 @@ function updateGameArea(lastTimestamp) {
 	towers();
 	prison();
 	frame();
-	pvp();
+	//pvp();
+	christmasBoss();
 	gambling();
 	jumble();
 	whackAJames();
