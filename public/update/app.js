@@ -1,11 +1,12 @@
 //Use strict mode, IIFE to avoid anyone directly changing their own player data
 //Useful to disable for debugging
+console.log("Welcome to Johnny Airlines!")
 let urlParams = new URLSearchParams(window.location.search);
 let debugMode = false
 for (const [key, value] of urlParams) {
 	if (key == "debug" && value == "true") {
 		debugMode = true
-		alert("Debug mode enabled, you can now access your player data in the console as 'myPlayer'")
+		console.log("Debug mode enabled, you can now access your player data in the console as 'myPlayer'")
 	}
 }
 (function(){ "use strict"
@@ -111,6 +112,9 @@ document.addEventListener("keydown", (key) => {
 					}
 					if (dialoguePromptUse == "jumble") {
 						if (dialoguePrompt.toUpperCase() == jumbleData.currentJumble) {
+							if (!(Object.keys(leaderboardData.jumble.data).includes(myPlayer.id))) {
+								leaderboardData.jumble.data[myPlayer.id] = {value: 0};
+							}
 							if (daysSinceEpoch() == lastJumbleSolve + 1) {
 								leaderboardData.jumble.data[myPlayer.id].value += 1;
 							}
@@ -124,7 +128,7 @@ document.addEventListener("keydown", (key) => {
 							leaderboardData.jumble.data[myPlayer.id].value = 0;
 						}
 						lastJumbleSolve = daysSinceEpoch();
-						db.ref(`leaderboardData/`).set({leaderboardData});
+						db.ref(`leaderboards`).set(leaderboardData);
 						db.ref(`jumbleUserData/${myPlayer.id}/`).update({
 							lastJumbleSolve,
 						});
@@ -205,9 +209,7 @@ onmousemove = function (e) {
 	try {
 		myPlayer.angle = Math.atan2(diffY, diffX) + Math.PI / 2;
 	} catch (e) {
-		if (e.message = 'can\'t access property "angle", myPlayer is undefined') {
-			console.log("Welcome to Johnny Airlines!");
-		} else {
+		if (e.message != 'can\'t access property "angle", myPlayer is undefined') {
 			throw e;
 		}
 	}
@@ -1015,7 +1017,6 @@ function ticketsLeaderboardUpdate() {
 }
 
 function jumbleStreakLeaderboardUpdate() {
-	console.log(leaderboardData);
 	db.ref(`users`).get().then((snapshot)=>{
 		var userData = snapshot.val();
 		var jumbleData = leaderboardData.jumble.data;
@@ -1933,7 +1934,7 @@ function startGame(displayName, email, uid, plane) {
 			lastJumbleSolve = temp;
 			if (daysSinceEpoch() > lastJumbleSolve + 1) {
 				leaderboardData.jumble.data[myPlayer.id].value = 0;
-				db.ref(`leaderboardData`).set({leaderboardData});
+				db.ref(`leaderboards`).set(leaderboardData);
 			}
 		}
 	});
