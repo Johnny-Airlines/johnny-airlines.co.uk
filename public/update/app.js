@@ -1,3 +1,13 @@
+//Use strict mode, IIFE to avoid anyone directly changing their own player data
+//Useful to disable for debugging
+let urlParams = new URLSearchParams(window.location.search);
+let debugMode = false
+for (const [key, value] of urlParams) {
+	if (key == "debug" && value == "true") {
+		debugMode = true
+		alert("Debug mode enabled, you can now access your player data in the console as 'myPlayer'")
+	}
+}
 (function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
@@ -1807,6 +1817,9 @@ function startGame(displayName, email, uid, plane) {
 	gameArea.start();
 	gameArea.resize();
 	myPlayer = new p();
+	if (debugMode) {
+		window.myPlayer = myPlayer;
+	}
 	myPlayer.displayName = displayName;
 	myPlayer.username = email;
 	window.playerUsername = email;
