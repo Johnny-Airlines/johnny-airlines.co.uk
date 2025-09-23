@@ -1,6 +1,6 @@
 //Use strict mode, IIFE to avoid anyone directly changing their own player data
 //Useful to disable for debugging
-console.log("Welcome to Johnny Airlines!")
+console.log("Welcome to Johnny Airlines! V=4")
 let urlParams = new URLSearchParams(window.location.search);
 let debugMode = false
 for (const [key, value] of urlParams) {

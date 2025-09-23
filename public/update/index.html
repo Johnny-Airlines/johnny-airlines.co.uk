@@ -226,8 +226,20 @@
 				}
 			}
 		</script>
-		<script src="./app.js"></script>
-		<script src="./chat.js"></script>
-		<script src="./shop.js"></script>
+		<div id="scripts">
+		</div>
+		<script>
+			async function loadScript(url) {
+				script = document.createElement("script");
+				script.type = "text/javascript";
+				script.src = url
+				document.getElementById("scripts").appendChild(script);
+			};
+			loadScript(`./app.js?v=${Date.now()}`).then(()=>{
+				loadScript("./chat.js").then(()=>{
+					loadScript("./shop.js");
+				});
+			});
+		</script>
 	</body>
 </html>
