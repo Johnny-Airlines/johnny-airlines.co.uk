@@ -1,4 +1,4 @@
- 
+
 //Database refrences
 const db = firebase.database();
 
@@ -178,8 +178,7 @@ function buy() {
 		firebase.auth().currentUser.updateProfile({
 			photoURL: "https://johnny-airlines.co.uk/"+plne,
 		});
-		alert("Please refresh for your plane to change");
+		updatePFP(`https://johnny-airlines.co.uk/${plne}`);
 	}
 }
-
 
