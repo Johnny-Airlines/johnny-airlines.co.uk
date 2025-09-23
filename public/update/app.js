@@ -1,6 +1,6 @@
 //Use strict mode, IIFE to avoid anyone directly changing their own player data
 //Useful to disable for debugging
-console.log("Welcome to Johnny Airlines!")
+console.log("Welcome to Johnny Airlines!");
 let urlParams = new URLSearchParams(window.location.search);
 let debugMode = false
 for (const [key, value] of urlParams) {
@@ -309,7 +309,6 @@ function drawJoystick(ctx) {
 }
 
 //Images
-const plane = new Image();
 const bg = new Image();
 bg.src = "bg.png";
 const btn = new Image();
@@ -1659,8 +1658,11 @@ function cloudsDraw() {
 	}
 }
 
-
-
+function updatePFP(plne) {
+	document.getElementById("pfp").src = plne;
+	myPlayer.plane = plne;
+}
+window.updatePFP = updatePFP;
 
 // PVP System is to be replaced with christmas boss.
 /* Old PVP system
