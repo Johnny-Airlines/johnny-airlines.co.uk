@@ -3,8 +3,29 @@ var randUrls=[
 	"https://www.youtube.com/watch?v=dQw4w9WgXcQ",
 	"/BSOD.html",
 	"/whyareyoulookingattheurl.html"
-	]
+]
 randNum = Math.floor(Math.random()*500)
 if (randNum <= 2) {
 	window.location=randUrls[randNum]
 }
+
+logo = document.getElementById("logoHref")
+
+selectedTexts = [];
+isEasterEggFound = false;
+
+const selectionDetector = setInterval(() => {
+	currentSelection = window.getSelection().toString();
+	if (!selectedTexts.includes(currentSelection)) {
+		selectedTexts.push(currentSelection);
+		if (selectedTexts.includes("Johnny") && selectedTexts.includes("Airlines") && selectedTexts.includes("Johnny Airlines")) {
+			selectedTexts = [];
+			logo.href = "https://johnny-airlines.co.uk/dev/";
+			setTimeout(()=>{
+				logo.href = "https://johnny-airlines.co.uk";
+			},5000);
+			alert("Easter egg found!");
+			console.log("Highlighting easter egg found!");
+		}
+	}
+},10);
