@@ -1,4 +1,4 @@
-(function(){"use strict";
+(function() { "use strict";
 const db = firebase.database();
 
 let pressedKeys = [];
@@ -74,4 +74,3 @@ fetchChat.on("child_added", function (snapshot) {
 	document.getElementById("messages").appendChild(message);
 });
 })();
-

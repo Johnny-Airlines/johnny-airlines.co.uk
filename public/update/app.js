@@ -196,6 +196,9 @@ document.addEventListener("keydown", (key) => {
 			if (keysPressed[k] == "l" && !chatFocus) {
 				cloudsOn = cloudsOn ? false : true;
 			}
+			if (!isNaN(keysPressed[k])) {
+				showingExtraDebugInfo = keysPressed[k];
+			}
 		}
 	}
 });
@@ -422,6 +425,7 @@ var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
+let showingExtraDebugInfo = 0;
 
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
@@ -600,7 +604,6 @@ class p {
 	}
 	update() {
 		ctx = gameArea.context;
-
 		ctx.textAlign = "center";
 		ctx.save();
 		ctx.translate(this.x, this.y);
@@ -1658,6 +1661,35 @@ function cloudsDraw() {
 	}
 }
 
+function showDebugStats() {
+	ctx = gameArea.context;
+	ctx.font = "24px DEFAULT FONT";
+	ctx.fillStyle = "#000000";
+	ctx.fillText(`Coords: x: ${Math.round(myPlayer.x)}, y: ${Math.round(myPlayer.y)}`,gameArea.canvas.width/2,40);
+	if (showingExtraDebugInfo == 1) {
+		ctx.fillText("Players Coords",gameArea.canvas.width/2,60);
+		let counter = 60;
+		for (const [playerUID, playerData] of Object.entries(players)) {
+			counter += 20;
+			ctx.fillText(`${playerData.username}: x: ${Math.round(playerData.x)}, y: ${Math.round(playerData.y)}`,gameArea.canvas.width/2,counter);
+		}
+	} else if (showingExtraDebugInfo == 2) {
+		ctx.fillText("Players UIDS",gameArea.canvas.width/2,60);
+		let counter = 60;
+		for (const [playerUID, playerData] of Object.entries(players)) {
+			counter += 20;
+			ctx.fillText(`${playerData.username}: ${playerUID}`,gameArea.canvas.width/2,counter);
+		}
+	} else if (showingExtraDebugInfo == 3) {
+		ctx.fillText("Players Planes",gameArea.canvas.width/2,60);
+		let counter = 60;
+		for (const [playerUID, playerData] of Object.entries(players)) {
+			counter += 20;
+			ctx.fillText(`${playerData.username}: ${playerData.plane}`,gameArea.canvas.width/2,counter);
+		}
+	}
+}
+
 function updatePFP(plne) {
 	document.getElementById("pfp").src = plne;
 	myPlayer.plane = plne;
@@ -2032,10 +2064,10 @@ function updateGameArea(lastTimestamp) {
 	myPlayer.vy *= 0.96;
 	myPlayer.vx *= 0.96;
 	if (Math.abs(myPlayer.vx) < 0.1) {
-		myPlayer.vx == 0;
+		myPlayer.vx = 0;
 	}
 	if (Math.abs(myPlayer.vy) < 0.1) {
-		myPlayer.vy == 0;
+		myPlayer.vy = 0;
 	}
 	if (myPlayer.x + 16000 < 0) {
 		myPlayer.x += 16000;
@@ -2123,6 +2155,9 @@ function updateGameArea(lastTimestamp) {
 	myPlayer.planeDraw();
 	boostbar();
 	miniMap();
+	if (debugMode) {
+		showDebugStats();
+	}
 	sendPlayerToDB(myPlayer);
 
 	for (const playerId in players) {
