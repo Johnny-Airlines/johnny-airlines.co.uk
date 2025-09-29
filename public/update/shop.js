@@ -1,4 +1,3 @@
-
 //Database refrences
 const db = firebase.database();
 
