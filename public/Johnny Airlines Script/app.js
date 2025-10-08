@@ -1,7 +1,7 @@
 "use strict"
 
 let interfaceElement = document.getElementById("interface");
-let textBody = "user> "
+let textBody = "> "
 let cursorVisible = false;
 
 setInterval(()=>{
@@ -128,7 +128,7 @@ function read_str(string) {
 
 function read() {
 	let lines = textBody.split("<br>");
-	let expr = lines[lines.length-1].replace("user> ","");
+	let expr = lines[lines.length-1].replace("> ","");
 	return read_str(expr);
 }
 
@@ -151,7 +151,7 @@ function evaluate(ast) {
 }
 
 function print(output) {
-	textBody += "<br>output> " + pr_str(output) + "<br>user> " 
+	textBody += "<br>" + pr_str(output) + "<br>> " 
 }
 
 function rep() {
