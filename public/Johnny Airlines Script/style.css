@@ -1,0 +1,21 @@
+@font-face {
+	font-family: myFont;
+	src: url("./Jersey15-Regular.ttf");
+}
+
+#interface {
+	width: 90%;
+	height: 90%;
+	background-color: black;
+	color: white;
+	font-family: myFont;
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	margin-top:0px;
+	margin-bottom:0px;
+	padding:2%;
+	font-size:40px;
+	white-space: preserve;
+}
