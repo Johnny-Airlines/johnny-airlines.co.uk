@@ -1268,12 +1268,7 @@ function jerryCansDraw() {
 	for (var i = 0; i < 20; i++) {
 		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
 		if (Math.abs(myPlayer.x+jerryCans[i][0])<=30 && Math.abs(myPlayer.y+jerryCans[i][1])<=30) {
-			if (myPlayer.fuel >= 80) {
-				myPlayer.fuel = 100;
-			}
-			else {
-				myPlayer.fuel += 20;
-			}
+			myPlayer.fuel += 20;
 			db.ref(`users/${myPlayer.id}`).update({
 				fuel: myPlayer.fuel
 			});
