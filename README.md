@@ -7,6 +7,7 @@ This repository contains the source code for the Johnny Airlines website ([https
 The website hosts a variety of applications, including:
 
 *   **Games:**
+    *   Plane Game: An online, multiplayer, top-down 2d game.   
     *   Banana Clicker: An incremental game based on clicking bananas.
     *   Whack A James: A classic whack-a-mole style game.
     *   Snake: The classic Nokia-style snake game.
@@ -44,7 +45,7 @@ This project consists of static web content (HTML, CSS, JavaScript) primarily lo
 ## Technologies Used
 
 *   **Frontend:** HTML, CSS, JavaScript
-*   **Hosting & Backend Services:** Firebase (Hosting, Realtime Database)
+*   **Hosting & Backend Services:** Firebase (Hosting, Realtime Database, Authentication)
 *   **Version Control & CI/CD:** Git, GitHub, GitHub Actions
 
 ## Contributing
