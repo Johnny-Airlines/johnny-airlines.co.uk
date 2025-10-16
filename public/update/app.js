@@ -1,3 +1,5 @@
+//Main app file for plane game, handles the main game logic
+
 //Use strict mode, IIFE to avoid anyone directly changing their own player data
 //Useful to disable for debugging
 console.log("Welcome to Johnny Airlines!");
@@ -9,6 +11,7 @@ for (const [key, value] of urlParams) {
 		console.log("Debug mode enabled, you can now access your player data in the console as 'myPlayer'")
 	}
 }
+//IIFE declaration
 (function(){ "use strict"
 const firebaseConfig = {
 	apiKey: "AIzaSyDJlncorTA9lATy5t-1bH0OH-lK509ipFw",
@@ -22,7 +25,7 @@ const firebaseConfig = {
 };
 firebase.initializeApp(firebaseConfig);
 
-//Database refrences
+//Database references
 const db = firebase.database();
 const playersRef = db.ref("players");
 
@@ -45,23 +48,27 @@ firebase.auth().onAuthStateChanged((user) => {
 		const email =
 			user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
 		const photoURL = user.photoURL;
+		//Loading the default font
 		let PixelFont = new FontFace(
 			"DEFAULT FONT",
 			"url('./Jersey15-Regular.ttf')"
 		);
 		PixelFont.load().then((font) => {
 			document.fonts.add(font)
+			//Loading the font for the leaderboards
 			let SkyFont = new FontFace(
 				"SKYFONT",
 				"url('./Skyfont-NonCommercial.otf')"
 			);
 			SkyFont.load().then((font) => {
 				document.fonts.add(font);
+				//Start the game only once the user state has been determined and the fonts have loaded
 				startGame(displayName, email, uid, photoURL);
 			});
 			
 		});
 	} else {
+		//Redirect user to sign in page if not signed in
 		window.location.href = "../accounts.html";
 	}
 });
@@ -96,6 +103,7 @@ document.getElementById("message-input").addEventListener("blur", (event) => { c
 //Key detection
 let keysPressed = [];
 document.addEventListener("keydown", (key) => {
+	//Creates an array of currently pressed keys
 	keysPressed.push(key.key);
 	keysPressed = [...new Set(keysPressed)];
 	for (let k in keysPressed) {
@@ -202,6 +210,7 @@ document.addEventListener("keydown", (key) => {
 		}
 	}
 });
+//Remove key from array when released
 document.addEventListener("keyup", (key) => {
 	keysPressed = keysPressed.filter((item) => item !== key.key);
 });
@@ -212,6 +221,7 @@ onmousemove = function (e) {
 	try {
 		myPlayer.angle = Math.atan2(diffY, diffX) + Math.PI / 2;
 	} catch (e) {
+		//During game load myPlayer is undefined, this error can be ignored as it will be defined soon.
 		if (e.message != 'can\'t access property "angle", myPlayer is undefined') {
 			throw e;
 		}
@@ -311,7 +321,7 @@ function drawJoystick(ctx) {
 	ctx.fill();
 }
 
-//Images
+//Load the images
 const bg = new Image();
 bg.src = "bg.png";
 const btn = new Image();
@@ -371,18 +381,21 @@ const FPImg = new Image();
 FPImg.src = Math.floor(Math.random()*2) == 1 ? "./red.png" : "./blue.png";
 const bananaImg = new Image();
 bananaImg.src = "../banana/banana.png";
-//CHRISTMAS
-const christmasTreeFrame1 = new Image();
+const ticketImage = new Image();
+ticketImage.src = "../Ticket.png"
+
+//Christmas images not loaded for now
+/*const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
-const ticketImage = new Image();
-ticketImage.src = "../Ticket.png"
-var cFrame = 1;
+var cFrame = 1;*/
+
 
 //Other Variables
 let ctx;
 var myPlayer;
+var clonedPlayer;
 let players = [];
 let bombs = [];
 let bullets = [];
@@ -427,6 +440,7 @@ let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LO
 let leaderboardData = null;
 let showingExtraDebugInfo = 0;
 
+//Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
 const planeData = {
 	"Plane":{"centerPoint":[33,30],"music":null},
 	"colour_planes/Blue":{"centerPoint":[33,30],"music":null},
@@ -450,7 +464,7 @@ const planeData = {
 	"SEC":{"centerPoint":[27,29],"music":null},
 	"coconut":{"centerPoint":[32,32],"music":"https://johnny-airlines.co.uk/island.mp3"},
 	"shark":{"centerPoint":[132,222],"music":null},
-	"OG":{"centerPoint":[27,29],"music":null},
+	"OG":{"centerPoint":[27,29],"music":null}
 }
 
 //Particle Variables
@@ -490,7 +504,6 @@ var colorPalette = {
 		]
 	}
 };
-var particleEffect = true;
 var particles = [],
 	centerX = gameArea.canvas.width / 2,
 	centerY = gameArea.canvas.height / 2,
@@ -585,8 +598,8 @@ var frame = function () {
 	});
 };
 
-//Plane constructor
-class p {
+//Player constructor
+class playerObject {
 	constructor() {
 		(this.username = ""), (this.displayName = ""), (this.size = 22 * 3);
 		this.x = 0;
@@ -602,7 +615,7 @@ class p {
 		this.health = 100;
 		this.contrailColour = "default";
 	}
-	update() {
+	drawBg() {
 		ctx = gameArea.context;
 		ctx.textAlign = "center";
 		ctx.save();
@@ -622,20 +635,13 @@ class p {
 		ctx.rotate(this.angle);
 		var planeimg = new Image();
 		planeimg.src = this.plane;
-		/*ctx.drawImage(
+		ctx.drawImage(
 			planeimg,
-			-this.size / 2,
-			-this.size / 2,
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
 			planeimg.width,
 			planeimg.height,
-		);*/
-			ctx.drawImage(
-				planeimg,
-				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
-				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
-				planeimg.width,
-				planeimg.height,
-			);
+		);
 		ctx.restore();
 		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
@@ -663,20 +669,13 @@ class p {
 		ctx.rotate(this.angle);
 		var planeimg = new Image();
 		planeimg.src = this.plane;
-		/*ctx.drawImage(
+		ctx.drawImage(
 			planeimg,
-			-this.size / 2,
-			-this.size / 2,
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
+			-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
 			planeimg.width,
 			planeimg.height,
-		);*/
-			ctx.drawImage(
-				planeimg,
-				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[0],
-				-planeData[this.plane.replace("https://johnny-airlines.co.uk/","").replace("http://localhost:8000/","").replace(".png","")].centerPoint[1],
-				planeimg.width,
-				planeimg.height,
-			);
+		);
 		ctx.restore();
 		ctx.font = "24px DEFAULT FONT";
 		ctx.textAlign = "center";
@@ -916,6 +915,7 @@ function missileShoot() {
 		db.ref(`bullets/${key}`).set(bullet);
 	}
 }
+
 document.getElementById("changeDisplayName").addEventListener("click",updateDisplayNamePrompt);
 function updateDisplayNamePrompt() {
 	document.getElementById("closebtn").click();
@@ -1039,7 +1039,6 @@ function jumbleStreakLeaderboardUpdate() {
 		db.ref(`leaderboards`).set(leaderboardData);
 	});
 }
-
 
 function boostbar() {
 	ctx = gameArea.context;
@@ -1249,21 +1248,6 @@ function playerCollisionCheck(a, b, c, d) {
 	);
 }
 
-function sendPlayerToDB(player) {
-	// Use the player's ID instead of the push() method
-	playersRef.child(player.id).set(player);
-}
-
-function fetchPlayer(playerName) {
-	for (fPl of players) {
-		if (fPl.username == playerName) {
-			return fPl;
-		}
-	}
-	return null;
-}
-
-
 function jerryCansDraw() {
 	for (var i = 0; i < 20; i++) {
 		drawImageAtFixedPosition(jerryCanImage,jerryCans[i][0]-31,jerryCans[i][1]-31,62,62);
@@ -1332,6 +1316,7 @@ function ticketDraw() {
 		if (ticketX < 0) { ticketX += 16000 }
 		if (ticketX > 16000) { ticketX -= 16000 }
 		if (ticketY < 0) { ticketY += 16000 }
+		
 		if (ticketY > 16000) { ticketY -= 16000 }
 		db.ref(`/`).update({
 			presentX:ticketX,
@@ -1851,7 +1836,8 @@ function christmasBoss() {
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
 	gameArea.resize();
-	myPlayer = new p();
+	myPlayer = new playerObject();
+	
 	if (debugMode) {
 		window.myPlayer = myPlayer;
 	}
@@ -1861,6 +1847,20 @@ function startGame(displayName, email, uid, plane) {
 	myPlayer.id = uid;
 	myPlayer.x = -8000;
 	myPlayer.y = -8000;
+
+	if (debugMode) {
+		clonedPlayer = new playerObject();
+		clonedPlayer.displayName = "clone";
+		clonedPlayer.username = "clone";
+		clonedPlayer.id = uid + "clone";
+		clonedPlayer.x = -8050;
+		clonedPlayer.y = -8050;
+		clonedPlayer.plane = plane;
+	} else {
+		clonedPlayer = null;
+		playersRef.child(uid + "clone").remove();
+	}
+
 	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
 		myPlayer.fuel = snapshot.val();
 	});
@@ -1871,7 +1871,8 @@ function startGame(displayName, email, uid, plane) {
 	}
 	db.ref(`users/${uid}/lastLogin`).set(Date.now());
 	
-	sendPlayerToDB(myPlayer);
+	playersRef.child(myPlayer.id).set(myPlayer);
+
 	var userStatusDatabaseRef = db.ref(`/status/${uid}`)
 	db.ref(`.info/connected`).on('value', (snapshot) => {
 		if (snapshot.val() == false) {
@@ -1947,7 +1948,7 @@ function startGame(displayName, email, uid, plane) {
 		if (daysSinceEpoch() > jumbleData.lastJumbleUpdate) {
 			fetch('./words.json').then(response => {
 				if (!response.ok) {
-					throw new Error(`HTTP error! Status: ${response.status}`);
+					throw new Error(`Error! Status: ${response.status}`);
 				}
 				return response.json()
 			}).then((data) => {
@@ -2002,7 +2003,7 @@ function startGame(displayName, email, uid, plane) {
 		for (const playerId in players) {
 			let player = players[playerId];
 			if (player.id != myPlayer.id) {
-				const playerInstance = new p();
+				const playerInstance = new playerObject();
 				Object.assign(playerInstance, player);
 				db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
 					if (snapshot.val().state == "offline") {
@@ -2018,6 +2019,7 @@ function startGame(displayName, email, uid, plane) {
 						}
 
 						db.ref(`players/${player.id}`).remove()
+						db.ref(`players/${player.id}clone`).remove()
 					}
 				})
 			}
@@ -2131,7 +2133,7 @@ function updateGameArea(lastTimestamp) {
 		}
 	}
 
-	myPlayer.update();
+	myPlayer.drawBg();
 	cloudsDraw();
 	gameArea.context.font = "24px DEFAULT FONT"; 
 	gameArea.context.fillText(`Fps: ${Math.round(fps)}`,gameArea.canvas.width/2,20);
@@ -2151,19 +2153,36 @@ function updateGameArea(lastTimestamp) {
 	noticeboard();
 	drawLeaderboards();
 
-
 	myPlayer.planeDraw();
 	boostbar();
 	miniMap();
 	if (debugMode) {
 		showDebugStats();
 	}
-	sendPlayerToDB(myPlayer);
+
+	playersRef.child(myPlayer.id).set(myPlayer);
+	if (debugMode) {
+		clonedPlayer.x += 10;
+		clonedPlayer.y += 2;
+		if (clonedPlayer.x > 0) {
+			clonedPlayer.x -= 16000;
+		}
+		if (clonedPlayer.y > 0) {
+			clonedPlayer.y -= 16000;
+		}
+		if (clonedPlayer.x + 16000 < 0) {
+			clonedPlayer.x -= 16000;
+		}
+		if (clonedPlayer.y + 16000 < 0) {
+			clonedPlayer.y -= 16000;
+		}
+		playersRef.child(clonedPlayer.id).set(clonedPlayer);
+	}
 
 	for (const playerId in players) {
 		let player = players[playerId];
 		if (player.id != myPlayer.id) {
-			const playerInstance = new p();
+			const playerInstance = new playerObject();
 			Object.assign(playerInstance, player);
 			playerInstance.draw();
 			ctx = gameArea.context;
@@ -2193,6 +2212,8 @@ function updateGameArea(lastTimestamp) {
 
 	}
 	drawJoystick(ctx);
+
+	//Force game loop and fps to 30
 	if ((Date.now()-currentTime)<(1000/30)) {
 		setTimeout(() => {
 			updateGameArea(currentTime)
