@@ -334,8 +334,6 @@ const mini = new Image();
 mini.src = "minimap.png";
 const up = new Image();
 up.src = "https://johnny-airlines.co.uk/up.png";
-const bulletImg = new Image();
-bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
 const jerryCanImage = new Image();
@@ -344,8 +342,6 @@ const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
-const rocketImg = new Image();
-rocketImg.src = "../rocket.png"
 const gambleImg = new Image();
 gambleImg.src = "../gamble.png"
 const die1 = new Image();
@@ -383,6 +379,17 @@ const bananaImg = new Image();
 bananaImg.src = "../banana/banana.png";
 const ticketImage = new Image();
 ticketImage.src = "../Ticket.png"
+
+const rocketImg = new Image();
+rocketImg.src = "../rocket.png"
+const bulletImg = new Image();
+bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
+
+const bulletTypeImages = {
+	"bullet": bulletImg,
+	"rocket": rocketImg,
+	"nuke": rocketImg
+}
 
 //Christmas images not loaded for now
 /*const christmasTreeFrame1 = new Image();
@@ -892,7 +899,7 @@ function shoot() {
 			myPlayer.id,
 			Date.now(),
 			key,
-			false
+			"bullet"
 		);
 		db.ref(`bullets/${key}`).set(bullet);
 	}
@@ -909,7 +916,7 @@ function missileShoot() {
 			myPlayer.id,
 			Date.now(),
 			key,
-			true
+			"rocket"
 		);
 		db.ref(`bullets/${key}`).set(bullet);
 	}
