@@ -395,7 +395,6 @@ var cFrame = 1;*/
 //Other Variables
 let ctx;
 var myPlayer;
-var clonedPlayer;
 let players = [];
 let bombs = [];
 let bullets = [];
@@ -1848,19 +1847,6 @@ function startGame(displayName, email, uid, plane) {
 	myPlayer.x = -8000;
 	myPlayer.y = -8000;
 
-	if (debugMode) {
-		clonedPlayer = new playerObject();
-		clonedPlayer.displayName = "clone";
-		clonedPlayer.username = "clone";
-		clonedPlayer.id = uid + "clone";
-		clonedPlayer.x = -8050;
-		clonedPlayer.y = -8050;
-		clonedPlayer.plane = plane;
-	} else {
-		clonedPlayer = null;
-		playersRef.child(uid + "clone").remove();
-	}
-
 	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
 		myPlayer.fuel = snapshot.val();
 	});
@@ -2161,23 +2147,6 @@ function updateGameArea(lastTimestamp) {
 	}
 
 	playersRef.child(myPlayer.id).set(myPlayer);
-	if (debugMode) {
-		clonedPlayer.x += 10;
-		clonedPlayer.y += 2;
-		if (clonedPlayer.x > 0) {
-			clonedPlayer.x -= 16000;
-		}
-		if (clonedPlayer.y > 0) {
-			clonedPlayer.y -= 16000;
-		}
-		if (clonedPlayer.x + 16000 < 0) {
-			clonedPlayer.x -= 16000;
-		}
-		if (clonedPlayer.y + 16000 < 0) {
-			clonedPlayer.y -= 16000;
-		}
-		playersRef.child(clonedPlayer.id).set(clonedPlayer);
-	}
 
 	for (const playerId in players) {
 		let player = players[playerId];
