@@ -694,14 +694,14 @@ class playerObject {
 }
 
 class Bullet {
-	constructor(x, y, angle, player, timestamp, key, isRocket) {
+	constructor(x, y, angle, player, timestamp, key, type) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		this.player = player;
 		this.timestamp = timestamp;
 		this.key = key;
-		this.isRocket = isRocket;
+		this.type = type;
 	}
 	draw() {
 		ctx = gameArea.context;
@@ -711,7 +711,7 @@ class Bullet {
 			-this.y + myPlayer.y + gameArea.canvas.height / 2,
 		);
 		ctx.rotate(this.angle - (Math.PI / 2) * 3 + Math.PI);
-		if (this.isRocket) {
+		if (this.type == "rocket") {
 			ctx.drawImage(rocketImg, 0, 0, -300 /4, -130 / 4);
 		}
 		else {
@@ -721,7 +721,7 @@ class Bullet {
 	}
 	update() {
 		let speed = 75
-		if (this.isRocket) {
+		if (this.type == "rocket") {
 			let selectedPlayerX = myPlayer.x
 			let selectedPlayerY = myPlayer.y
 			playersRef.once("value", (snapshot) => {
@@ -743,10 +743,10 @@ class Bullet {
 		this.x -= speed * Math.cos(this.angle + (Math.PI / 2) * 3);
 		this.y -= speed * Math.sin(this.angle + (Math.PI / 2) * 3);
 		db.ref(`bullets/${this.key}`).set(this);
-		if (Date.now() - this.timestamp > 10000 && this.isRocket) {
+		if (Date.now() - this.timestamp > 10000 && this.type == "rocket") {
 			db.ref(`bullets/${this.key}`).remove();
 		}
-		else if (Date.now()-this.timestamp > 2000 && !this.isRocket) {
+		else if (Date.now()-this.timestamp > 2000 && !(this.type == "rocket")) {
 			db.ref(`bullets/${this.key}`).remove();
 		}
 	} 
@@ -1706,7 +1706,7 @@ function pvp() {
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
 			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
-				if (bullet.isRocket) {
+				if (bullet.type == "rocket") {
 					myPlayer.health -= 10
 					console.log("huh")
 				} else {
@@ -1781,7 +1781,7 @@ function christmasBoss() {
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
 			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
-				if (bullet.isRocket) {
+				if (bullet.type == "rocket") {
 					myPlayer.health -= 10
 					console.log("huh")
 				} else {
@@ -1913,7 +1913,7 @@ function startGame(displayName, email, uid, plane) {
 					bulletData.player,
 					bulletData.timestamp,
 					bulletData.key,
-					bulletData.isRocket
+					bulletData.type
 				);
 				bullets.push(bullet);
 			})
