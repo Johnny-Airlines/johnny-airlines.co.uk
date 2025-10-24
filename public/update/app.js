@@ -2021,7 +2021,7 @@ function startGame(displayName, email, uid, plane) {
 		db.ref(`boss`).set(christmasBossData);
 	});
 	db.ref(`boss`).on("value", (snapshot) => {
-		//christmasBossData = snapshot.val();
+		christmasBossData = snapshot.val();
 	});
 
 	playersRef.on("value", (snapshot) => {
