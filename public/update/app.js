@@ -392,11 +392,14 @@ const bulletTypeImages = {
 }
 
 //Christmas images not loaded for now
+const christmasBossImg = new Image();
+christmasBossImg.src = "../shrek.png";
 /*const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
 var cFrame = 1;*/
+
 
 
 //Other Variables
@@ -445,6 +448,11 @@ var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
 let showingExtraDebugInfo = 0;
+var christmasBossData = {
+	x: 8000,
+	y: 8000,
+	health: 3000,
+}
 
 //Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
 const planeData = {
@@ -1767,6 +1775,23 @@ function christmasBoss() {
 	ctx = gameArea.context
 	//pvpOn - is player in pvp area, if so, show health and enable damage
 	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	if (debugMode) {
+		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,500,500);
+		let highestV = 0.1
+		let ticketPlayer = 0
+		for (const player in players) {
+			var playerVelocity = Math.sqrt(players[player]["vx"]**2+players[player]["vy"]**2)
+			if (playerVelocity > highestV) {
+				highestV = playerVelocity
+				ticketPlayer = players[player].id
+			}
+		}
+		if (ticketPlayer == myPlayer.id) {
+			christmasBossData.x = myPlayer.x * -1;
+			christmasBossData.y = myPlayer.y * -1;
+			db.ref(`boss`).update(christmasBossData);
+		}
+	}
 	if (pvpOn) {
 		ctx.beginPath();
 		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
@@ -1990,6 +2015,14 @@ function startGame(displayName, email, uid, plane) {
 			jerryCans[i][1] = snapshot.val();
 		});
 	}
+
+	db.ref(`boss`).get().then((snapshot) => {
+		let thingy = snapshot.val();
+		db.ref(`boss`).set(christmasBossData);
+	});
+	db.ref(`boss`).on("value", (snapshot) => {
+		//christmasBossData = snapshot.val();
+	});
 
 	playersRef.on("value", (snapshot) => {
 		players = snapshot.val();
