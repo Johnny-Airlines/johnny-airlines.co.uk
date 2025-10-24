@@ -30,16 +30,37 @@ window.addEventListener("keydown", (e) => {
 	interfaceElement.innerHTML = textBody + "|"
 });
 
-const repl_env = {
-	"+": (a,b) => {return a.value+b.value},
-	"-": (a,b) => {return a.value-b.value},
-	"*": (a,b) => {return a.value*b.value},
-	"/": (a,b) => {return Math.floor(a.value/b.value)}
+class Env {
+	constructor(outer) {
+		this.outer = outer;
+		this.data = {};
+	}
+
+	set(symKey,malVal) {
+		this.data[symKey] = malVal;
+		return malVal;
+	}
+
+	get(symKey) {
+		if (Object.hasOwn(this.data,symKey)) {
+			return this.data[symKey];
+		} else {
+			get(this.outer);
+		}
+	}
 }
+
+const repl_env = new Env(null);
+repl_env.set("+",(a,b)=>{return a.value+b.value});
+repl_env.set("-",(a,b)=>{return a.value-b.value});
+repl_env.set("*",(a,b)=>{return a.value*b.value});
+repl_env.set("/",(a,b) => {return Math.floor(a.value/b.value)});
+repl_env.set("def!",(a,b) => { return repl_env.set(a.value,b.value) } );
+repl_env.set("let*",(a,b) => { return 
 
 class MalType {
 	constructor(string) {
-		if (string == "+" || string == "-" || string == "*" || string == "/") {
+		if (string == "+" || string == "-" || string == "*" || string == "/" || string == "def!" || string == "let*") {
 			this.type = "symbol";
 			this.value = string;
 		} else if (string == "(" || string == ")") {
@@ -51,6 +72,9 @@ class MalType {
 		} else if (string == "list") {
 			this.type = "list"
 			this.value = [];
+		} else {
+			this.type = "identifier";
+			this.value = string;
 		}
 	}
 
@@ -135,7 +159,7 @@ function read() {
 function evaluate(ast) {
 	let firstParamater = ast;
 	if (firstParamater.type == "symbol") {
-		return repl_env[firstParamater.value];
+		return repl_env.get(firstParamater.value);
 	} else if (firstParamater.type == "list") {
 		if (firstParamater.value.length != 0) {
 			let func = evaluate(firstParamater.value.shift());

@@ -334,8 +334,6 @@ const mini = new Image();
 mini.src = "minimap.png";
 const up = new Image();
 up.src = "https://johnny-airlines.co.uk/up.png";
-const bulletImg = new Image();
-bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
 const towersImg = new Image();
 towersImg.src = "https://johnny-airlines.co.uk/towers.png";
 const jerryCanImage = new Image();
@@ -344,8 +342,6 @@ const jerryCanIconImage = new Image();
 jerryCanIconImage.src = "../jerryCanIcon.png";
 const heartImage = new Image();
 heartImage.src = "../heart.png";
-const rocketImg = new Image();
-rocketImg.src = "../rocket.png"
 const gambleImg = new Image();
 gambleImg.src = "../gamble.png"
 const die1 = new Image();
@@ -384,12 +380,26 @@ bananaImg.src = "../banana/banana.png";
 const ticketImage = new Image();
 ticketImage.src = "../Ticket.png"
 
+const rocketImg = new Image();
+rocketImg.src = "../rocket.png"
+const bulletImg = new Image();
+bulletImg.src = "https://johnny-airlines.co.uk/bullet.png";
+
+const bulletTypeImages = {
+	"bullet": bulletImg,
+	"rocket": rocketImg,
+	"nuke": rocketImg
+}
+
 //Christmas images not loaded for now
+const christmasBossImg = new Image();
+christmasBossImg.src = "../shrek.png";
 /*const christmasTreeFrame1 = new Image();
 christmasTreeFrame1.src = "../christmasTreeFrames/1.png";
 const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
 var cFrame = 1;*/
+
 
 
 //Other Variables
@@ -438,6 +448,11 @@ var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
 let showingExtraDebugInfo = 0;
+var christmasBossData = {
+	x: 8000,
+	y: 8000,
+	health: 3000,
+}
 
 //Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
 const planeData = {
@@ -694,14 +709,14 @@ class playerObject {
 }
 
 class Bullet {
-	constructor(x, y, angle, player, timestamp, key, isRocket) {
+	constructor(x, y, angle, player, timestamp, key, type) {
 		this.x = x;
 		this.y = y;
 		this.angle = angle;
 		this.player = player;
 		this.timestamp = timestamp;
 		this.key = key;
-		this.isRocket = isRocket;
+		this.type = type;
 	}
 	draw() {
 		ctx = gameArea.context;
@@ -711,7 +726,7 @@ class Bullet {
 			-this.y + myPlayer.y + gameArea.canvas.height / 2,
 		);
 		ctx.rotate(this.angle - (Math.PI / 2) * 3 + Math.PI);
-		if (this.isRocket) {
+		if (this.type == "rocket") {
 			ctx.drawImage(rocketImg, 0, 0, -300 /4, -130 / 4);
 		}
 		else {
@@ -721,7 +736,7 @@ class Bullet {
 	}
 	update() {
 		let speed = 75
-		if (this.isRocket) {
+		if (this.type == "rocket") {
 			let selectedPlayerX = myPlayer.x
 			let selectedPlayerY = myPlayer.y
 			playersRef.once("value", (snapshot) => {
@@ -743,10 +758,10 @@ class Bullet {
 		this.x -= speed * Math.cos(this.angle + (Math.PI / 2) * 3);
 		this.y -= speed * Math.sin(this.angle + (Math.PI / 2) * 3);
 		db.ref(`bullets/${this.key}`).set(this);
-		if (Date.now() - this.timestamp > 10000 && this.isRocket) {
+		if (Date.now() - this.timestamp > 10000 && this.type == "rocket") {
 			db.ref(`bullets/${this.key}`).remove();
 		}
-		else if (Date.now()-this.timestamp > 2000 && !this.isRocket) {
+		else if (Date.now()-this.timestamp > 2000 && !(this.type == "rocket")) {
 			db.ref(`bullets/${this.key}`).remove();
 		}
 	} 
@@ -892,7 +907,7 @@ function shoot() {
 			myPlayer.id,
 			Date.now(),
 			key,
-			false
+			"bullet"
 		);
 		db.ref(`bullets/${key}`).set(bullet);
 	}
@@ -909,7 +924,7 @@ function missileShoot() {
 			myPlayer.id,
 			Date.now(),
 			key,
-			true
+			"rocket"
 		);
 		db.ref(`bullets/${key}`).set(bullet);
 	}
@@ -1706,7 +1721,7 @@ function pvp() {
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
 			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
-				if (bullet.isRocket) {
+				if (bullet.type == "rocket") {
 					myPlayer.health -= 10
 					console.log("huh")
 				} else {
@@ -1760,6 +1775,23 @@ function christmasBoss() {
 	ctx = gameArea.context
 	//pvpOn - is player in pvp area, if so, show health and enable damage
 	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	if (debugMode) {
+		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,500,500);
+		let highestV = 0.1
+		let ticketPlayer = 0
+		for (const player in players) {
+			var playerVelocity = Math.sqrt(players[player]["vx"]**2+players[player]["vy"]**2)
+			if (playerVelocity > highestV) {
+				highestV = playerVelocity
+				ticketPlayer = players[player].id
+			}
+		}
+		if (ticketPlayer == myPlayer.id) {
+			christmasBossData.x = myPlayer.x * -1;
+			christmasBossData.y = myPlayer.y * -1;
+			db.ref(`boss`).update(christmasBossData);
+		}
+	}
 	if (pvpOn) {
 		ctx.beginPath();
 		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
@@ -1781,7 +1813,7 @@ function christmasBoss() {
 		}
 		else if (Math.sqrt((bullet.x-myPlayer.x)**2 + (bullet.y-myPlayer.y)**2) < 100 && pvpOn) {
 			db.ref(`/bullets/${bullet.key}`).remove().then(()=>{
-				if (bullet.isRocket) {
+				if (bullet.type == "rocket") {
 					myPlayer.health -= 10
 					console.log("huh")
 				} else {
@@ -1913,7 +1945,7 @@ function startGame(displayName, email, uid, plane) {
 					bulletData.player,
 					bulletData.timestamp,
 					bulletData.key,
-					bulletData.isRocket
+					bulletData.type
 				);
 				bullets.push(bullet);
 			})
@@ -1983,6 +2015,14 @@ function startGame(displayName, email, uid, plane) {
 			jerryCans[i][1] = snapshot.val();
 		});
 	}
+
+	db.ref(`boss`).get().then((snapshot) => {
+		let thingy = snapshot.val();
+		db.ref(`boss`).set(christmasBossData);
+	});
+	db.ref(`boss`).on("value", (snapshot) => {
+		//christmasBossData = snapshot.val();
+	});
 
 	playersRef.on("value", (snapshot) => {
 		players = snapshot.val();
