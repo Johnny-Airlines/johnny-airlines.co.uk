@@ -1787,8 +1787,18 @@ function christmasBoss() {
 			}
 		}
 		if (ticketPlayer == myPlayer.id) {
-			christmasBossData.x = myPlayer.x * -1;
-			christmasBossData.y = myPlayer.y * -1;
+			let meanX = 0;
+			let meanY = 0;
+			let playerCount = 0;
+			for (const player in players) {
+				meanX += players[player]["x"];
+				meanY += players[player]["y"];
+				playerCount += 1;
+			}
+			meanX = meanX / playerCount;
+			meanY = meanY / playerCount;
+			christmasBossData.x = meanX * -1;
+			christmasBossData.y = meanY * -1;
 			db.ref(`boss`).update(christmasBossData);
 		}
 	}
