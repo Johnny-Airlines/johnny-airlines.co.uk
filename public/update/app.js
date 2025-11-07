@@ -448,10 +448,18 @@ var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
 let showingExtraDebugInfo = 0;
-var christmasBossData = {
-	x: 8000,
-	y: 8000,
+let christmasBossData;
+christmasBossData = {
+	x: 0,
+	y: 0,
 	health: 3000,
+	mode: "inactive",
+	action: null,
+	targetX: 0,
+	targetY: 0,
+	angle: 0,
+	circleAngle: 0,
+	participatingPlayers: []
 }
 
 //Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
@@ -1774,9 +1782,11 @@ function pvp() {
 function christmasBoss() {
 	ctx = gameArea.context
 	//pvpOn - is player in pvp area, if so, show health and enable damage
-	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	let pvpOn = playerCollisionCheck(8336,15680,10048,15776);
+	let width = 100;
+	let height = 100;
 	if (debugMode) {
-		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,500,500);
+		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x-width/2,christmasBossData.y-height/2,width,height);
 		let highestV = 0.1
 		let ticketPlayer = 0
 		for (const player in players) {
@@ -1786,19 +1796,49 @@ function christmasBoss() {
 				ticketPlayer = players[player].id
 			}
 		}
-		if (ticketPlayer == myPlayer.id) {
-			let meanX = 0;
-			let meanY = 0;
-			let playerCount = 0;
-			for (const player in players) {
-				meanX += players[player]["x"];
-				meanY += players[player]["y"];
-				playerCount += 1;
+		if (christmasBossData.mode == "inactive" && christmasBossData.action == "") {
+			if (playerCollisionCheck(christmasBossData.x-width/2,christmasBossData.x+width/2,christmasBossData.y-height/2,christmasBossData.y+height/2)) {
+				dialogue("SO YOU HAVE CHOSEN DEATH!",false,10000);	
+				christmasBossData.action = "toDefault"
+				christmasBossData.timestamp = Date.now();
+				db.ref(`boss`).update(christmasBossData);
 			}
-			meanX = meanX / playerCount;
-			meanY = meanY / playerCount;
-			christmasBossData.x = meanX * -1;
-			christmasBossData.y = meanY * -1;
+		}
+		if (ticketPlayer == myPlayer.id) {
+			if (christmasBossData.action == "toDefault") {
+				let meanX = 0;
+				let meanY = 0;
+				let playerCount = 0;
+				for (const player in players) {
+					meanX += players[player]["x"];
+					meanY += players[player]["y"];
+					playerCount += 1;
+				}
+				meanX = meanX / playerCount;
+				meanY = meanY / playerCount;
+				christmasBossData.targetX = meanX * -1;
+				christmasBossData.targetY = meanY * -1;
+				if ((Date.now() - christmasBossData.timestamp) > 5000) {
+					christmasBossData.centerX = christmasBossData.targetX;
+					christmasBossData.centerY = christmasBossData.targetY;
+					christmasBossData.targetY += 100;
+					christmasBossData.mode = "default";
+					christmasBossData.action = "";
+				}
+			}
+			else if (christmasBossData.mode == "inactive") {
+				christmasBossData.x = 10466;
+				christmasBossData.y = 10873;
+			} else if (christmasBossData.mode == "default") {
+				christmasBossData.circleAngle += 0.1;
+				christmasBossData.targetX = christmasBossData.centerX + 500 * Math.sin(christmasBossData.circleAngle);
+				christmasBossData.targetY = christmasBossData.centerY + 500 * Math.cos(christmasBossData.circleAngle);
+				christmasBossData.x = christmasBossData.targetX;
+				christmasBossData.y = christmasBossData.targetY;
+			}
+			christmasBossData.angle = Math.atan2(-christmasBossData.x+christmasBossData.targetX,-christmasBossData.y+christmasBossData.targetY) + (Math.PI / 2) * 3;
+			christmasBossData.x -= (Math.abs(christmasBossData.x-christmasBossData.targetX) < 5 ? 0 : 25) * Math.sin(christmasBossData.angle+ (Math.PI / 2) * 3);
+			christmasBossData.y -= (Math.abs(christmasBossData.y-christmasBossData.targetY) < 5 ? 0 : 25) * Math.cos(christmasBossData.angle+ (Math.PI / 2) * 3);
 			db.ref(`boss`).update(christmasBossData);
 		}
 	}
@@ -2028,7 +2068,22 @@ function startGame(displayName, email, uid, plane) {
 
 	db.ref(`boss`).get().then((snapshot) => {
 		let thingy = snapshot.val();
-		db.ref(`boss`).set(christmasBossData);
+		var christmasBossDataTemplate = {
+			x: 0,
+			y: 0,
+			health: 3000,
+			mode: "inactive",
+			action: "",
+			participatingPlayers: [""],
+			timestamp: 0,
+			centerX: 0,
+			centerY: 0,
+			targetX: 0,
+			targetY: 0,
+			angle: 0,
+			circleAngle: 0
+		}
+		db.ref(`boss`).set(christmasBossDataTemplate);
 	});
 	db.ref(`boss`).on("value", (snapshot) => {
 		christmasBossData = snapshot.val();
@@ -2055,7 +2110,6 @@ function startGame(displayName, email, uid, plane) {
 						}
 
 						db.ref(`players/${player.id}`).remove()
-						db.ref(`players/${player.id}clone`).remove()
 					}
 				})
 			}
