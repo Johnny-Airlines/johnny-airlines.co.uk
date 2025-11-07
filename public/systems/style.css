@@ -1,0 +1,140 @@
+.box {
+    border:5px black solid;
+    width:fit-content;
+    float:left;
+    border-radius:20px;
+    margin:10px;
+    padding:5px;
+    color:gainsboro;
+    height:200px
+}
+.flowchart-container {
+    clear: both;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 20px;
+    margin-top: 20px;
+    gap: 20px;
+}
+.flowchart-box {
+    border: 5px black solid;
+    width: 200px;
+    text-align: center;
+    border-radius: 20px;
+    padding: 15px;
+    position: relative;
+}
+.arrow {
+    width: 60px;
+    height: 2px;
+    background-color: black;
+    position: relative;
+    margin: 0 10px;
+}
+.arrow::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -4px;
+    width: 0;
+    height: 0;
+    border-left: 10px solid black;
+    border-top: 5px solid transparent;
+    border-bottom: 5px solid transparent;
+}
+p {
+    width:300px;
+}
+.logo {
+    position: fixed;
+    top:0;
+    left:0;
+    width:100px;
+    height:100px;
+}
+.logoI {
+    width:100px;
+    height:100px;
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1000;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0,0,0,0.8);
+}
+
+.modal-content {
+    background-color: #395B64;
+    color: white;
+    margin: 5% auto;
+    padding: 30px;
+    border: 5px solid black;
+    border-radius: 20px;
+    width: 80%;
+    max-height: 85vh;
+    overflow-y: auto;
+    position: relative;
+    animation: modalOpen 0.3s ease-out;
+}
+
+.modal-content h2 {
+    font-size: 2.5em;
+    margin-bottom: 20px;
+}
+
+.modal-content h3 {
+    font-size: 2em;
+    margin-bottom: 15px;
+}
+
+.modal-content p, .modal-content li {
+    font-size: 1.4em;
+    line-height: 1.6;
+}
+
+.modal-image {
+    max-width: 300px;
+    height: auto;
+    display: block;
+    margin: 20px auto;
+    border-radius: 10px;
+    box-shadow: 0 0 15px rgba(0,0,0,0.3);
+}
+
+.close-button {
+    color: white;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.close-button:hover {
+    color: #999;
+}
+
+.box, .flowchart-box {
+    cursor: pointer;
+    transition: transform 0.2s;
+}
+
+.box:hover, .flowchart-box:hover {
+    transform: scale(1.02);
+}
+
+@keyframes modalOpen {
+    from {
+        transform: scale(0);
+        opacity: 0;
+    }
+    to {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
