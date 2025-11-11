@@ -3,15 +3,29 @@
 <head>
     <title>404 Johnny Airlines 404</title>
     <link rel="shortcut icon" type="image/png" href="favicon.ico">
-    <link rel="stylesheet" href="maincss.css">
+    <link rel="stylesheet" href="./maincss.css">
 </head>
 <body>
     <div class="logo"><a href="https://johnny-airlines.co.uk" class="logo"><img src="LOGO.png" class="logoI"></a></div>
-    <p> ERROR 404</p>
-    <p> Page not found sorry you couldn't find what you wanted ):</p>
-    <script type="text/javascript">
-        window.location="/"
+    <h1 style="text-align: center;font-size: 100px;"> ERROR 404 </h1>
+    <p> The plane is in the air but can not find somewhere to land. Perhaps try returning to the <a href="/">mainland.</a></p>
+    <p>You attempted to access: <strong id="requested-url"></strong></p>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Use window.location.href to get the full URL from the browser's address bar
+            var requestedUrl = window.location.href;
+            
+            // Get the element where you want to display the URL
+            var urlElement = document.getElementById('requested-url');
+            
+            // Display the URL to the user
+            if (urlElement) {
+                urlElement.textContent = requestedUrl;
+            }
+        });
     </script>
 </body>
 </html>
+
 

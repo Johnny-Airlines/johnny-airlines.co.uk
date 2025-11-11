@@ -1,0 +1,50 @@
+<!doctype html>
+<html>
+<head>
+	<script src="https://cdn.jsdelivr.net/pyodide/v0.29.0/full/pyodide.js"></script>
+</head>
+
+<body>
+	<p>
+	You can execute any Python code. Just enter something in the box below and
+	click the button.
+	</p>
+	<button onclick="evaluatePython()">Run</button>
+	<textarea id="input" style="width: 50%;" rows="6"></textarea>
+	<textarea id="output" style="width: 50%;" rows="6" disabled></textarea>
+
+	<script>
+		const output = document.getElementById("output");
+		const code = document.getElementById("input");
+
+		function addToOutput(s) {
+			output.value += s;
+		}
+
+		output.value = "Initializing...\n";
+		// init Pyodide
+		async function main() {
+			let pyodide = await loadPyodide();
+			output.value = "Ready!\n";
+			return pyodide;
+		}
+		let pyodideReadyPromise = main();
+
+		async function evaluatePython() {
+			let pyodide = await pyodideReadyPromise;
+			output.value = "";
+			try {
+				const arr = [];
+				pyodide.setStdout({ batched: (msg) => arr.push(msg) });
+				let output = pyodide.runPython(code.value);
+				for (count in arr) {
+					addToOutput(arr[count] + "\n");
+				}
+			} catch (err) {
+				addToOutput(err);
+			}
+		}
+	</script>
+</body>
+</html>
+
