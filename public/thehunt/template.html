@@ -24,7 +24,9 @@
 
 			//NEEDS TO BE CHANGED
 			//Encrypt the real answer at https://johnny-airlines.co.uk/thehunt/hash.html
-			answer = "8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d" 
+			//HASHING DOES NOT WORK IN THE SCHOOL SYSTEM
+			//answer = "8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d" 
+			correctAnswer = "yes"
 
 			async function digestMessage(message) {
 				const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
@@ -34,24 +36,24 @@
 			}
 
 			function submit() {
-				digestMessage(userAnswer.value).then((digestHex)=>{
-					if (digestHex == answer) {
-						confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
-						fadeOut = setInterval(()=>{
-							modal.style.opacity = opacity + "%";
-							opacity -= 0.5;
-							if (opacity <= 0) {
-								modal.style.display = "none";
-								clearInterval(fadeOut);
-							}
-						},10)
-					} else {
-						confirmation.innerText = "❌ WRONG!"
-						setTimeout(()=>{
-							confirmation.innerText = "";
-						},2000);
-					}
-				});
+				//digestMessage(userAnswer.value).then((digestHex)=>{
+				if (userAnswer.value == correctAnswer) {
+					confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
+					fadeOut = setInterval(()=>{
+						modal.style.opacity = opacity + "%";
+						opacity -= 0.5;
+						if (opacity <= 0) {
+							modal.style.display = "none";
+							clearInterval(fadeOut);
+						}
+					},10)
+				} else {
+					confirmation.innerText = "❌ WRONG!"
+					setTimeout(()=>{
+						confirmation.innerText = "";
+					},2000);
+				}
+				//});
 			}
 		</script>
 	</body>
