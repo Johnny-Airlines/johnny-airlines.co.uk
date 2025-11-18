@@ -1,0 +1,60 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<link rel="stylesheet" href="../maincss.css">
+		<title>Challenge 3</title> 
+		<meta charset="UTF-8">
+	</head>
+	<body>
+		<div style="width:100%;height:100%;background-color:black;position:absolute;top:0px;left:0px" id="modal">
+			<div style="width:33.3333%;height:33.333333%;background-color:gray;position:relative;top:33.3333%;left:33.3333%;text-align:center"margin:auto;>
+				<h1> Submit Your Answer to Challenge 2 </h1> 
+				<input placeholder="Answer here" id="answer"></input>
+				<button onclick="submit()">Submit</button>
+				<br>
+				<strong id="confirmation"></strong>
+			</div>
+		</div>
+		<p> Think you know the answer? <a href="./Challenge 4.html" style="all:revert;color:white">Click here to submit your answer and move onto the next challenge.</a></p> <!-- CHANGE NEXT CHALLENGE NUMBER -->
+		<script>
+			userAnswer = document.getElementById("answer");
+			modal = document.getElementById("modal");
+			confirmation = document.getElementById("confirmation");
+			opacity = 100;
+
+			//NEEDS TO BE CHANGED
+			//Encrypt the real answer at https://johnny-airlines.co.uk/thehunt/hash.html
+			//HASHING DOES NOT WORK IN THE SCHOOL SYSTEM
+			//answer = "8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d" 
+			correctAnswer = "placeholder 3"
+
+			async function digestMessage(message) {
+				const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
+				const hashBuffer = await window.crypto.subtle.digest("SHA-256", msgUint8); // hash the message
+				const hashHex = new Uint8Array(hashBuffer).toHex(); // Convert ArrayBuffer to hex string.
+					return hashHex;
+			}
+
+			function submit() {
+				//digestMessage(userAnswer.value).then((digestHex)=>{
+				if (userAnswer.value == correctAnswer) {
+					confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
+					fadeOut = setInterval(()=>{
+						modal.style.opacity = opacity + "%";
+						opacity -= 0.5;
+						if (opacity <= 0) {
+							modal.style.display = "none";
+							clearInterval(fadeOut);
+						}
+					},10)
+				} else {
+					confirmation.innerText = "❌ WRONG!"
+					setTimeout(()=>{
+						confirmation.innerText = "";
+					},2000);
+				}
+				//});
+			}
+		</script>
+	</body>
+</html>
