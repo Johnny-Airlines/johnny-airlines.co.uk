@@ -4,26 +4,16 @@
 		<link rel="stylesheet" href="../maincss.css">
 		<title>Challenge 2</title>
 		<meta charset="UTF-8">
-		<style>
-		:root {
-			/* default value, will override on #container */
-			--grid-cols: 1;
-			--grid-rows: 1;
-		}
-
-		#containerDiv {
-			display: grid;
-			grid-template-rows: repeat(var(--grid-rows), 20px 3px);
-			grid-template-columns: repeat(var(--grid-cols),20px 3px);
-		}
-
-		.grid-item {
-			font-size: 0.5em;
-			text-align: center;
-			width: 20px;
-			height: 20px;
-		}
-		</style>
+<style>
+.pointed{
+  width: 7px;
+  height: 7px;
+  background-color: black;
+  border-radius: 50%;
+  margin-bottom: 20rem;
+  position:absolute;
+}
+</style>
 	</head>
 	<body>
 		<div style="width:100%;height:100%;background-color:black;position:absolute;top:0px;left:0px" id="modal">
@@ -35,50 +25,57 @@
 				<strong id="confirmation"></strong>
 			</div>
 		</div>
-		<div id="containerDiv">
-		</div>
+		
+		<canvas id="game" width="900px" height="800px"></canvas>
 		<p> Think you know the answer? <a href="./Challenge 3.html" style="all:revert;color:white">Click here to submit your answer and move onto the next challenge.</a></p>
+		<div class="cursor pointed"></div>
 		<script>
-			const map =[];
-  			const rows = 16*2;
-			const columns = 16*4;
-			container = document.getElementById("containerDiv")
-			container.style.setProperty('--grid-rows', rows/2);
-			container.style.setProperty('--grid-cols', columns/2);
-			let cell;
-			let ID;
-			for (let c = 0; c < ( rows * columns); c++) {
-				cell = document.createElement("div");
-				row = Math.floor(c/rows)
-				col = c % columns
-				ID = `#${row}#${col}`
-				cell.id = ID;
-				if (map.includes(ID)) {
-					cell.style.backgroundColor = "black";
-				} else {
-					cell.style.backgroundColor = "white";
-				}
-				if ((col+1) % 2 == 0) {
-					//cell.style.width = "3px";
-					cell.style.backgroundColor = "black";
-				}
-				if ((row+1) % 2 == 0) {
-					//cell.style.height = "3px";
-					cell.style.backgroundColor = "black";
-				}
-				cell.onclick = () => {toggle()};
-				container.appendChild(cell).className = "grid-item";
+			Number.prototype.clamp = function(min, max) {
+			  return Math.min(Math.max(this, min), max);
+			};
+			function rgbToHex(r, g, b) {
+				if (r > 255 || g > 255 || b > 255)
+					throw "Invalid color component";
+				return ((r << 16) | (g << 8) | b).toString(16);
 			}
-			function toggle(id) {
-				console.log(event.srcElement.id);
-				if (event.srcElement.style.backgroundColor == "white") {
-					event.srcElement.style.backgroundColor = "black";
-					map.push(event.srcElement.id);
-				} else {
-					event.srcElement.style.backgroundColor = "white";
-					map.splice(map.indexOf(event.srcElement.id),1);
+			const mazeImage = new Image();
+			mazeImage.src = "./maze2.png";
+			gameArea = document.getElementById("game");
+			ctx = gameArea.getContext("2d");
+			mazeImage.onload = () => {
+				ctx.fillStyle = "white";
+				ctx.fillRect(0,0,1000,800);
+				ctx.fillStyle = "green";
+				ctx.fillRect(0,0,50,800);
+				ctx.fillStyle = "red";
+				ctx.fillRect(850,0,50,800);
+				ctx.drawImage(mazeImage,50,0,800,800);
+			};
+			state = false
+			gameArea.onmousemove = (e) => {
+				x = e.clientX - 8
+				y = e.clientY - 8
+				p = ctx.getImageData(x,y,1,1).data;
+				c = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
+				if (c == "#000000") {
+					state = true
+					alert("monkey")
 				}
 			}
+			const cursorRounded = document.querySelector('.rounded');
+			const cursorPointed = document.querySelector('.pointed');
+
+
+				const moveCursor = (e)=> {
+					const mouseY = e.clientY;
+					const mouseX = e.clientX;
+					//cursorPointed.style.transform = `translate3d(${mouseX.clamp(8,808)}px, ${mouseY.clamp(8,808)}px, 0)`;
+					cursorPointed.style.left = `${mouseX.clamp(8,908)}px`
+					cursorPointed.style.top = `${mouseY.clamp(8,908)}px`
+				}
+
+			window.addEventListener('mousemove', moveCursor)
+
 		</script>
 		<script>
 			userAnswer = document.getElementById("answer");
