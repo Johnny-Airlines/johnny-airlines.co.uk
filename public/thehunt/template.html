@@ -22,39 +22,42 @@
 			confirmation = document.getElementById("confirmation");
 			opacity = 100;
 
-			//NEEDS TO BE CHANGED
-			//Encrypt the real answer at https://johnny-airlines.co.uk/thehunt/hash.html
-			//HASHING DOES NOT WORK IN THE SCHOOL SYSTEM
-			//answer = "8a798890fe93817163b10b5f7bd2ca4d25d84c52739a645a889c173eee7d9d3d" 
-			correctAnswer = "yes"
-
-			async function digestMessage(message) {
-				const msgUint8 = new TextEncoder().encode(message); // encode as (utf-8) Uint8Array
-				const hashBuffer = await window.crypto.subtle.digest("SHA-256", msgUint8); // hash the message
-				const hashHex = new Uint8Array(hashBuffer).toHex(); // Convert ArrayBuffer to hex string.
-					return hashHex;
+			previousChallengeNumber = 1 //NEEDS TO BE CHANGED
+			async function checkAnswer() {
+				const url = `https://api.johnny-airlines.co.uk/checkAnswer/${previousChallengeNumber}/${userAnswer.value}`
+				try {
+					const response = await fetch(url);
+					if (!response.ok) {
+						throw new Error(`Response status: ${response.status}`);
+					}
+					const result = await response.json();
+					return result["correct"]
+				} catch (error) {
+					console.error(error.message);
+				}
 			}
 
 			function submit() {
 				//digestMessage(userAnswer.value).then((digestHex)=>{
-				if (userAnswer.value == correctAnswer) {
-					confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
-					fadeOut = setInterval(()=>{
-						modal.style.opacity = opacity + "%";
-						opacity -= 0.5;
-						if (opacity <= 0) {
-							modal.style.display = "none";
-							clearInterval(fadeOut);
+					checkAnswer().then((result)=>{
+						if (result) {
+							confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
+							fadeOut = setInterval(()=>{
+								modal.style.opacity = opacity + "%";
+								opacity -= 0.5;
+								if (opacity <= 0) {
+									modal.style.display = "none";
+									clearInterval(fadeOut);
+								}
+							},10)
+						} else {
+							confirmation.innerText = "❌ WRONG!"
+							setTimeout(()=>{
+								confirmation.innerText = "";
+							},2000);
 						}
-					},10)
-				} else {
-					confirmation.innerText = "❌ WRONG!"
-					setTimeout(()=>{
-						confirmation.innerText = "";
-					},2000);
+					});
 				}
-				//});
-			}
 		</script>
 	</body>
 </html>
