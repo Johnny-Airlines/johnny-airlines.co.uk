@@ -2,27 +2,27 @@
 <html>
 	<head>
 		<link rel="stylesheet" href="../maincss.css">
-		<title>Challenge 1</title> <!-- CHANGE CHALLENGE NUMBER -->
+		<title>Challenge 3</title> 
 		<meta charset="UTF-8">
 	</head>
 	<body>
 		<div style="width:100%;height:100%;background-color:black;position:absolute;top:0px;left:0px" id="modal">
 			<div style="width:33.3333%;height:33.333333%;background-color:gray;position:relative;top:33.3333%;left:33.3333%;text-align:center"margin:auto;>
-				<h1> Submit Your Answer to Challenge 0 </h1> <!-- CHANGE PREVIOUS CHALLENGE NUMBER -->
+				<h1> Submit Your Answer to Challenge 2 </h1> 
 				<input placeholder="Answer here" id="answer"></input>
 				<button onclick="submit()">Submit</button>
 				<br>
 				<strong id="confirmation"></strong>
 			</div>
 		</div>
-		<p> Think you know the answer? <a href="./2.html" style="all:revert;color:white">Click here to submit your answer and move onto the next challenge.</a></p> <!-- CHANGE NEXT CHALLENGE NUMBER -->
+		<p> Think you know the answer? <a href="./Challenge 4.html" style="all:revert;color:white">Click here to submit your answer and move onto the next challenge.</a></p> <!-- CHANGE NEXT CHALLENGE NUMBER -->
 		<script>
 			userAnswer = document.getElementById("answer");
 			modal = document.getElementById("modal");
 			confirmation = document.getElementById("confirmation");
 			opacity = 100;
 
-			previousChallengeNumber = 1 //NEEDS TO BE CHANGED
+			previousChallengeNumber = 2
 			async function checkAnswer() {
 				const url = `https://api.johnny-airlines.co.uk/checkAnswer/${previousChallengeNumber}/${userAnswer.value}`
 				try {
@@ -39,25 +39,25 @@
 
 			function submit() {
 				//digestMessage(userAnswer.value).then((digestHex)=>{
-					checkAnswer().then((result)=>{
-						if (result) {
-							confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
-							fadeOut = setInterval(()=>{
-								modal.style.opacity = opacity + "%";
-								opacity -= 0.5;
-								if (opacity <= 0) {
-									modal.style.display = "none";
-									clearInterval(fadeOut);
-								}
-							},10)
-						} else {
-							confirmation.innerText = "❌ WRONG!"
-							setTimeout(()=>{
-								confirmation.innerText = "";
-							},2000);
-						}
+				checkAnswer().then((result)=>{
+					if (result) {
+						confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
+						fadeOut = setInterval(()=>{
+							modal.style.opacity = opacity + "%";
+							opacity -= 0.5;
+							if (opacity <= 0) {
+								modal.style.display = "none";
+								clearInterval(fadeOut);
+							}
+						},10)
+					} else {
+						confirmation.innerText = "❌ WRONG!"
+						setTimeout(()=>{
+							confirmation.innerText = "";
+						},2000);
+					}
 					});
-				}
-		</script>
+			}
+		</script>	
 	</body>
 </html>
