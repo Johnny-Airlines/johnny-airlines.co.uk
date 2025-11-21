@@ -4,16 +4,16 @@
 		<link rel="stylesheet" href="../maincss.css">
 		<title>Challenge 2</title>
 		<meta charset="UTF-8">
-<style>
+		<style>
 .pointed{
-  width: 7px;
-  height: 7px;
-  background-color: black;
-  border-radius: 50%;
-  margin-bottom: 20rem;
-  position:absolute;
+	width: 7px;
+	height: 7px;
+	background-color: black;
+	border-radius: 50%;
+	margin-bottom: 20rem;
+	position:absolute;
 }
-</style>
+		</style>
 	</head>
 	<body>
 		<div style="width:100%;height:100%;background-color:black;position:absolute;top:0px;left:0px" id="modal">
@@ -23,59 +23,100 @@
 				<button onclick="submit()">Submit</button>
 				<br>
 				<strong id="confirmation"></strong>
+				<br>
+				<a href="./Challenge 1.html" style="text-decoration:revert;color:revert;">Don't know? Go back using this link.</a>
 			</div>
 		</div>
-		
+
 		<canvas id="game" width="900px" height="800px"></canvas>
 		<p> Think you know the answer? <a href="./Challenge 3.html" style="all:revert;color:white">Click here to submit your answer and move onto the next challenge.</a></p>
 		<div class="cursor pointed"></div>
 		<script>
 			Number.prototype.clamp = function(min, max) {
-			  return Math.min(Math.max(this, min), max);
+				return Math.min(Math.max(this, min), max);
 			};
 			function rgbToHex(r, g, b) {
 				if (r > 255 || g > 255 || b > 255)
 					throw "Invalid color component";
 				return ((r << 16) | (g << 8) | b).toString(16);
+			};
+			function waitingKeypress() {
+				return new Promise((resolve) => {
+					document.addEventListener('keydown', onKeyHandler);
+					function onKeyHandler(e) {
+						if (e.keyCode === 13) {
+							document.removeEventListener('keydown', onKeyHandler);
+							resolve();
+						}
+					}
+				});
 			}
-			const mazeImage = new Image();
-			mazeImage.src = "./maze2.png";
+			function drawMaze(src) {
+				let mazeImage = new Image();
+				mazeImage.src = src;
+				mazeImage.onload = () => {
+					ctx.fillStyle = "white";
+					ctx.fillRect(0,0,900,800);
+					ctx.fillStyle = "purple";
+					ctx.fillRect(0,0,50,800);
+					ctx.fillStyle = "red";
+					ctx.fillRect(850,0,50,800);
+					ctx.drawImage(mazeImage,50,0,800,800);
+				};
+			};
 			gameArea = document.getElementById("game");
 			ctx = gameArea.getContext("2d");
-			mazeImage.onload = () => {
-				ctx.fillStyle = "white";
-				ctx.fillRect(0,0,1000,800);
-				ctx.fillStyle = "green";
-				ctx.fillRect(0,0,50,800);
-				ctx.fillStyle = "red";
-				ctx.fillRect(850,0,50,800);
-				ctx.drawImage(mazeImage,50,0,800,800);
-			};
-			state = false
-			gameArea.onmousemove = (e) => {
+			ctx.fillStyle = "black"
+			ctx.fillRect(0,0,900,800);
+			ctx.font = "32px serif";
+			ctx.textAlign = "center";
+			ctx.fillStyle = "white";
+			ctx.fillText("5 mouse mazes must be done.",450,100);
+			ctx.fillText("Each one revealing a letter.",450,200);
+			ctx.fillText("If you touch a wall you must restart.",450,300);
+			ctx.fillText("Or if your mouse leaves the maze",450,350);
+			ctx.fillText("Unscramble the letters to find the answer.",450,425);
+			ctx.fillText("The finish line is red, the start green.",450,500);
+			ctx.fillText("If the start is purple, then you must head to the start.",450,550);
+			ctx.fillText("Good luck.",450,650);
+			ctx.fillText("Press Enter to begin.",450,750);
+			var isWinning = false
+			game();
+			async function game() {
+				await waitingKeypress();
+				drawMaze("./maze2.png")
+				window.addEventListener('mousemove', moveCursor);
+				window.addEventListener('mousemove',colourDetection);
+			}
+			colourDetection = (e) => {
 				x = e.clientX - 8
 				y = e.clientY - 8
 				p = ctx.getImageData(x,y,1,1).data;
-				c = "#" + ("000000" + rgbToHex(p[0], p[1], p[2])).slice(-6);
-				if (c == "#000000") {
-					state = true
-					alert("monkey")
+				console.log(p[0],p[1],p[2]);
+				if (p[0] == 128 && p[1] == 0 && p[2] == 128) {
+					isWinning = true;
+					ctx.fillStyle = "green";
+					ctx.fillRect(0,0,50,800);
+				} else if (p[0] == 255 && p[1] == 0 && p[2] == 0 && isWinning) {
+					alert("winner")
+				} else if ((!(p[0] == 255 && p[1] == 255 && p[2] == 255) && p[1] != 128) || x > 800 || x < 0 || y > 800 || y < 0) {
+					isWinning = false;
+					ctx.fillStyle = "purple";
+					ctx.fillRect(0,0,50,800);
 				}
 			}
 			const cursorRounded = document.querySelector('.rounded');
 			const cursorPointed = document.querySelector('.pointed');
 
+			const moveCursor = (e)=> {
+				const mouseY = e.clientY;
+				const mouseX = e.clientX;
+				//cursorPointed.style.transform = `translate3d(${mouseX.clamp(8,808)}px, ${mouseY.clamp(8,808)}px, 0)`;
+				cursorPointed.style.left = `${mouseX.clamp(8,908)}px`
+				cursorPointed.style.top = `${mouseY.clamp(8,808)}px`
+			}
 
-				const moveCursor = (e)=> {
-					const mouseY = e.clientY;
-					const mouseX = e.clientX;
-					//cursorPointed.style.transform = `translate3d(${mouseX.clamp(8,808)}px, ${mouseY.clamp(8,808)}px, 0)`;
-					cursorPointed.style.left = `${mouseX.clamp(8,908)}px`
-					cursorPointed.style.top = `${mouseY.clamp(8,908)}px`
-				}
-
-			window.addEventListener('mousemove', moveCursor)
-
+			
 		</script>
 		<script>
 			userAnswer = document.getElementById("answer");
@@ -100,25 +141,25 @@
 
 			function submit() {
 				//digestMessage(userAnswer.value).then((digestHex)=>{
-				checkAnswer().then((result)=>{
-					if (result) {
-						confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
-						fadeOut = setInterval(()=>{
-							modal.style.opacity = opacity + "%";
-							opacity -= 0.5;
-							if (opacity <= 0) {
-								modal.style.display = "none";
-								clearInterval(fadeOut);
-							}
-						},10)
-					} else {
-						confirmation.innerText = "❌ WRONG!"
-						setTimeout(()=>{
-							confirmation.innerText = "";
-						},2000);
-					}
+					checkAnswer().then((result)=>{
+						if (result) {
+							confirmation.innerText = "✅ Well done you got that correct! Proceeding to next challenge ..."
+							fadeOut = setInterval(()=>{
+								modal.style.opacity = opacity + "%";
+								opacity -= 0.5;
+								if (opacity <= 0) {
+									modal.style.display = "none";
+									clearInterval(fadeOut);
+								}
+							},10)
+						} else {
+							confirmation.innerText = "❌ WRONG!"
+							setTimeout(()=>{
+								confirmation.innerText = "";
+							},2000);
+						}
 					});
-			}
+				}
 		</script>
 	</body>
 </html>
