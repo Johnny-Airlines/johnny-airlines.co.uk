@@ -21,6 +21,7 @@ async function query(data) {
 		}
 
 		let json = await response.json();
+		print(json);
 		return json;
 	} catch (error) {
 		console.error(error.message);
@@ -44,13 +45,16 @@ function img_gen() {
 		.catch(error => {
 			console.error("Error fetching IP address:", error)
 		});
-	if (document.getElementById("msg-input-img").value.toLowerCase() == "tristan") {
-		document.getElementById("image").src = "../tristan.png"
-		return;
+	query = document.getElementById("msg-input-img").value
+	if (query.toLowerCase() == "tristan") {
+		//document.getElementById("image").src = "../tristan.png"
+		tristan = ["monkey","neanderthal","large forehead","erm actually nerd"] 
+		query = tristan[Math.floor(Math.random()*tristan.length)];
 	}
-	query(document.getElementById("msg-input-img").value).then((response) => {
-		console.log(response);
-		let url = response.data[0].url;
+	//query(document.getElementById("msg-input-img").value)
+	fetch(`https://api.johnny-airlines.co.uk/genImg/${query}`).then(response=>response.json()).then((data) => {
+		console.log(data);
+		let url = data.url;
 		document.getElementById("image").src = url;
 	});
 }
