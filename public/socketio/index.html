@@ -1,0 +1,180 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>SocketIO Command & Broadcast Test</title>
+    <!-- Load the Socket.IO client library -->
+    <script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
+    <style>
+        body { font-family: sans-serif; padding: 20px; background-color: #f0f4f8; }
+        .card { background: white; padding: 25px; border-radius: 12px; box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); max-width: 700px; margin: 0 auto; }
+        h1 { font-size: 1.5em; margin-bottom: 20px; color: #1e40af; }
+        button { padding: 10px 15px; margin-right: 10px; cursor: pointer; border-radius: 6px; border: none; font-weight: bold; transition: background-color 0.2s; }
+        #connect-btn { background-color: #4ade80; color: white; }
+        #disconnect-btn { background-color: #f87171; color: white; }
+        #send-command-btn { background-color: #3b82f6; color: white; }
+        #controls-send { display: flex; gap: 10px; margin-top: 15px; }
+        #command-input { flex-grow: 1; padding: 10px; border: 1px solid #ccc; border-radius: 6px; }
+        #log-container { margin-top: 20px; border: 1px solid #d1d5db; padding: 10px; max-height: 250px; overflow-y: scroll; background-color: #ffffff; border-radius: 6px; }
+        .log-line { font-family: monospace; white-space: pre-wrap; word-wrap: break-word; font-size: 0.9em; margin-bottom: 5px; border-bottom: 1px dotted #e0e0e0; padding-bottom: 3px; }
+        .success { color: green; }
+        .warning { color: orange; }
+        .error { color: red; }
+        .info { color: blue; }
+        .broadcast { color: purple; font-weight: bold; }
+    </style>
+</head>
+<body>
+    <div class="card">
+        <h1>SocketIO Command & Broadcast Test</h1>
+        <div id="controls-connection">
+            <button id="connect-btn">Connect</button>
+            <button id="disconnect-btn" disabled>Disconnect</button>
+        </div>
+        
+        <div id="controls-send">
+            <input type="text" id="command-input" placeholder="Type command/message to broadcast..." disabled>
+            <button id="send-command-btn" disabled>Send Command</button>
+			<input type="text" id="targets" placeholder="Targets">
+			<input type="text" id="username-input" placeholder="Username">
+        </div>
+        
+        <h2>Console Log</h2>
+        <div id="log-container"></div>
+    </div>
+
+    <script>
+        //const SERVER_URL = 'http://127.0.0.1:5000';
+		const SERVER_URL = 'https://api.johnny-airlines.co.uk'
+        let socket; 
+        
+        // Get UI elements
+        const connectBtn = document.getElementById('connect-btn');
+        const disconnectBtn = document.getElementById('disconnect-btn');
+        const sendCommandBtn = document.getElementById('send-command-btn');
+		const usernameInput = document.getElementById('username-input');
+        const commandInput = document.getElementById('command-input');
+		const targetsInput = document.getElementById('targets');
+        const logContainer = document.getElementById('log-container');
+        
+        //const myUserId = (Math.random() * 1000).toFixed(0); // Simple way to identify this client
+
+        // --- Logging Utility ---
+        function appendLog(level, message) {
+            const div = document.createElement('div');
+            const now = new Date().toLocaleTimeString();
+            div.className = `log-line ${level}`;
+            div.textContent = `[${now}] [${level.toUpperCase()}] ${message}`;
+            logContainer.appendChild(div);
+            logContainer.scrollTop = logContainer.scrollHeight;
+        }
+
+        // --- Connection / Disconnection Logic ---
+        function connectSocket() {
+            if (socket && socket.connected) {
+                appendLog('info', 'Socket is already connected.');
+                return;
+            }
+            
+            appendLog('info', `Attempting to connect to ${SERVER_URL}`);
+            socket = io(SERVER_URL);
+            
+            setupSocketHandlers(socket);
+
+            connectBtn.disabled = true;
+            disconnectBtn.disabled = false;
+        }
+
+        function disconnectSocket() {
+            if (socket) {
+                socket.disconnect();
+                appendLog('warning', 'Disconnect requested.');
+            }
+            connectBtn.disabled = false;
+            disconnectBtn.disabled = true;
+            sendCommandBtn.disabled = true;
+            commandInput.disabled = true;
+        }
+
+        // --- Command Sending Logic ---
+        function sendCommandMessage() {
+            const message = commandInput.value.trim();
+            if (!message) {
+                appendLog('warning', 'Please enter a command/message.');
+                return;
+            }
+            
+            if (socket && socket.connected) {
+                const commandData = { 
+                    command: message,
+					targets: document.getElementById('targets').value 
+                };
+                
+                // Send the command under the new event name
+                socket.emit('command_message', commandData); 
+                
+                appendLog('info', `SENT command: ${message}`);
+                commandInput.value = ''; // Clear input
+            } else {
+                appendLog('error', 'Cannot send: Socket is not connected.');
+            }
+        }
+
+        // --- Event Listeners and Handlers ---
+        function setupSocketHandlers(s) {
+            s.on('connect', () => {
+                appendLog('success', '✅ CONNECTED successfully!');
+                sendCommandBtn.disabled = false;
+                commandInput.disabled = false;
+				usernameInput.disabled = true;
+				s.emit('establish_username',{'username':usernameInput.value});
+				appendLog('info',`Establishing username as ${usernameInput.value}`)
+            });
+
+            s.on('disconnect', () => {
+                appendLog('warning', '❌ DISCONNECTED from server.');
+                sendCommandBtn.disabled = true;
+                commandInput.disabled = true;
+                connectBtn.disabled = false;
+                disconnectBtn.disabled = true;
+            });
+
+            s.on('connect_error', (error) => {
+                appendLog('error', `🛑 Connection Error: ${error.message}`);
+            });
+
+            // 1. Receives the welcome message (from handle_connect)
+            s.on('status', (data) => {
+                appendLog('info', `✨ STATUS Event Received: ${JSON.stringify(data)}`);
+            });
+
+            // 2. Receives the date update (from the /setDate API call)
+            s.on('date_update', (data) => {
+                appendLog('success', `🗓️ DATE_UPDATE Event Received: ${JSON.stringify(data)}`);
+            });
+            
+            // 3. Receives the broadcast command from another user (from the new server handler)
+            s.on('new_command', (data) => {
+                appendLog('broadcast', `📢 COMMAND RECEIVED from username ${data.username}: "${data.command}"`);
+            });
+            
+            // (Keeping the old test handlers just in case)
+            s.on('test_response', (data) => {
+                appendLog('info', `📢 TEST_RESPONSE Event Received: ${JSON.stringify(data)}`);
+            });
+        }
+
+        // --- Initial Setup ---
+        connectBtn.addEventListener('click', connectSocket);
+        disconnectBtn.addEventListener('click', disconnectSocket);
+        sendCommandBtn.addEventListener('click', sendCommandMessage);
+        
+        // Allow sending message with the Enter key
+        commandInput.addEventListener('keydown', (e) => {
+            if (e.key === 'Enter') {
+                sendCommandMessage();
+            }
+        });
+    </script>
+</body>
+</html>
