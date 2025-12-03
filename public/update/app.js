@@ -204,9 +204,6 @@ document.addEventListener("keydown", (key) => {
 			if (keysPressed[k] == "l" && !chatFocus) {
 				cloudsOn = cloudsOn ? false : true;
 			}
-			if (!isNaN(keysPressed[k])) {
-				showingExtraDebugInfo = keysPressed[k];
-			}
 		}
 	}
 });
@@ -405,6 +402,7 @@ var cFrame = 1;*/
 //Other Variables
 let ctx;
 var myPlayer;
+var isAdmin = true
 let players = [];
 let bombs = [];
 let bullets = [];
@@ -447,7 +445,6 @@ var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
-let showingExtraDebugInfo = 0;
 let christmasBossData;
 christmasBossData = {
 	x: 0,
@@ -1668,31 +1665,43 @@ function cloudsDraw() {
 	}
 }
 
-function showDebugStats() {
+function updateAdminTable() {
 	ctx = gameArea.context;
 	ctx.font = "24px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.fillText(`Coords: x: ${Math.round(myPlayer.x)}, y: ${Math.round(myPlayer.y)}`,gameArea.canvas.width/2,40);
-	if (showingExtraDebugInfo == 1) {
-		ctx.fillText("Players Coords",gameArea.canvas.width/2,60);
-		let counter = 60;
-		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: x: ${Math.round(playerData.x)}, y: ${Math.round(playerData.y)}`,gameArea.canvas.width/2,counter);
+	let adminTable = document.getElementById("admin-table");
+	for (const [playerUID, playerData] of Object.entries(players)) {
+		let rowWithPlayerUsername = false
+		for (let row of adminTable.rows) {
+			if (row.children[0].innerText == playerData.username) {
+				rowWithPlayerUsername = row
+			}
 		}
-	} else if (showingExtraDebugInfo == 2) {
-		ctx.fillText("Players UIDS",gameArea.canvas.width/2,60);
-		let counter = 60;
-		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: ${playerUID}`,gameArea.canvas.width/2,counter);
+		if (rowWithPlayerUsername == false) {
+			let newRow = adminTable.insertRow(adminTable.rows.length);
+			let usernameCell = newRow.insertCell(0);
+			let displayNameCell = newRow.insertCell(1);
+			let UIDCell = newRow.insertCell(2);
+			let coordsCell = newRow.insertCell(3);
+			let sendCommandCheckbox = newRow.insertCell(4);
+			usernameCell.innerText = playerData.username
+			displayNameCell.innerText = playerData.displayName
+			UIDCell.innerText = playerData.id
+			sendCommandCheckbox.innerHTML = "<input type='checkbox'>"
+		} else {
+			rowWithPlayerUsername.children[3].innerText = `${Math.round(playerData.x*-1)},${Math.round(playerData.y*-1)}`
 		}
-	} else if (showingExtraDebugInfo == 3) {
-		ctx.fillText("Players Planes",gameArea.canvas.width/2,60);
-		let counter = 60;
+	}
+	for (let i=0;i < adminTable.rows.length;i++) {
+		let rowWithoutPlayerUsername = false
 		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: ${playerData.plane}`,gameArea.canvas.width/2,counter);
+			if (adminTable.rows[i].children[0].innerText == playerData.username) {
+				rowWithoutPlayerUsername = true
+			}	
+		}
+		if (rowWithoutPlayerUsername == false && adminTable.rows[i].children[0].innerText != "Username") {
+			adminTable.deleteRow(i)
 		}
 	}
 }
@@ -1917,8 +1926,7 @@ function christmasBoss() {
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
 	gameArea.resize();
-	myPlayer = new playerObject();
-	
+	myPlayer = new playerObject();	
 	if (debugMode) {
 		window.myPlayer = myPlayer;
 	}
@@ -1928,6 +1936,12 @@ function startGame(displayName, email, uid, plane) {
 	myPlayer.id = uid;
 	myPlayer.x = -8000;
 	myPlayer.y = -8000;
+
+	if (!["johnnyairlinesceo","frazeldazel","hmmmm"].includes(myPlayer.username)) {
+		document.getElementById("Admin-tablink").remove()
+		document.getElementById("Admin").remove()
+		isAdmin = false
+	}
 
 	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
 		myPlayer.fuel = snapshot.val();
@@ -2246,8 +2260,9 @@ function updateGameArea(lastTimestamp) {
 	myPlayer.planeDraw();
 	boostbar();
 	miniMap();
-	if (debugMode) {
-		showDebugStats();
+
+	if (isAdmin) {
+		updateAdminTable();
 	}
 
 	playersRef.child(myPlayer.id).set(myPlayer);
@@ -2296,4 +2311,5 @@ function updateGameArea(lastTimestamp) {
 		updateGameArea(currentTime)
 	}
 }
+
 })();
