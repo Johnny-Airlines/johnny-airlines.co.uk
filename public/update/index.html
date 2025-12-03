@@ -8,6 +8,7 @@
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 		<link rel="stylesheet" href="chat.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -131,7 +132,7 @@
 						<button id="select-none">Deselect all</button>
 						<button id="select-invert">Invert selection</button>
 						<br>
-						<input type="text" placeholder="e.g. rickroll SELECTION"></input>
+						<input type="text" placeholder="e.g. rickroll" id="cmd"></input>
 						<button id="send-cmd">Send command</button>
 					</div>
 					<div style="float:right;width:calc(50% - 3px);">
