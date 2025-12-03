@@ -101,3 +101,16 @@ html {
 #Shop {background-color:green;}
 #Info {background-color:blue;}
 #Controls {background-color:red;}
+#Admin {background-color:purple;}
+
+tr {
+	background-color: #FFFFFF;
+	color: black
+}
+tr:nth-child(even) {
+	background-color: #D6EEEE
+}
+table {
+	border-spacing: 0px;
+	border: 1px solid black;
+}

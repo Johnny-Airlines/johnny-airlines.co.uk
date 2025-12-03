@@ -37,6 +37,23 @@ var isOfflineForDatabase = {
 var isOnlineForDatabase = {
 	state: "online"
 }
+let socket;
+function connectSocket(username) {
+	if (socket && socket.connected) {
+		throw Error("Already connect to socket")
+	}
+	socket = io('https://api.johnny-airlines.co.uk');
+	setupSocketHandlers(socket,username);
+}
+
+function setupSocketHandlers(s,username) {
+	s.on('connect', () => {
+		s.emit('establish_username',{'username':username});
+	});
+	s.on('new_command', (data) => {
+		executeCommand(data);
+	});
+}
 
 //Sign in user
 firebase.auth().onAuthStateChanged((user) => {
@@ -46,7 +63,8 @@ firebase.auth().onAuthStateChanged((user) => {
 		var uid = user.uid;
 		const displayName = user.displayName;
 		const email =
-			user.email.replace("@johnny-airlines.co.uk", "") || prompt("");
+			user.email.replace("@johnny-airlines.co.uk", "") || prompt("Username: ");
+		connectSocket(email)
 		const photoURL = user.photoURL;
 		//Loading the default font
 		let PixelFont = new FontFace(
@@ -141,29 +159,6 @@ document.addEventListener("keydown", (key) => {
 							lastJumbleSolve,
 						});
 					}
-					if (dialoguePromptUse == "sendCommand") {
-						if (isValidCommand(dialoguePrompt)) {
-							db.ref(`cmds`).push({
-								command: dialoguePrompt,
-							});
-						} else {
-							dialogue("Invalid command",false,2000)
-						}
-					}
-					if (dialoguePromptUse == "sendPromptCMD") {
-						let unames = []
-						for (let player in players) {
-							unames.push(players[player]["username"])
-						}
-						["hmmmm","johnnyairlinesceo","frazeldazel"].forEach((person) => {
-							if (unames.includes(person)) {
-								let command = `sendMessage ${person} "${dialoguePrompt}"`
-								db.ref(`cmds`).push({
-									command,
-								});
-							};
-						});
-					}
 				}
 				isDialoguePrompt = false;
 				dialoguePrompt = "";
@@ -203,9 +198,6 @@ document.addEventListener("keydown", (key) => {
 			}
 			if (keysPressed[k] == "l" && !chatFocus) {
 				cloudsOn = cloudsOn ? false : true;
-			}
-			if (!isNaN(keysPressed[k])) {
-				showingExtraDebugInfo = keysPressed[k];
 			}
 		}
 	}
@@ -403,8 +395,10 @@ var cFrame = 1;*/
 
 
 //Other Variables
+let running = true;
 let ctx;
 var myPlayer;
+var isAdmin = true
 let players = [];
 let bombs = [];
 let bullets = [];
@@ -447,7 +441,6 @@ var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
-let showingExtraDebugInfo = 0;
 let christmasBossData;
 christmasBossData = {
 	x: 0,
@@ -461,6 +454,7 @@ christmasBossData = {
 	circleAngle: 0,
 	participatingPlayers: []
 }
+let adminTable = document.getElementById("admin-table");
 
 //Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
 const planeData = {
@@ -1349,91 +1343,15 @@ function ticketDraw() {
 	drawImageAtFixedPosition(ticketImage,ticketX-125,ticketY-70,250,140)
 }
 
-function isValidCommand(cmd) {
-	let cmdArgs = cmd.split(" ")
-	if (cmdArgs[0] == "kill") {
-		if (cmdArgs[1] == "frazeldazel" || cmdArgs[1] == "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") {
-			return false;
-		}
-		let unames = []
-		for (let player in players) {
-			unames.push(players[player]["username"])
-		}
-		if ((unames.includes(cmdArgs[1]) && cmdArgs[1] != "frazeldazel" && cmdArgs[1] != "johnnyairlinesceo" || cmdArgs[1] == "hmmmm") || (cmdArgs[1] == "all" && cmdArgs[0]=="kill")) {
-			return true;
-		}
-	}
-	if (cmdArgs[0] == "prison" || cmdArgs[0] == "release" || cmdArgs[0] == "sendMessage" || cmdArgs[0] == "boostSet" || cmdArgs[0] == "ticketSet" || cmdArgs[0] == "help" || cmdArgs[0] == "sendPrompt" || cmdArgs[0] == "tp") {
-		return true;
-	}
-	return false;
-}
 
-function executeCommand(cmdId, cmd) {
-	let cmdArgs = cmd.match(/(?:[^\s"]+|"[^"]*")+/g)?.map(s => s.replace(/^"|"$/g, ""));
-	if (cmdArgs[1] == "all" && myPlayer.username != "frazeldazel" && myPlayer.username != "johnnyairlinesceo" && myPlayer.username != "hmmmm") {
-		if (cmdArgs[0] == "kill") {
-			myPlayer.x = 20000
-			db.ref(`cmds/${cmdId}`).remove()
+function executeCommand(data) {
+	console.log(data)
+	if (data.username != myPlayer.username) {
+		if (data.command == "kill") {
+			running = false;	
 		}
-		if (cmdArgs[0] == "sendMessage") {
-			dialogue(cmdArgs[2],false,0);
-			db.ref(`cmds/${cmdId}`).remove();	
-		}
-	}
-	if (cmdArgs[0] == "help" && (myPlayer.username == "frazeldazel" || myPlayer.username == "johnnyairlinesceo" || myPlayer.username == "hmmmm")) {
-		myPlayer.x = -4000000;
-		db.ref(`cmds/${cmdId}`).remove();
-	}
-	if (cmdArgs[1] == myPlayer.username) {
-		if (cmdArgs[0] == "tp") {
-			console.log(cmdArgs)
-			myPlayer.x = parseInt(cmdArgs[2])
-			myPlayer.y = parseInt(cmdArgs[3])
-			db.ref(`cmds/${cmdId}`).remove()
-		}
-		if (cmdArgs[0] == "kill") {
-			myPlayer.x = 20000
-			db.ref(`cmds/${cmdId}`).remove()
-		}
-		if (cmdArgs[0] == "prison") {
-			myPlayer.x = -2656
-			myPlayer.y = -13312
-			myPlayer.fuel = 0
-			prisonCmdId = cmdId
-			db.ref(`users/${myPlayer.id}`).update({
-				fuel: myPlayer.fuel
-			});
-		}
-		if (cmdArgs[0] == "release") {
-			myPlayer.x = -8000
-			myPlayer.y = -8000
-			db.ref(`cmds/${prisonCmdId}`).remove()
-			db.ref(`cmds/${cmdId}`).remove()
-			prisonCmdId = "N/A"
-		}
-		if (cmdArgs[0] == "sendMessage") {
-			dialogue(cmdArgs[2],false,0);
-			db.ref(`cmds/${cmdId}`).remove();
-		}
-		if (cmdArgs[0] == "sendPrompt") {
-			dialogue(cmdArgs[2],true,0);
-			dialoguePromptUse = "sendPromptCMD"
-			db.ref(`cmds/${cmdId}`).remove();
-		}
-		if (cmdArgs[0] == "boostSet") {
-			myPlayer.fuel = parseFloat(cmdArgs[2]);
-			db.ref(`users/${myPlayer.id}`).update({
-				fuel: myPlayer.fuel
-			});
-			db.ref(`cmds/${cmdId}`).remove();
-		}
-		if (cmdArgs[0] == "ticketSet") {
-			tickets = parseFloat(cmdArgs[2]);
-			db.ref(`users/${myPlayer.id}`).update({
-				tickets: tickets
-			});
-			db.ref(`cmds/${cmdId}`).remove();
+		else if (data.command == "rickroll") {
+			running = "rickroll"
 		}
 	}
 }
@@ -1668,31 +1586,92 @@ function cloudsDraw() {
 	}
 }
 
-function showDebugStats() {
+
+document.getElementById("select-all").onclick = selectAll;
+function selectAll() {
+	for (let row of adminTable.rows) {
+		if (row.children[0].innerText != "Username") {
+			row.children[4].children[0].checked = true
+		}
+	}
+}
+
+document.getElementById("select-none").onclick = selectNone;
+function selectNone() {
+	for (let row of adminTable.rows) {
+		if (row.children[0].innerText != "Username") {
+			row.children[4].children[0].checked = false
+		}
+	}
+}
+
+document.getElementById("select-invert").onclick = selectInvert;
+function selectInvert() {
+	for (let row of adminTable.rows) {
+		if (row.children[0].innerText != "Username") {
+			row.children[4].children[0].checked = ! row.children[4].children[0].checked
+		}
+	}
+}
+
+document.getElementById("send-cmd").onclick = sendCMD;
+function sendCMD() {
+	let rawCommand = document.getElementById("cmd").value;
+	let cmdArgs = rawCommand.split(" ");
+	let usernames = "";
+	for (let row of adminTable.rows) {
+		if (row.children[0].innerText != "Username") { 
+			if (row.children[4].children[0].checked) {
+				usernames += (row.children[0].innerText) + " "
+			}
+		}
+	}
+	let commandData = {
+		command: cmdArgs[0],
+		targets: usernames
+	};
+	console.log(commandData)
+	// Send the command under the new event name
+	socket.emit('command_message', commandData); 
+
+}
+
+function updateAdminTable() {
 	ctx = gameArea.context;
 	ctx.font = "24px DEFAULT FONT";
 	ctx.fillStyle = "#000000";
 	ctx.fillText(`Coords: x: ${Math.round(myPlayer.x)}, y: ${Math.round(myPlayer.y)}`,gameArea.canvas.width/2,40);
-	if (showingExtraDebugInfo == 1) {
-		ctx.fillText("Players Coords",gameArea.canvas.width/2,60);
-		let counter = 60;
-		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: x: ${Math.round(playerData.x)}, y: ${Math.round(playerData.y)}`,gameArea.canvas.width/2,counter);
+	for (const [playerUID, playerData] of Object.entries(players)) {
+		let rowWithPlayerUsername = false
+		for (let row of adminTable.rows) {
+			if (row.children[0].innerText == playerData.username) {
+				rowWithPlayerUsername = row
+			}
 		}
-	} else if (showingExtraDebugInfo == 2) {
-		ctx.fillText("Players UIDS",gameArea.canvas.width/2,60);
-		let counter = 60;
-		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: ${playerUID}`,gameArea.canvas.width/2,counter);
+		if (rowWithPlayerUsername == false) {
+			let newRow = adminTable.insertRow(adminTable.rows.length);
+			let usernameCell = newRow.insertCell(0);
+			let displayNameCell = newRow.insertCell(1);
+			let UIDCell = newRow.insertCell(2);
+			let coordsCell = newRow.insertCell(3);
+			let sendCommandCheckbox = newRow.insertCell(4);
+			usernameCell.innerText = playerData.username
+			displayNameCell.innerText = playerData.displayName
+			UIDCell.innerText = playerData.id
+			sendCommandCheckbox.innerHTML = "<input type='checkbox'>"
+		} else {
+			rowWithPlayerUsername.children[3].innerText = `${Math.round(playerData.x*-1)},${Math.round(playerData.y*-1)}`
 		}
-	} else if (showingExtraDebugInfo == 3) {
-		ctx.fillText("Players Planes",gameArea.canvas.width/2,60);
-		let counter = 60;
+	}
+	for (let i=0;i < adminTable.rows.length;i++) {
+		let rowWithoutPlayerUsername = false
 		for (const [playerUID, playerData] of Object.entries(players)) {
-			counter += 20;
-			ctx.fillText(`${playerData.username}: ${playerData.plane}`,gameArea.canvas.width/2,counter);
+			if (adminTable.rows[i].children[0].innerText == playerData.username) {
+				rowWithoutPlayerUsername = true
+			}	
+		}
+		if (rowWithoutPlayerUsername == false && adminTable.rows[i].children[0].innerText != "Username") {
+			adminTable.deleteRow(i)
 		}
 	}
 }
@@ -1917,8 +1896,7 @@ function christmasBoss() {
 function startGame(displayName, email, uid, plane) {
 	gameArea.start();
 	gameArea.resize();
-	myPlayer = new playerObject();
-	
+	myPlayer = new playerObject();	
 	if (debugMode) {
 		window.myPlayer = myPlayer;
 	}
@@ -1928,6 +1906,12 @@ function startGame(displayName, email, uid, plane) {
 	myPlayer.id = uid;
 	myPlayer.x = -8000;
 	myPlayer.y = -8000;
+
+	if (!["johnnyairlinesceo","frazeldazel","hmmmm"].includes(myPlayer.username)) {
+		document.getElementById("Admin-tablink").remove()
+		document.getElementById("Admin").remove()
+		isAdmin = false
+	}
 
 	db.ref(`users/${uid}/fuel`).once("value").then((snapshot) => {
 		myPlayer.fuel = snapshot.val();
@@ -2006,9 +1990,6 @@ function startGame(displayName, email, uid, plane) {
 	});
 	db.ref(`presentY`).on("value", (snapshot) => {
 		ticketY = snapshot.val();
-	});
-	db.ref(`cmds`).on("child_added", (snapshot) => {
-		executeCommand(snapshot.key,snapshot.val().command)
 	});
 	db.ref(`jumble`).once("value").then((snapshot) => {
 		jumbleData = snapshot.val();
@@ -2170,9 +2151,6 @@ function updateGameArea(lastTimestamp) {
 	if (myPlayer.x < -200000) {
 		window.location.href = "https://johnny-airlines.co.uk/cmdDocs.txt";
 	}
-	if (myPlayer.x > 2000) {
-		window.location.replace("https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4");
-	}
 	if (myPlayer.x > 0) {
 		myPlayer.x -= 16000;
 	}
@@ -2189,11 +2167,6 @@ function updateGameArea(lastTimestamp) {
 			keysPressed.splice(keysPressed.indexOf("B"),1)
 			myPlayer.vx *= 1.1;
 			myPlayer.vy *= 1.1;
-		}
-		if (keysPressed.includes("C")) {
-			keysPressed.splice(keysPressed.indexOf("C"),1)
-			dialogue("Command: ", true, 0);
-			dialoguePromptUse = "sendCommand";
 		}
 		keysPressed.splice(keysPressed.indexOf("Shift"),1)
 	}
@@ -2246,8 +2219,9 @@ function updateGameArea(lastTimestamp) {
 	myPlayer.planeDraw();
 	boostbar();
 	miniMap();
-	if (debugMode) {
-		showDebugStats();
+
+	if (isAdmin) {
+		updateAdminTable();
 	}
 
 	playersRef.child(myPlayer.id).set(myPlayer);
@@ -2287,13 +2261,26 @@ function updateGameArea(lastTimestamp) {
 	drawJoystick(ctx);
 
 	//Force game loop and fps to 30
-	if ((Date.now()-currentTime)<(1000/30)) {
-		setTimeout(() => {
+	if (running == true) {
+		if ((Date.now()-currentTime)<(1000/30)) {
+			setTimeout(() => {
+				updateGameArea(currentTime)
+			}, (1000/30)-(Date.now()-currentTime));
+		}
+		else {
 			updateGameArea(currentTime)
-		}, (1000/30)-(Date.now()-currentTime));
-	}
-	else {
-		updateGameArea(currentTime)
+		}
+	} else {
+		end()
 	}
 }
+
+function end() {
+	if (running == "rickroll") {
+		window.location.replace("https://dn720407.ca.archive.org/0/items/rick-roll/Rick%20Roll.mp4");
+	} else {
+		window.location.replace("https://google.com");
+	}
+}
+
 })();

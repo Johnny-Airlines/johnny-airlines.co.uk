@@ -8,6 +8,7 @@
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-app.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-database.js"></script>
 		<script src="https://www.gstatic.com/firebasejs/8.2.1/firebase-auth.js"></script>
+		<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
 		<link rel="stylesheet" href="chat.css" />
 		<link rel="preconnect" href="https://fonts.googleapis.com">
 		<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -58,6 +59,7 @@
 				<button class="tablink" style="grid-area: Shop" onclick="openCity('Shop', this, 'green')">Shop</button>
 				<button class="tablink" style="grid-area: Info" onclick="openCity('Info', this, 'blue')">Info</button>
 				<button class="tablink" style="grid-area: Controls" onclick="openCity('Controls', this, 'red')">Controls</button>
+				<button class="tablink" style="grid-area: Admin" onclick="openCity('Admin', this, 'purple')" id="Admin-tablink">Admin</button>
 				</div>
 				<div id="Profile" class="tabcontent">
 					<div style="position: relative;display: grid;grid-template-areas: &quot;img dname dnameEdit&quot; &quot;img uname uname &quot; &quot;img ticket ticket&quot;;width: fit-content;">
@@ -122,6 +124,28 @@
 
 					Sometimes the game will not register when you release the mouse button, if this happens you can press "p" to stop the glitch.
 					</p>
+				</div>
+				<div id="Admin" class="tabcontent">
+					<h1>Admin</h1>
+					<div style="float:left;width:calc(50% - 3px);border-right:6px solid green">
+						<button id="select-all">Select all</button>
+						<button id="select-none">Deselect all</button>
+						<button id="select-invert">Invert selection</button>
+						<br>
+						<input type="text" placeholder="e.g. rickroll" id="cmd"></input>
+						<button id="send-cmd">Send command</button>
+					</div>
+					<div style="float:right;width:calc(50% - 3px);">
+						<table id="admin-table">
+							<thead>
+								<th>Username</th>
+								<th>Display name</th>
+								<th>UID</th>
+								<th>Coords</th>
+								<th>Select</th>
+							</thead>
+						</table>
+					</div>
 				</div>
 			</div>
 		</div>
