@@ -42,8 +42,7 @@ function connectSocket(username) {
 	if (socket && socket.connected) {
 		throw Error("Already connect to socket")
 	}
-	//socket = io('https://api.johnny-airlines.co.uk');
-	socket = io('https://shiny-memory-x59q5449rw7pc6rv7-5000.app.github.dev/')
+	socket = io('https://api.johnny-airlines.co.uk');
 	setupSocketHandlers(socket,username);
 }
 
@@ -2108,7 +2107,7 @@ function updateGameArea(lastTimestamp) {
 	let currentTime = Date.now()
 	let fps = (1/((currentTime-lastTimestamp)/1000))
 
-	if (isDialogueOpen) {
+	if (isDialogueOpen && running==true) {
 		dialogueDraw();
 		if ((Date.now()-currentTime)<(1000/30)) {
 			setTimeout(() => {
