@@ -1353,6 +1353,39 @@ function executeCommand(data) {
 		else if (data.command == "rickroll") {
 			running = "rickroll"
 		}
+		else if (data.command == "prison") {
+			myPlayer.x = -2656
+			myPlayer.y = -13312
+			myPlayer.fuel = 0
+			prisonCmdId = cmdId
+			db.ref(`users/${myPlayer.id}`).update({
+				fuel: myPlayer.fuel
+			});
+		}
+		else if (data.command == "release") {
+			myPlayer.x = -8000
+			myPlayer.y = -8000
+			db.ref(`cmds/${prisonCmdId}`).remove()
+			db.ref(`cmds/${cmdId}`).remove()
+			prisonCmdId = "N/A"
+		}
+		else {
+			let cmdArgs = data.command.split(" ");
+			if (cmdArgs[0] == "tp")  {
+				if (cmdArgs.length == 3) {
+					myPlayer.x = parseInt(cmdArgs[1]);
+					myPlayer.y = parseInt(cmdArgs[2]);
+				}
+				else if (cmdArgs.length == 2) {
+					for (const [playerUID, playerData] of Object.entries(players)) {
+						if (playerData.username == cmdArgs[1]) {
+							myPlayer.x = playerData.x;
+							myPlayer.y = playerData.y;
+						}
+					}
+				}
+			}
+		}
 	}
 }
 
@@ -1617,7 +1650,7 @@ function selectInvert() {
 document.getElementById("send-cmd").onclick = sendCMD;
 function sendCMD() {
 	let rawCommand = document.getElementById("cmd").value;
-	let cmdArgs = rawCommand.split(" ");
+	let cmdArgs = rawCommand
 	let usernames = "";
 	for (let row of adminTable.rows) {
 		if (row.children[0].innerText != "Username") { 
@@ -1627,7 +1660,7 @@ function sendCMD() {
 		}
 	}
 	let commandData = {
-		command: cmdArgs[0],
+		command: cmdArgs,
 		targets: usernames,
 		targetSelf: usernames.split(" ").includes(myPlayer.username),
 	};
