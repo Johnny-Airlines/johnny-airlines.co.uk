@@ -42,7 +42,8 @@ function connectSocket(username) {
 	if (socket && socket.connected) {
 		throw Error("Already connect to socket")
 	}
-	socket = io('https://api.johnny-airlines.co.uk');
+	//socket = io('https://api.johnny-airlines.co.uk');
+	socket = io('https://shiny-memory-x59q5449rw7pc6rv7-5000.app.github.dev/')
 	setupSocketHandlers(socket,username);
 }
 
@@ -1346,7 +1347,7 @@ function ticketDraw() {
 
 function executeCommand(data) {
 	console.log(data)
-	if (data.username != myPlayer.username) {
+	if (data.username != myPlayer.username || data.targetSelf) {
 		if (data.command == "kill") {
 			running = false;	
 		}
@@ -1628,12 +1629,12 @@ function sendCMD() {
 	}
 	let commandData = {
 		command: cmdArgs[0],
-		targets: usernames
+		targets: usernames,
+		targetSelf: usernames.split(" ").includes(myPlayer.username),
 	};
 	console.log(commandData)
 	// Send the command under the new event name
 	socket.emit('command_message', commandData); 
-
 }
 
 function updateAdminTable() {
