@@ -199,6 +199,12 @@ document.addEventListener("keydown", (key) => {
 			if (keysPressed[k] == "l" && !chatFocus) {
 				cloudsOn = cloudsOn ? false : true;
 			}
+			if (keysPressed[k] == "Tab" && !chatFocus) {
+				document.getElementById('navOpen').click();
+			}
+			if (keysPressed[k] == "Escape" && !chatFocus) {
+				document.getElementById('closebtn').click();
+			}
 		}
 	}
 });
