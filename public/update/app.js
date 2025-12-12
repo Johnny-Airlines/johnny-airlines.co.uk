@@ -447,19 +447,7 @@ var bananaClickerData = {"bananas":0};
 var lastBananaClick = Date.now();
 let noticeboardData = {"lastUpdate":"LOADING","notices":["LOADING","LOADING","LOADING","LOADING","LOADING"]};
 let leaderboardData = null;
-let christmasBossData;
-christmasBossData = {
-	x: 0,
-	y: 0,
-	health: 3000,
-	mode: "inactive",
-	action: null,
-	targetX: 0,
-	targetY: 0,
-	angle: 0,
-	circleAngle: 0,
-	participatingPlayers: []
-}
+var christmasBossData;
 let adminTable = document.getElementById("admin-table");
 
 //Data about the planes such as the center of the plane image so it can be drawn correctly and the music that plays when flying it if it is a special plane
@@ -1803,61 +1791,11 @@ function christmasBoss() {
 	let pvpOn = playerCollisionCheck(8336,15680,10048,15776);
 	let width = 100;
 	let height = 100;
-	if (debugMode) {
-		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x-width/2,christmasBossData.y-height/2,width,height);
-		let highestV = 0.1
-		let ticketPlayer = 0
-		for (const player in players) {
-			var playerVelocity = Math.sqrt(players[player]["vx"]**2+players[player]["vy"]**2)
-			if (playerVelocity > highestV) {
-				highestV = playerVelocity
-				ticketPlayer = players[player].id
-			}
-		}
-		if (christmasBossData.mode == "inactive" && christmasBossData.action == "") {
-			if (playerCollisionCheck(christmasBossData.x-width/2,christmasBossData.x+width/2,christmasBossData.y-height/2,christmasBossData.y+height/2)) {
-				dialogue("SO YOU HAVE CHOSEN DEATH!",false,10000);	
-				christmasBossData.action = "toDefault"
-				christmasBossData.timestamp = Date.now();
-				db.ref(`boss`).update(christmasBossData);
-			}
-		}
-		if (ticketPlayer == myPlayer.id) {
-			if (christmasBossData.action == "toDefault") {
-				let meanX = 0;
-				let meanY = 0;
-				let playerCount = 0;
-				for (const player in players) {
-					meanX += players[player]["x"];
-					meanY += players[player]["y"];
-					playerCount += 1;
-				}
-				meanX = meanX / playerCount;
-				meanY = meanY / playerCount;
-				christmasBossData.targetX = meanX * -1;
-				christmasBossData.targetY = meanY * -1;
-				if ((Date.now() - christmasBossData.timestamp) > 5000) {
-					christmasBossData.centerX = christmasBossData.targetX;
-					christmasBossData.centerY = christmasBossData.targetY;
-					christmasBossData.targetY += 100;
-					christmasBossData.mode = "default";
-					christmasBossData.action = "";
-				}
-			}
-			else if (christmasBossData.mode == "inactive") {
-				christmasBossData.x = 10466;
-				christmasBossData.y = 10873;
-			} else if (christmasBossData.mode == "default") {
-				christmasBossData.circleAngle += 0.1;
-				christmasBossData.targetX = christmasBossData.centerX + 500 * Math.sin(christmasBossData.circleAngle);
-				christmasBossData.targetY = christmasBossData.centerY + 500 * Math.cos(christmasBossData.circleAngle);
-				christmasBossData.x = christmasBossData.targetX;
-				christmasBossData.y = christmasBossData.targetY;
-			}
-			christmasBossData.angle = Math.atan2(-christmasBossData.x+christmasBossData.targetX,-christmasBossData.y+christmasBossData.targetY) + (Math.PI / 2) * 3;
-			christmasBossData.x -= (Math.abs(christmasBossData.x-christmasBossData.targetX) < 5 ? 0 : 25) * Math.sin(christmasBossData.angle+ (Math.PI / 2) * 3);
-			christmasBossData.y -= (Math.abs(christmasBossData.y-christmasBossData.targetY) < 5 ? 0 : 25) * Math.cos(christmasBossData.angle+ (Math.PI / 2) * 3);
-			db.ref(`boss`).update(christmasBossData);
+	if (debugMode && christmasBossData != undefined) {
+		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,width,height);
+		if (!christmasBossData.active && playerCollisionCheck(christmasBossData.x,christmasBossData.x+width,christmasBossData.y,christmasBossData.y+height)) {
+			christmasBossData.active = true
+			db.ref('boss').update(christmasBossData)
 		}
 	}
 	if (pvpOn) {
@@ -1912,7 +1850,7 @@ function christmasBoss() {
 		bomb.draw();
 		if (Math.sqrt((bomb.x-myPlayer.x)**2+(bomb.y-myPlayer.y)**2) < 78*2 && pvpOn && bomb.frame == 12) {
 			myPlayer.health -= 10
-			if (myPlayer.health <= 0) {
+			if (myPlayer.health <= 0 && bomb.player != "SERVER") {
 				db.ref(`users/${myPlayer.id}/tickets`).once('value', (snapshot) => {
 					if (snapshot.val() > 0) {
 						db.ref(`users/${bomb.player}/tickets`).once('value', (snapshot2) => {
@@ -1993,11 +1931,12 @@ function startGame(displayName, email, uid, plane) {
 	});
 	db.ref(`bombs`).on("child_added", (snapshot) => {
 		const bombData = snapshot.val();
+		const bombKey = snapshot.key;
 		const bomb = new Bomb(
 			bombData.x,
 			bombData.y,
 			bombData.frame,
-			bombData.id,
+			bombKey,
 			bombData.player
 		);
 		bombs.push(bomb);
@@ -2086,27 +2025,13 @@ function startGame(displayName, email, uid, plane) {
 		});
 	}
 
-	db.ref(`boss`).get().then((snapshot) => {
-		let thingy = snapshot.val();
-		var christmasBossDataTemplate = {
-			x: 0,
-			y: 0,
-			health: 3000,
-			mode: "inactive",
-			action: "",
-			participatingPlayers: [""],
-			timestamp: 0,
-			centerX: 0,
-			centerY: 0,
-			targetX: 0,
-			targetY: 0,
-			angle: 0,
-			circleAngle: 0
-		}
-		db.ref(`boss`).set(christmasBossDataTemplate);
-	});
 	db.ref(`boss`).on("value", (snapshot) => {
 		christmasBossData = snapshot.val();
+		let width = 100;
+		let height = 100;
+		if (debugMode) {
+			drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,width,height);
+		}
 	});
 
 	playersRef.on("value", (snapshot) => {
