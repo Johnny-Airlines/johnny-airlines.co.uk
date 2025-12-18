@@ -66,6 +66,8 @@ function renderTable() {
     const endIndex = startIndex + rowsPerPage;
 	const data = Object.values(rawData).slice(startIndex, endIndex);
 	const uids = Object.keys(rawData).slice(startIndex, endIndex);
+	document.getElementById("currentPage").innerHTML = page;
+	document.getElementById("maxPages").innerHTML = totalPages;
 	for (const user of data) {
 		const row = document.createElement('tr');
 		const keyCell = document.createElement('td');
@@ -75,7 +77,7 @@ function renderTable() {
 		const ownedPlanesCell = document.createElement('td');
 		const ticketsCell = document.createElement('td');
 
-		keyCell.innerHTML = `<button onclick="editRow(this)">✏️ Edit</button><span>${uids[data.indexOf(user)]}</span>`;
+		keyCell.innerHTML = `<button onclick="editRow(this)" class="edit">✏️ Edit</button> | <span>${uids[data.indexOf(user)]}</span>`;
 		usernameCell.textContent = JSON.stringify(user.username);
 		lastLoginCell.textContent = timeConverter(user.lastLogin);
 		lastLoginCell.style = "font-size:10px";
@@ -142,6 +144,10 @@ function editRow(button) {
 	const cells = row.querySelectorAll('td');
 	const ticketsCell = cells[3];
 	const fuelCell = cells[4];
+	/*const planesCell = cells[5];
+	for (let plane of planesCell) {
+		plane.classname = "editablePlane";
+	}*/
 	ticketsCell.innerHTML = `<input type="number" value="${ticketsCell.textContent.replace(/"/g, '')}">`;
 	fuelCell.innerHTML = `<input type="number" value="${fuelCell.textContent.replace(/"/g, '')}">`;
 	button.innerHTML = '💾 Save';
@@ -162,6 +168,9 @@ function saveRow(button) {
 	});
 	cells[3].textContent = newTickets;
 	cells[4].textContent = newFuel;
+	/*for (let plane of cells[5]) {
+		plane.classname = "";
+	}*/
 	button.innerHTML = '✏️ Edit';
 	button.onclick = () => editRow(button);
 }
