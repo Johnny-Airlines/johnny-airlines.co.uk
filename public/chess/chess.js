@@ -18,6 +18,7 @@ var blackKingCastle = false;
 var blackQueenCastle = false;
 var playingBot = false;
 var depth = 5;
+generateBoard(chessboardhtml);
 updateBoard()
 if (playingBot) {
 	stockfish({fen:fen(),depth:depth}).then((data)=>{
@@ -112,6 +113,32 @@ chessboardhtml.addEventListener("click", (evt) => {
 		selectedPiece = false;
 	}
 });
+
+function generateBoard(table) {
+	const tableBody = document.createElement("tbody");
+	tableBody.innerHTML = "<thead><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></thead>";
+	let colour = "dark";
+	let rank = 8;
+	for (var i = 0; i < 8; i++) {
+		const row = document.createElement("tr");
+		const rankIndicator = document.createElement("th")
+		const rankIndicatorText = document.createTextNode(rank)
+		rankIndicator.appendChild(rankIndicatorText)
+		row.appendChild(rankIndicator)
+		rank -= 1;
+		for (var j = 0; j < 8; j++) {
+			let id = "" + j + "" + i;
+			const cell = document.createElement("td");
+			cell.id = id;
+			cell.className = colour;
+			row.appendChild(cell);
+			colour = colour == "dark" ? "white" : "dark";
+		}
+		tableBody.appendChild(row);
+		colour = colour == "dark" ? "white" : "dark";
+	}
+	table.appendChild(tableBody);
+}
 
 function updateBoard() {
 	for (var i = 0; i < 8; i++ ) {

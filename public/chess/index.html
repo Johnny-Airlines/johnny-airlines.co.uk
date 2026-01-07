@@ -1,128 +1,27 @@
 <!DOCTYPE html>
 <html>
-    <head>
-        <title>Chess</title>
-        <meta charset="UTF-8">
-        <style>
-            .chess-board { border-spacing: 0; border-collapse: collapse; }
-            .chess-board th { padding: .5em; width:75px; height:75px; }
-            .chess-board th + th { border-bottom: 1px solid #000; }
-            .chess-board th:first-child,
-            .chess-board td:last-child { border-right: 1px solid #000; }
-            .chess-board tr:last-child td { border-bottom: 1px solid; }
-            .chess-board th:empty { border: none; }
-            .chess-board td { width: 1.5em; height: 1.5em; text-align: center; font-size: 60px; line-height: 0;}
-            .chess-board .light { background: #eee; }
-            .chess-board .dark { background: #aaa; }
-        </style>
-    </head>
-    <body>
-        <table class="chess-board" id="chessboard">
-            <tbody>
-                <tr>
-                    <th></th>
-                    <th>a</th>
-                    <th>b</th>
-                    <th>c</th>
-                    <th>d</th>
-                    <th>e</th>
-                    <th>f</th>
-                    <th>g</th>
-                    <th>h</th>
-                </tr>
-                <tr>
-                    <th>8</th>
-					<td class="light" id="00"><img src="./chessPieces/Br.webp"></img></td>
-                    <td class="dark" id="10">♞</td>
-                    <td class="light"id="20">♝</td>
-                    <td class="dark" id="30">♛</td>
-                    <td class="light" id="40">♚</td>
-                    <td class="dark" id="50">♝</td>
-                    <td class="light" id="60">♞</td>
-                    <td class="dark" id="70">♜</td>
-                </tr>
-                <tr>
-                    <th>7</th>
-                    <td class="dark" id="01">♟</td>
-                    <td class="light" id="11">♟</td>
-                    <td class="dark" id="21">♟</td>
-                    <td class="light" id="31">♟</td>
-                    <td class="dark" id="41">♟</td>
-                    <td class="light" id="51">♟</td>
-                    <td class="dark" id="61">♟</td>
-                    <td class="light" id="71">♟</td>
-                </tr>
-                <tr>
-                    <th>6</th>
-                    <td class="light" id="02"></td>
-                    <td class="dark" id="12"></td>
-                    <td class="light" id="22"></td>
-                    <td class="dark" id="32"></td>
-                    <td class="light" id="42"></td>
-                    <td class="dark" id="52"></td>
-                    <td class="light" id="62"></td>
-                    <td class="dark" id="72"></td>
-                </tr>
-                <tr>
-                    <th>5</th>
-                    <td class="dark" id="03"></td>
-                    <td class="light" id="13"></td>
-                    <td class="dark" id="23"></td>
-                    <td class="light" id="33"></td>
-                    <td class="dark" id="43"></td>
-                    <td class="light" id="53"></td>
-                    <td class="dark" id="63"></td>
-                    <td class="light" id="73"></td>
-                </tr>
-                <tr>
-                    <th>4</th>
-                    <td class="light" id="04"></td>
-                    <td class="dark" id="14"></td>
-                    <td class="light" id="24"></td>
-                    <td class="dark" id="34"></td>
-                    <td class="light" id="44"></td>
-                    <td class="dark" id="54"></td>
-                    <td class="light" id="64"></td>
-                    <td class="dark" id="74"></td>
-                </tr>
-                <tr>
-                    <th>3</th>
-                    <td class="dark" id="05"></td>
-                    <td class="light" id="15"></td>
-                    <td class="dark" id="25"></td>
-                    <td class="light" id="35"></td>
-                    <td class="dark" id="45"></td>
-                    <td class="light" id="55"></td>
-                    <td class="dark" id="65"></td>
-                    <td class="light" id="75"></td>
-                </tr>
-                <tr>
-                    <th>2</th>
-                    <td class="light" id="06">♙</td>
-                    <td class="dark" id="16">♙</td>
-                    <td class="light" id="26">♙</td>
-                    <td class="dark" id="36">♙</td>
-                    <td class="light" id="46">♙</td>
-                    <td class="dark" id="56">♙</td>
-                    <td class="light" id="66">♙</td>
-                    <td class="dark" id="76">♙</td>
-                </tr>
-                <tr>
-                    <th>1</th>
-                    <td class="dark" id="07">♖</td>
-                    <td class="light" id="17">♘</td>
-                    <td class="dark" id="27">♗</td>
-                    <td class="light" id="37">♕</td>
-                    <td class="dark" id="47">♔</td>
-                    <td class="light" id="57">♗</td>
-                    <td class="dark" id="67">♘</td>
-                    <td class="light" id="77">♖</td>
-                </tr>
-            </tbody>
-        </table>
+	<head>
+		<title>Chess</title>
+		<meta charset="UTF-8">
+		<style>
+			.chess-board { border-spacing: 0; border-collapse: collapse; }
+			.chess-board th { padding: .5em; width:75px; height:75px; }
+			.chess-board th + th { border-bottom: 1px solid #000; }
+			.chess-board th:first-child,
+			.chess-board td:last-child { border-right: 1px solid #000; }
+			.chess-board tr:last-child td { border-bottom: 1px solid; }
+			.chess-board th:empty { border: none; }
+			.chess-board td { width: 1.5em; height: 1.5em; text-align: center; font-size: 60px; line-height: 0;}
+			.chess-board .light { background: #eee; }
+			.chess-board .dark { background: #aaa; }
+		</style>
+	</head>
+	<body>
+		<table class="chess-board" id="chessboard">
+		</table>
 		<p id="turnTxt">White</p>
 		<p id="fenTxt"></p>
 		<script src="chess.js"></script>
-    </body>
+	</body>
 </html>
 
