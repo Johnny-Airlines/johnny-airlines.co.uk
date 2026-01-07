@@ -16,8 +16,9 @@ var whiteKingCastle = false;
 var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
-var playingBot = true;
+var playingBot = false;
 var depth = 5;
+updateBoard()
 if (playingBot) {
 	stockfish({fen:fen(),depth:depth}).then((data)=>{
 		console.log(data.move)
@@ -116,33 +117,8 @@ function updateBoard() {
 	for (var i = 0; i < 8; i++ ) {
 		for (var j = 0; j < 8; j++ ) {
 			id = "" + j + "" + i;
-			//document.getElementById(id).innerHTML = board[j][i]
-			if (board[i][j] == "Br") {
-				document.getElementById(id).innerHTML = "♜";
-			} else if (board[i][j] == "Bn") {
-				document.getElementById(id).innerHTML = "♞";
-			} else if (board[i][j] == "Bb") {
-				document.getElementById(id).innerHTML = "♝";
-			} else if (board[i][j] == "Bk") {
-				document.getElementById(id).innerHTML = "♚";
-			} else if (board[i][j] == "Bq") {
-				document.getElementById(id).innerHTML = "♛";
-			} else if (board[i][j] == "Bp") {
-				document.getElementById(id).innerHTML = "♟";
-			} else if (board[i][j] == "Wr") {
-				document.getElementById(id).innerHTML = "♖";
-			} else if (board[i][j] == "Wn") {
-				document.getElementById(id).innerHTML = "♘";
-			} else if (board[i][j] == "Wb") {
-				document.getElementById(id).innerHTML = "♗";
-			} else if (board[i][j] == "Wk") {
-				document.getElementById(id).innerHTML = "♔";
-			} else if (board[i][j] == "Wq") {
-				document.getElementById(id).innerHTML = "♕";
-			} else if (board[i][j] == "Wp") {
-				document.getElementById(id).innerHTML = "♙";
-			} else if (board[i][j] == "") {
-				document.getElementById(id).innerHTML = "";
+			if (board[i][j] != "") {
+				document.getElementById(id).innerHTML = `<img src=\'./chessPieces/${board[i][j]}.webp\'/>`
 			}
 		}
 	}
