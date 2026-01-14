@@ -1,56 +1,51 @@
+Number.prototype.clamp = function(min, max) {
+  return Math.min(Math.max(this, min), max);
+};
+
 class Boid {
 	constructor(x,y,isMouse) {
 		this.x = x;
 		this.y = y;
-		//this.angle = Math.floor(Math.random()*Math.PI*2);
-		this.angle = 0;
-		this.vx = 1;
-		this.vy = 1;
+		this.angle = Math.floor(Math.random()*Math.PI*2);
+		this.vx = Math.cos(this.angle)*10;
+		this.vy = Math.sin(this.angle)*10;
 		this.maxV = 10;
 		this.color = `rgb(${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)})`;
 		this.isMouse = isMouse;
 	}
 
 	update() {
-		if (Math.sqrt((this.vy)**2 + (this.vx)**2) > this.maxV) {
-			if (this.vy > 0) {
-				this.vy -= 0.1;
-				//this.vx -= 0.1;
-			}
-			if (this.vy < 0) {
-				this.vy += 0.1;
-				//this.vx += 0.1;
-			}
-			if (this.vx > 0) {
-				//this.vy -= 0.1;
-				this.vx -= 0.1;
-			}
-			if (this.vx < 0) {
-				//this.vy += 0.1;
-				this.vx += 0.1;
-			}
+		this.x += this.vx
+		this.y += this.vy
+		/*
+		if (this.x > canvas.width || this.x < 0) {
+			this.setAngle(this.angle + Math.PI)
 		}
 
+		if (this.y > canvas.height || this.y < 0) {
+			this.setAngle(this.angle + Math.PI)
+		}*/
 		
-
-		
-
-		this.x += this.vx;
-		this.y += this.vy;
-
-		this.angle = Math.atan2(this.vy,this.vx);
-
-		if (this.x > 3000) {
-			this.x -= 3000
+		if (this.x > canvas.width) {
+			this.x -= canvas.width
 		} else if (this.x < 0) {
-			this.x += 3000
+			this.x += canvas.width
 		}
-
-		if (this.y > 900) {
-			this.y -= 900
+		if (this.y > canvas.width) {
+			this.y -= canvas.width
 		} else if (this.y < 0) {
-			this.y += 900
+			this.y += canvas.width
 		}
+	}
+
+	setAngle(angle) {
+		this.angle = angle
+		this.vx = Math.cos(this.angle) * this.speed()
+		this.vy = Math.sin(this.angle) * this.speed()
+	}
+
+	speed() {
+		return Math.sqrt(this.vx**2+this.vy**2)
 	}
 
 	draw() {
@@ -97,76 +92,65 @@ addEventListener("mousemove", (event) => {
 	mouseY = event.clientY;
 	boids[0].x = mouseX;
 	boids[0].y = mouseY;
+	console.log(event.clientX,event.clientY)
 });
-
-var boids = [new Boid(mouseX,mouseY,false)];
+var boids = [];
 
 for (let i = 0; i < 300; i++) {
-	boids.push(new Boid(Math.floor(Math.random()*3000),Math.floor(Math.random()*900),false))
+	boids.push(new Boid(Math.floor(Math.random()*canvas.width),Math.floor(Math.random()*canvas.height),false))
 }
 
-var alignmentStrength = 0.5;
-var cohesionStrength = 0.4;
-var vision = 150;
-var collisionDistance = 10;
-var wierdThing = false;
+var alignmentStrength = 1;
+var cohesionStrength = 1;
+var vision = 1000;
+var collisionDistance = 50;
+var turnSpeed = Math.PI/4
+
+
 
 update()
 
 function update() {
-	//ctx.clearRect(0,0,3000,900);
+	ctx.clearRect(0,0,3000,900);
 	for (i in boids) {
 		boid = boids[i]
 		let boidAlignment = 0;
 		let centerOfMass = [0,0]
 		let numOfBoids = 0;
 		for (j in boids) {
+			otherBoid = boids[j]
 			if (i != j) {
-				otherBoid = boids[j]
-				let offScreenAdjust = [0,-1000,1000]
-				for (let i = 0; i < 3; i++) {	
-					for (let j = 0; j < 3; j++) {
-						if (((boid.x-otherBoid.x + offScreenAdjust[i])**2+(boid.y-otherBoid.y + offScreenAdjust[j])**2)**0.5 < vision) {
-							//boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
-							boidAlignment += otherBoid.angle;
-							centerOfMass[0] += otherBoid.x
-							centerOfMass[1] += otherBoid.y
-							numOfBoids += 1
-							if (otherBoid.isMouse) {
-								boidAlignment += otherBoid.angle*4000;
-								centerOfMass[0] += otherBoid.x*4000
-								centerOfMass[1] += otherBoid.y*4000
-							}
-							//boid.angle += Math.PI/2
-						}
-
-						if (((boid.x-otherBoid.x + offScreenAdjust[i])**2+(boid.y-otherBoid.y + offScreenAdjust[j])**2)**0.5 < collisionDistance) {
-							centerOfMass[0] -= otherBoid.x*2;
-							centerOfMass[0] -= otherBoid.y*2;
-						}
+				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < vision) {
+					boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
+					boidAlignment += otherBoid.angle;
+					centerOfMass[0] += otherBoid.x
+					centerOfMass[1] += otherBoid.y
+					numOfBoids += 1
+					if (otherBoid.isMouse) {
+						boidAlignment += otherBoid.angle*4000;
+						centerOfMass[0] += otherBoid.x*4000
+						centerOfMass[1] += otherBoid.y*4000
 					}
+					//boid.angle += Math.PI/2
+				}
+
+				if (((boid.x-otherBoid.x )**2+(boid.y-otherBoid.y )**2)**0.5 < collisionDistance) {
+					centerOfMass[0] -= otherBoid.x*2;
+					centerOfMass[0] -= otherBoid.y*2;
 				}
 			}
 		}
-		//boidAlignment = boidAlignment/numOfBoids  + Math.floor(Math.random()*1)*Math.PI - Math.PI*0.5;
-		boidAlignment = boidAlignment/numOfBoids
+		boidAlignment /= numOfBoids;
 		centerOfMass[0] /= numOfBoids;
 		centerOfMass[1] /= numOfBoids;
-		if (Math.sqrt((boid.vy)**2 + (boid.vx)**2) < boid.maxV) {
-			boid.vx += Math.sin(boidAlignment)*alignmentStrength
-			boid.vy += Math.cos(boidAlignment)*alignmentStrength
-			boid.vx += (boid.x-centerOfMass[0])*cohesionStrength
-			boid.vy += (boid.y-centerOfMass[1])*cohesionStrength
-		}
-		if (Math.sqrt((boid.vy)**2 + (boid.vx)**2) > boid.maxV) {
-			boid.vx -= Math.sin(boidAlignment)*alignmentStrength
-			boid.vy -= Math.cos(boidAlignment)*alignmentStrength
-			boid.vx -= (boid.x-centerOfMass[0])*cohesionStrength
-			boid.vy -= (boid.y-centerOfMass[1])*cohesionStrength
-		}
+		centerOfMass[0] = centerOfMass[0].clamp(150,canvas.width-150)
+		centerOfMass[1] = centerOfMass[1].clamp(150,canvas.width-150)
+		idealAngle = (Math.atan2(centerOfMass[0],centerOfMass[1])*cohesionStrength + boidAlignment*alignmentStrength)/(cohesionStrength+alignmentStrength)
+		angleToTurnBy = idealAngle.clamp(boid.angle-turnSpeed/2,boid.angle+turnSpeed/2)
+		boid.setAngle(angleToTurnBy)
 		boid.update()
 		//boid.update()
 		boid.draw()
 	}
-	setTimeout(update,1);
+	setTimeout(update,33);
 }
