@@ -17,6 +17,12 @@ class Boid {
 	update() {
 		this.x += this.vx
 		this.y += this.vy
+		this.vx *= 1.1
+		this.vy *= 1.1
+		if (this.speed() > this.maxV) {
+			this.vx *= 100/110
+			this.vy *= 100/110
+		}
 		/*
 		if (this.x > canvas.width || this.x < 0) {
 			this.setAngle(this.angle + Math.PI)
@@ -37,7 +43,9 @@ class Boid {
 			this.y += canvas.width
 		}
 	}
-
+	updateAngle() {
+		this.angle = Math.atan2(this.vy,this.x)
+	}
 	setAngle(angle) {
 		this.angle = angle
 		this.vx = Math.cos(this.angle) * this.speed()
@@ -70,6 +78,9 @@ function drawTriangle(x,y,angle, color) {
 	ctx.fill()
 
 	ctx.restore();
+	ctx.beginPath();
+	ctx.arc(x,y,collisionDistance,0,Math.PI*2,0);
+	ctx.stroke();
 }
 
 const canvas = document.getElementById("boidsCanvas");
@@ -102,9 +113,10 @@ for (let i = 0; i < 300; i++) {
 
 var alignmentStrength = 1;
 var cohesionStrength = 1;
-var vision = 1000;
-var collisionDistance = 50;
-var turnSpeed = Math.PI/4
+var vision = 150;
+var collisionDistance = 10;
+var turnSpeed = Math.PI/164
+
 
 
 
@@ -112,14 +124,17 @@ update()
 
 function update() {
 	ctx.clearRect(0,0,3000,900);
-	for (i in boids) {
-		boid = boids[i]
+	for (boid of boids) {
+		//boid = boids[i]
 		let boidAlignment = 0;
 		let centerOfMass = [0,0]
 		let numOfBoids = 0;
-		for (j in boids) {
-			otherBoid = boids[j]
-			if (i != j) {
+		boid.color = "rgb(0,255,0)"
+		let avoid = false;
+		let avoidCoords = [0,0];
+		for (otherBoid of boids) {
+			//otherBoid = boids[j]
+			if (otherBoid != boid) {
 				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < vision) {
 					boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
 					boidAlignment += otherBoid.angle;
@@ -135,19 +150,30 @@ function update() {
 				}
 
 				if (((boid.x-otherBoid.x )**2+(boid.y-otherBoid.y )**2)**0.5 < collisionDistance) {
-					centerOfMass[0] -= otherBoid.x*2;
-					centerOfMass[0] -= otherBoid.y*2;
+					//centerOfMass[0] -= otherBoid.x*2;
+					//centerOfMass[0] -= otherBoid.y*2;
+					avoid = true
+					boid.color = "rgb(255,0,0)"
+					avoidCoords[0] += boid.y-otherBoid.y
+					avoidCoords[1] += boid.x-otherBoid.x
 				}
 			}
 		}
-		boidAlignment /= numOfBoids;
-		centerOfMass[0] /= numOfBoids;
-		centerOfMass[1] /= numOfBoids;
-		centerOfMass[0] = centerOfMass[0].clamp(150,canvas.width-150)
-		centerOfMass[1] = centerOfMass[1].clamp(150,canvas.width-150)
-		idealAngle = (Math.atan2(centerOfMass[0],centerOfMass[1])*cohesionStrength + boidAlignment*alignmentStrength)/(cohesionStrength+alignmentStrength)
-		angleToTurnBy = idealAngle.clamp(boid.angle-turnSpeed/2,boid.angle+turnSpeed/2)
-		boid.setAngle(angleToTurnBy)
+		if (numOfBoids > 0) {
+			boidAlignment /= numOfBoids;
+			centerOfMass[0] /= numOfBoids;
+			centerOfMass[1] /= numOfBoids;
+			centerOfMass[0] = centerOfMass[0].clamp(150,canvas.width-150)
+			centerOfMass[1] = centerOfMass[1].clamp(150,canvas.width-150)
+			idealAngle = (Math.atan2(centerOfMass[0],centerOfMass[1])*cohesionStrength + boidAlignment*alignmentStrength)/(cohesionStrength+alignmentStrength)
+			avoidCoords[0] /= numOfBoids;
+			avoidCoords[1] /= numOfBoids
+			if (avoid) {
+				idealAngle = Math.atan2(avoidCoords[0],avoidCoords[1])
+			}
+			angleToTurnBy = idealAngle.clamp(boid.angle-turnSpeed/2,boid.angle+turnSpeed/2)
+			boid.setAngle(angleToTurnBy)
+		}
 		boid.update()
 		//boid.update()
 		boid.draw()
