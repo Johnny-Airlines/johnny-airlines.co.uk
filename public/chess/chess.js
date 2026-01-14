@@ -129,8 +129,8 @@ function generateBoard(table) {
 		for (var j = 0; j < 8; j++) {
 			let id = "" + j + "" + i;
 			const cell = document.createElement("td");
-			cell.id = id;
 			cell.className = colour;
+			cell.innerHTML = `<img id=${id} class="piece" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>`
 			row.appendChild(cell);
 			colour = colour == "dark" ? "white" : "dark";
 		}
@@ -144,8 +144,11 @@ function updateBoard() {
 	for (var i = 0; i < 8; i++ ) {
 		for (var j = 0; j < 8; j++ ) {
 			id = "" + j + "" + i;
-			if (board[i][j] != "") {
-				document.getElementById(id).innerHTML = `<img src=\'./chessPieces/${board[i][j]}.webp\'/>`
+			if (board[i][j] == "") {
+				document.getElementById(id).src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+			}
+			else {
+				document.getElementById(id).src = `./chessPieces/${board[i][j]}.webp`
 			}
 		}
 	}
