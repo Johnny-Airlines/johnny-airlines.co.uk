@@ -16,8 +16,10 @@ var whiteKingCastle = false;
 var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
-var playingBot = true;
+var playingBot = false;
 var depth = 5;
+generateBoard(chessboardhtml);
+updateBoard()
 if (playingBot) {
 	stockfish({fen:fen(),depth:depth}).then((data)=>{
 		console.log(data.move)
@@ -112,37 +114,41 @@ chessboardhtml.addEventListener("click", (evt) => {
 	}
 });
 
+function generateBoard(table) {
+	const tableBody = document.createElement("tbody");
+	tableBody.innerHTML = "<thead><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></thead>";
+	let colour = "dark";
+	let rank = 8;
+	for (var i = 0; i < 8; i++) {
+		const row = document.createElement("tr");
+		const rankIndicator = document.createElement("th")
+		const rankIndicatorText = document.createTextNode(rank)
+		rankIndicator.appendChild(rankIndicatorText)
+		row.appendChild(rankIndicator)
+		rank -= 1;
+		for (var j = 0; j < 8; j++) {
+			let id = "" + j + "" + i;
+			const cell = document.createElement("td");
+			cell.className = colour;
+			cell.innerHTML = `<img id=${id} class="piece" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>`
+			row.appendChild(cell);
+			colour = colour == "dark" ? "white" : "dark";
+		}
+		tableBody.appendChild(row);
+		colour = colour == "dark" ? "white" : "dark";
+	}
+	table.appendChild(tableBody);
+}
+
 function updateBoard() {
 	for (var i = 0; i < 8; i++ ) {
 		for (var j = 0; j < 8; j++ ) {
 			id = "" + j + "" + i;
-			//document.getElementById(id).innerHTML = board[j][i]
-			if (board[i][j] == "Br") {
-				document.getElementById(id).innerHTML = "♜";
-			} else if (board[i][j] == "Bn") {
-				document.getElementById(id).innerHTML = "♞";
-			} else if (board[i][j] == "Bb") {
-				document.getElementById(id).innerHTML = "♝";
-			} else if (board[i][j] == "Bk") {
-				document.getElementById(id).innerHTML = "♚";
-			} else if (board[i][j] == "Bq") {
-				document.getElementById(id).innerHTML = "♛";
-			} else if (board[i][j] == "Bp") {
-				document.getElementById(id).innerHTML = "♟";
-			} else if (board[i][j] == "Wr") {
-				document.getElementById(id).innerHTML = "♖";
-			} else if (board[i][j] == "Wn") {
-				document.getElementById(id).innerHTML = "♘";
-			} else if (board[i][j] == "Wb") {
-				document.getElementById(id).innerHTML = "♗";
-			} else if (board[i][j] == "Wk") {
-				document.getElementById(id).innerHTML = "♔";
-			} else if (board[i][j] == "Wq") {
-				document.getElementById(id).innerHTML = "♕";
-			} else if (board[i][j] == "Wp") {
-				document.getElementById(id).innerHTML = "♙";
-			} else if (board[i][j] == "") {
-				document.getElementById(id).innerHTML = "";
+			if (board[i][j] == "") {
+				document.getElementById(id).src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+			}
+			else {
+				document.getElementById(id).src = `./chessPieces/${board[i][j]}.webp`
 			}
 		}
 	}

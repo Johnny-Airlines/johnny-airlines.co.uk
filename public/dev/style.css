@@ -60,7 +60,7 @@ input[type="text"]:focus, input[type="number"]:focus {
 	text-align: center;
 	--var-width: 318px;
 	width: var(--var-width);
-	border: 1px solid black;
+	border: 5px solid black;
 	left: calc(50% - calc(var(--var-width)/2));
 	position: relative;
 	background-color: white;
@@ -68,5 +68,5 @@ input[type="text"]:focus, input[type="number"]:focus {
 }
 
 .editablePlane:hover {
-	background-color: #ffffff
+	background-color: #ff0000;
 }

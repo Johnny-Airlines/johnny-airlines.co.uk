@@ -1,7 +1,13 @@
-
-
-<canvas width="3000" height="900" id="boidsCanvas" style="border: 3px solid black"></canvas>
-
-
-
+<canvas width="1800" height="850" id="boidsCanvas" style="border: 3px solid black"></canvas>
+<input type="range" id="boidsCount" min="5" max="1000" value="300"list="values" style="width: 50%;"></input>
+<datalist id="values">
+  <option value="5" label="5"></option>
+  <option value="50" label="50"></option>
+  <option value="100" label="100"></option>
+  <option value="250" label="250"></option>
+  <option value="300" label="300"></option>
+  <option value="400" label="400"></option>
+  <option value="1000" label="1000"></option>
+</datalist>
+<label id="boidsCountLabel">Number of Boids: 300</label>
 <script src="./app.js"></script>

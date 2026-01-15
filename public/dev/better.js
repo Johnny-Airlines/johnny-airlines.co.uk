@@ -83,7 +83,7 @@ function renderTable() {
 		lastLoginCell.style = "font-size:10px";
 		fuelCell.textContent = JSON.stringify(user.fuel);
 		for (const plane of user.ownedPlanes) {
-			ownedPlanesCell.innerHTML += `<img src="../${plane}.png" alt="${plane}" title="${plane}" style="width:30px;height:30px;margin-right:5px;">`;
+			ownedPlanesCell.innerHTML += `<img src="https://johnny-airlines.co.uk/${plane}.png" alt="${plane}" title="${plane}" style="width:30px;height:30px;margin-right:5px;">`;
 		}
 		ticketsCell.textContent = JSON.stringify(user.tickets);
 
@@ -139,15 +139,47 @@ function searchUser() {
 	}
 }
 
+let planes = [];
+let validPlanes = ["Plane","christmasPlane","colour_planes/Green","CEO","LGD","mop","invis","purple","colour_planes/Blue","colour_planes/Brown","colour_planes/Purple","colour_planes/Grey","colour_planes/Pink","colour_planes/White","colour_planes/Yellow","Disco","Spitfire","Rainbow","paper","SEC","shark","coconut","OG"];
 function editRow(button) {
+	planes = [];
 	const row = button.parentElement.parentElement;
 	const cells = row.querySelectorAll('td');
 	const ticketsCell = cells[3];
 	const fuelCell = cells[4];
-	/*const planesCell = cells[5];
-	for (let plane of planesCell) {
-		plane.classname = "editablePlane";
-	}*/
+	const planesCell = cells[5];
+	planesCell.innerHTML += `<img src="./flag.png" alt="add_plane" style="width:30px;height:30px;margin-right:5px;" class="editablePlane">`;
+	for (let plane of planesCell.children) {
+		planes.push(plane.alt);
+		if (plane.alt != "Plane") {
+			plane.className = "editablePlane";
+			plane.onclick = () => {
+				plane.remove();
+				planes.splice(planes.indexOf(plane.alt), 1);
+			}
+		} else if (plane.alt == "add_plane") {
+			plane.onclick = () => {
+				let planeToAdd = prompt("Enter the plane name to add (e.g., Plane, colour_planes/Blue, Disco):");
+				if (validPlanes.includes(planeToAdd) && !planes.includes(planeToAdd)) {
+					let newPlane = document.createElement("img");
+					newPlane.src = `https://johnny-airlines.co.uk/${planeToAdd}.png`;
+					newPlane.alt = planeToAdd;
+					newPlane.title = planeToAdd;
+					newPlane.style = "width:30px;height:30px;margin-right:5px;";
+					newPlane.className = "editablePlane";
+					newPlane.onclick = () => {
+						newPlane.remove();
+						planes.splice(planes.indexOf(newPlane.alt), 1);
+					}
+					planesCell.appendChild(newPlane);
+					planes.push(planeToAdd);
+				} else {
+					alert("Invalid plane name or plane already owned.");
+				}
+			}
+		}
+	}
+	
 	ticketsCell.innerHTML = `<input type="number" value="${ticketsCell.textContent.replace(/"/g, '')}">`;
 	fuelCell.innerHTML = `<input type="number" value="${fuelCell.textContent.replace(/"/g, '')}">`;
 	button.innerHTML = '💾 Save';
@@ -162,15 +194,21 @@ function saveRow(button) {
 	const fuelInput = cells[4].querySelector('input');
 	const newTickets = parseInt(ticketsInput.value);
 	const newFuel = parseInt(fuelInput.value);
+	for (let plane of cells[5].children) {
+		plane.className = "";
+		plane.onclick = null;
+		if (plane.alt == "add_plane") {
+			plane.remove();
+			planes.splice(planes.indexOf(plane.alt), 1);
+		}
+	}
 	userRef.child(uid).update({
 		tickets: newTickets,
-		fuel: newFuel
+		fuel: newFuel,
+		ownedPlanes: planes
 	});
 	cells[3].textContent = newTickets;
 	cells[4].textContent = newFuel;
-	/*for (let plane of cells[5]) {
-		plane.classname = "";
-	}*/
 	button.innerHTML = '✏️ Edit';
 	button.onclick = () => editRow(button);
 }
