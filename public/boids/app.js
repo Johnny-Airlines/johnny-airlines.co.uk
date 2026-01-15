@@ -10,7 +10,8 @@ class Boid {
 		this.vx = Math.cos(this.angle)*10;
 		this.vy = Math.sin(this.angle)*10;
 		this.maxV = 10;
-		this.color = `rgb(${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)})`;
+		//this.color = `rgb(${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)} ${Math.floor(Math.random()*255)})`;
+		this.color = `rgb(0, 66, 165)`;
 		this.isMouse = isMouse;
 	}
 
@@ -134,10 +135,12 @@ var visionVisible = false;
 update()
 
 function update() {
-	ctx.clearRect(0,0,canvas.width,canvas.height);
+	//ctx.clearRect(0,0,canvas.width,canvas.height);
+	ctx.fillStyle = "rgb(68, 68, 68)";
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 	for (boid of boids) {
 		//boid = boids[i]
-		boid.color = `rgb(${boid.speed()*25} 255 0)`
+		//boid.color = `rgb(${boid.speed()*25} 255 0)`
 		let boidAlignment = 0;
 		let centerOfMass = [0,0]
 		let numOfBoids = 0;
@@ -194,7 +197,7 @@ function update() {
 			boid.setAngle(angleToTurnBy)
 			ctx.beginPath();
 			ctx.arc(centerOfMass[0],centerOfMass[1],5,0,Math.PI*2,0);
-			ctx.fillStyle = "rgba(0,0,0,0.1)"
+			ctx.fillStyle = "rgba(255,255,255,0.1)"
 			ctx.fill();
 		}
 		boid.update()
