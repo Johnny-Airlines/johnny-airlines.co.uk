@@ -20,8 +20,8 @@ class Boid {
 		this.vx *= 1.1
 		this.vy *= 1.1
 		if (this.speed() > this.maxV) {
-			this.vx *= 100/110
-			this.vy *= 100/110
+			this.vx = this.vx.clamp(-this.maxV,this.maxV)
+			this.vy = this.vy.clamp(-this.maxV,this.maxV)
 		}
 		/*
 		if (this.x > canvas.width || this.x < 0) {
@@ -31,16 +31,16 @@ class Boid {
 		if (this.y > canvas.height || this.y < 0) {
 			this.setAngle(this.angle + Math.PI)
 		}*/
-		
+
 		if (this.x > canvas.width) {
 			this.x -= canvas.width
 		} else if (this.x < 0) {
 			this.x += canvas.width
 		}
-		if (this.y > canvas.width) {
-			this.y -= canvas.width
+		if (this.y > canvas.height) {
+			this.y -= canvas.height
 		} else if (this.y < 0) {
-			this.y += canvas.width
+			this.y += canvas.height
 		}
 	}
 	updateAngle() {
@@ -78,65 +78,77 @@ function drawTriangle(x,y,angle, color) {
 	ctx.fill()
 
 	ctx.restore();
-	ctx.beginPath();
-	ctx.arc(x,y,collisionDistance,0,Math.PI*2,0);
-	ctx.stroke();
+	if (collisionDistanceVisible) {
+		ctx.beginPath();
+		ctx.arc(x,y,collisionDistance,0,Math.PI*2,0);
+		ctx.stroke();
+	}
+	if (visionVisible) {
+		ctx.beginPath();
+		ctx.arc(x,y,vision,0,Math.PI*2,0);
+		ctx.stroke();
+	}
 }
-
 const canvas = document.getElementById("boidsCanvas");
 const ctx = canvas.getContext("2d");
 
 var mouseX = 0;
 var mouseY = 0;
-//var mousedown = false;
+var mousedown = false;
 
 addEventListener("mousedown", (event) => {
-	boids[0].isMouse = true;
+	mousedown = true;
 })
 
 addEventListener("mouseup", (event) => {
-	boids[0].isMouse = false;
+	mousedown = false;
 })
 
 addEventListener("mousemove", (event) => {
 	mouseX = event.clientX;
 	mouseY = event.clientY;
-	boids[0].x = mouseX;
-	boids[0].y = mouseY;
-	console.log(event.clientX,event.clientY)
 });
-var boids = [];
-
-for (let i = 0; i < 300; i++) {
+var boids = [new Boid(Math.floor(Math.random()*canvas.width),Math.floor(Math.random()*canvas.height),false)];
+for (let i = 0; i < 500; i++) {
 	boids.push(new Boid(Math.floor(Math.random()*canvas.width),Math.floor(Math.random()*canvas.height),false))
 }
+function addEL() {
+	document.getElementById("boidsCount").addEventListener("change", (event) => {
+		document.getElementById("boidsCountLabel").innerText = `Number of Boids: ${event.target.value}`;
+		boids = [new Boid(Math.floor(Math.random()*canvas.width),Math.floor(Math.random()*canvas.height),false)];
+		for (let i = 0; i < event.target.value; i++) {
+			boids.push(new Boid(Math.floor(Math.random()*canvas.width),Math.floor(Math.random()*canvas.height),false))
+		}	
+	});
+}
+addEL();
 
 var alignmentStrength = 1;
 var cohesionStrength = 1;
-var vision = 150;
+var vision = 250;
 var collisionDistance = 10;
-var turnSpeed = Math.PI/164
-
-
-
+var turnSpeed = Math.PI/16;
+var collisionDistanceVisible = false;
+var visionVisible = false;
 
 update()
 
 function update() {
-	ctx.clearRect(0,0,3000,900);
+	ctx.clearRect(0,0,canvas.width,canvas.height);
 	for (boid of boids) {
 		//boid = boids[i]
+		boid.color = `rgb(${boid.speed()*25} 255 0)`
 		let boidAlignment = 0;
 		let centerOfMass = [0,0]
 		let numOfBoids = 0;
-		boid.color = "rgb(0,255,0)"
+		//boid.color = "rgb(0,255,0)"
 		let avoid = false;
 		let avoidCoords = [0,0];
 		for (otherBoid of boids) {
 			//otherBoid = boids[j]
 			if (otherBoid != boid) {
 				if (((boid.x-otherBoid.x)**2+(boid.y-otherBoid.y)**2)**0.5 < vision) {
-					boidAlignment += Math.atan2((boid.x-otherBoid.x),(boid.y-otherBoid.y))
+					boidAlignment += Math.atan2((boid.y-otherBoid.y),(boid.x-otherBoid.x))
 					boidAlignment += otherBoid.angle;
 					centerOfMass[0] += otherBoid.x
 					centerOfMass[1] += otherBoid.y
@@ -153,26 +165,37 @@ function update() {
 					//centerOfMass[0] -= otherBoid.x*2;
 					//centerOfMass[0] -= otherBoid.y*2;
 					avoid = true
-					boid.color = "rgb(255,0,0)"
+					//boid.color = "rgb(255,0,0)"
 					avoidCoords[0] += boid.y-otherBoid.y
 					avoidCoords[1] += boid.x-otherBoid.x
+					boid.vx *= 1.1
+					boid.vy *= 1.1
 				}
 			}
 		}
-		if (numOfBoids > 0) {
+		if (numOfBoids > 0 || mousedown) {
 			boidAlignment /= numOfBoids;
 			centerOfMass[0] /= numOfBoids;
 			centerOfMass[1] /= numOfBoids;
-			centerOfMass[0] = centerOfMass[0].clamp(150,canvas.width-150)
-			centerOfMass[1] = centerOfMass[1].clamp(150,canvas.width-150)
-			idealAngle = (Math.atan2(centerOfMass[0],centerOfMass[1])*cohesionStrength + boidAlignment*alignmentStrength)/(cohesionStrength+alignmentStrength)
+			//centerOfMass[0] = centerOfMass[0].clamp(150,canvas.width-150)
+			//centerOfMass[1] = centerOfMass[1].clamp(150,canvas.width-150)
+			if (mousedown) {
+				centerOfMass[0] = mouseX
+				centerOfMass[1] = mouseY
+				numOfBoids += 1
+			}
+			idealAngle = (Math.atan2(-boid.y+centerOfMass[1],-boid.x+centerOfMass[0])*cohesionStrength + boidAlignment*alignmentStrength)/(cohesionStrength+alignmentStrength)
 			avoidCoords[0] /= numOfBoids;
 			avoidCoords[1] /= numOfBoids
 			if (avoid) {
-				idealAngle = Math.atan2(avoidCoords[0],avoidCoords[1])
+				idealAngle = Math.atan2(avoidCoords[0],avoidCoords[1])+Math.PI
 			}
 			angleToTurnBy = idealAngle.clamp(boid.angle-turnSpeed/2,boid.angle+turnSpeed/2)
 			boid.setAngle(angleToTurnBy)
+			ctx.beginPath();
+			ctx.arc(centerOfMass[0],centerOfMass[1],5,0,Math.PI*2,0);
+			ctx.fillStyle = "rgba(0,0,0,0.1)"
+			ctx.fill();
 		}
 		boid.update()
 		//boid.update()
