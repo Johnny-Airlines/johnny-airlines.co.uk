@@ -125,9 +125,9 @@ addEL();
 
 var alignmentStrength = 1;
 var cohesionStrength = 1;
-var vision = 250;
+var vision = 150;
 var collisionDistance = 10;
-var turnSpeed = Math.PI/16;
+var turnSpeed = Math.PI/3;
 var collisionDistanceVisible = false;
 var visionVisible = false;
 
