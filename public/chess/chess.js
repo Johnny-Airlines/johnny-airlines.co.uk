@@ -16,29 +16,13 @@ var whiteKingCastle = false;
 var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
-var playingBot = false;
+var playingBot = true;
 var depth = 5;
 generateBoard(chessboardhtml);
 updateBoard()
+
 if (playingBot) {
-	stockfish({fen:fen(),depth:depth}).then((data)=>{
-		console.log(data.move)
-		conversionArray = ["a","b","c","d","e","f","g","h"]
-		x1 = conversionArray.indexOf(data.move.charAt(0));
-		y1 = 8-parseInt(data.move.charAt(1));
-		x2 = conversionArray.indexOf(data.move.charAt(2));
-		y2 = 8-parseInt(data.move.charAt(3));
-		board[y2][x2] = board[y1][x1];
-		board[y1][x1] = "";
-		updateBoard();
-		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
-	})
-	.catch((e)=> {
-		console.log(e)
-		alert("Stockfish broke for some reason, now its ur turn.");
-	});
-	turn = "B";
-	document.getElementById("turnTxt").innerHTML = "Black";
+	stockfishMove();
 }
 
 chessboardhtml.addEventListener("click", (evt) => {
@@ -79,29 +63,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 			}
 			document.getElementById("turnTxt").innerHTML = "White";
 			if (playingBot) {
-				stockfish({fen:fen(),depth:depth}).then((data)=>{
-					console.log(data)
-					console.log(data.move)
-					if (data.winChance == 100) {
-						alert("Stockfish won")
-					}
-					conversionArray = ["a","b","c","d","e","f","g","h"]
-					x1 = conversionArray.indexOf(data.move.charAt(0));
-					y1 = 8-parseInt(data.move.charAt(1));
-					x2 = conversionArray.indexOf(data.move.charAt(2));
-					y2 = 8-parseInt(data.move.charAt(3));
-					board[y2][x2] = board[y1][x1];
-					board[y1][x1] = "";
-					updateBoard();
-					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2)
-					
-				})
-				.catch((e)=> {
-					console.log(e)
-					alert("Stockfish broke for some reason, now its ur turn.");
-				});
-				turn = "B";
-				document.getElementById("turnTxt").innerHTML = "Black";
+				stockfishMove();
 			}
 		}
 		updateBoard();
@@ -406,6 +368,11 @@ function isKingInCheck(king) {
 	return false;
 }
 
+function changeTurn() {
+	turn = turn=="W" ? "B" : "W";
+	document.getElementById("turnTxt").innerHTML = turn=="W" ? "White" : "Black";
+}
+
 function fen() {
 	fenString = "";
 	counter = 0;
@@ -449,8 +416,28 @@ async function stockfish(data = {}) {
         },
         body: JSON.stringify(data),
     });
-    return response.json();
+	return response.json();
 }
+
+function stockfishMove() {
+	stockfish({fen:fen(),depth:depth}).then((data)=>{
+		conversionArray = ["a","b","c","d","e","f","g","h"];
+		x1 = conversionArray.indexOf(data.move.charAt(0));
+		y1 = 8-parseInt(data.move.charAt(1));
+		x2 = conversionArray.indexOf(data.move.charAt(2));
+		y2 = 8-parseInt(data.move.charAt(3));
+		board[y2][x2] = board[y1][x1];
+		board[y1][x1] = "";
+		updateBoard();
+		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+	})
+	.catch((e)=> {
+		console.log(e)
+		alert("Stockfish broke for some reason, now its ur turn.");
+	});
+	changeTurn();
+}
+
 function stockfishPlays() {
 	if (playingBot) {
 		stockfish({fen:fen(),depth:depth}).then((data)=>{
