@@ -1,12 +1,5 @@
 "use strict";
 
-
-const targetFPS = 60;
-const PX_PER_METER = 100;
-let GRAVITY = (-9.8 * PX_PER_METER) / (targetFPS ** 2);
-//GRAVITY = 0;
-const wall_particle_res = 0.9;
-
 function ranInt(max,min) {
 	return Math.floor(Math.random() * (max - min)) + min;
 }
@@ -78,6 +71,24 @@ class Particle {
 	}
 }
 
+var preCalcGravity = -9.8
+var targetTPS = 60;
+var PX_PER_METER = 100;
+var GRAVITY = (preCalcGravity * PX_PER_METER) / (targetTPS ** 2);
+const wall_particle_res = 0.9;
+
+document.getElementById("targetTPS").addEventListener("input",(e) => {
+	targetTPS = document.getElementById("targetTPS").value;
+});
+
+document.getElementById("gravity").addEventListener("input",(e) => {
+	preCalcGravity = document.getElementById("gravity").value;
+	GRAVITY = (preCalcGravity * PX_PER_METER) / (targetTPS ** 2);
+	particles.forEach((particle) => {
+		particle.ay = GRAVITY;
+	});
+});
+
 var paused = false;
 document.onkeypress = (e) => {
 	if (e.key == " ") {
@@ -97,9 +108,7 @@ var particles = [];
 for (let i = 0; i < 5; i++) {
 	particles.push(new Particle());
 }
-//var particles = [new Particle()];
 
-//setInterval(update,1000/targetFPS);
 update();
 function update() {
 	ctx.fillStyle = "rgba(255,255,255,0.1)";
@@ -109,6 +118,6 @@ function update() {
 		particle.update();
 	});
 	if (!paused) {
-		setTimeout(update,1000/targetFPS);
+		setTimeout(update,1000/targetTPS);
 	}
 }

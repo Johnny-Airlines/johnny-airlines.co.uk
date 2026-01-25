@@ -3,16 +3,23 @@
 	<div class="container">
 		<div class="configPanel">
 			<h1>Basic particle simulation</h1>
-			<label for="gravity">Target FPS: </label>
-			<input type="range" class="slider" id="gravity" name="gravity" list="values" min="30" max="120" step="30"/>
-			<datalist id="values">
+			<label for="targetTPS">Target TPS</label>
+			<input type="range" class="slider" id="targetTPS" name="targetTPS" list="tpsValues" min="30" max="120" step="30"/>
+			<datalist id="tpsValues">
 				<option value="30" label="30"></option>
 				<option value="60" label="60"></option>
 				<option value="90" label="90"></option>
 				<option value="120" label="120"></option>
 			</datalist>
-			<input type="range" class="slider"/><br>
-			<input type="range" class="slider"/><br>
+			<label for="gravity">Gravity</label>
+			<input type="range" class="slider" id="gravity" name="gravity" list="gravityValues" min="-19.6" max="19.6" step="9.8"/>
+			<datalist id="gravityValues">
+				<option value="-19.6" label="-2g"></option>
+				<option value="-9.8" label="-g"></option>
+				<option value="0" label= "0g"></option>
+				<option value="9.8" label="+g"></option>
+				<option value="19.6" label="+2g"></option>
+			</datalist>
 		</div>
 		<canvas id="mainCanvas" width="700px" height="700px" class="mainCanvas"></canvas>
 	</div>
