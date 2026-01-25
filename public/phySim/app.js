@@ -20,7 +20,8 @@ class Particle {
 		this.ax = 0;
 		this.ay = GRAVITY;
 		this.radius = 10;
-		this.colour = `rgb(${ranInt(0,100)},${ranInt(0,100)},${ranInt(0,100)})`; 
+		this.colour = `rgb(${ranInt(0,100)},${ranInt(0,100)},${ranInt(0,100)})`;
+		this.COLOUR = this.colour;
 	}
 	
 	update() {
@@ -45,17 +46,47 @@ class Particle {
 			this.vx *= -1 * wall_particle_res;
 			this.x = canvas.width - this.radius;
 		}
-
+		this.collision();
 		this.draw();
+	}
+
+	collision() { 
+		particles.forEach((particle) => {
+			if (particle != this) {
+				if (((particle.x-this.x)**2+(particle.y-this.y)**2)**0.5 < this.radius * 2) {
+					particle.colour = "red";
+					this.colour = "red";
+					setTimeout(() => {
+						particle.colour = particle.COLOUR;
+						this.colour = this.COLOUR;
+					},5);
+				}
+			}
+		});
 	}
 
 	draw() {
 		ctx.beginPath();
-		ctx.fillStyle = this.colour;
+		ctx.fillStyle = "black";
 		ctx.arc(this.x,this.y,this.radius,0,Math.PI*2);
+		ctx.fill();
+
+		ctx.beginPath();
+		ctx.fillStyle = this.colour;
+		ctx.arc(this.x,this.y,this.radius-1,0,Math.PI*2);
 		ctx.fill();
 	}
 }
+
+var paused = false;
+document.onkeypress = (e) => {
+	if (e.key == " ") {
+		paused = !paused;
+		if (!paused) {
+			update();
+		}
+	}
+};
 
 const canvas = document.getElementById("mainCanvas");
 const ctx = canvas.getContext("2d");
@@ -77,5 +108,7 @@ function update() {
 	particles.forEach((particle) => {
 		particle.update();
 	});
-	setTimeout(update,1000/targetFPS);
+	if (!paused) {
+		setTimeout(update,1000/targetFPS);
+	}
 }

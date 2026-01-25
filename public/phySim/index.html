@@ -1,5 +1,20 @@
 <link rel="stylesheet" href="./style.css"/>
-<body style="background-color:#8a8a8a">
-	<canvas id="mainCanvas" width="500px" height="500px" class="mainCanvas"></canvas>
+<body style="background-color:#6791bd">
+	<div class="container">
+		<div class="configPanel">
+			<h1>Basic particle simulation</h1>
+			<label for="gravity">Target FPS: </label>
+			<input type="range" class="slider" id="gravity" name="gravity" list="values" min="30" max="120" step="30"/>
+			<datalist id="values">
+				<option value="30" label="30"></option>
+				<option value="60" label="60"></option>
+				<option value="90" label="90"></option>
+				<option value="120" label="120"></option>
+			</datalist>
+			<input type="range" class="slider"/><br>
+			<input type="range" class="slider"/><br>
+		</div>
+		<canvas id="mainCanvas" width="700px" height="700px" class="mainCanvas"></canvas>
+	</div>
 	<script src="./app.js"></script>
 </body>
