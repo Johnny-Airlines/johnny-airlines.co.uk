@@ -1,6 +1,7 @@
 "use strict";
 
 function dot(a, b){
+	//console.log(`Dot: ${a} . ${b} = ${a[0]*b[0]+a[1]*b[1]}`);
 	return a[0]*b[0]+a[1]*b[1];
 }
 
@@ -10,67 +11,141 @@ function add(a, b) {
 }
 
 function multiply(a, b) {
-	//console.log(`Multiply: ${a} * ${b} = ${[a[0]*b,a[1]*b]}`);
+	if (isNaN(a[0]*b)) {
+		console.log(`Multiply: ${a} * ${b} = ${[a[0]*b,a[1]*b]}`);
+		//throw new Error("NO")
+	}
 	return [a[0]*b,a[1]*b];
 }
 
 function minus(a, b) {
+	//console.log(`Minus: ${a} - ${b} = ${add(a,multiply(b,-1))}`);
 	return add(a,multiply(b,-1));
 }
 
 function magnitude(a) {
+	//console.log(`Magnitude of ${a} = ${(a[0]**2+a[1]**2)**0.5}`);
 	return (a[0]**2+a[1]**2)**0.5;
 }
 
-function ranInt(max,min) {
-	return Math.floor(Math.random() * (max - min)) + min;
+function normalize(a) {
+	return [a[0]/magnitude(a),a[1]/magnitude(a)];
+}
+
+function ran(max,min) {
+	return (Math.random() * (max - min)) + min;
 }
 
 class Particle {
 	constructor(x, y) {
-		this.x = x || ranInt(0,canvas.width);
-		this.y = y || ranInt(0,canvas.height);
-		this.vx = ranInt(-10,10);
-		this.vy = ranInt(-10,10);
+		this.x = x || ran(0,canvas.width);
+		this.y = y || ran(0,canvas.height);
+		this.vx = ran(-1,1);
+		this.vy = ran(-1,1);
 		this.ax = 0;
 		this.ay = GRAVITY;
 		this.radius = 10;
 		this.mass = this.radius ** 2;
-		this.colour = `rgb(${ranInt(0,100)},${ranInt(0,100)},${ranInt(0,100)})`;
+		this.colour = `rgb(${ran(0,100)},${ran(0,100)},${ran(0,100)})`;
 		this.COLOUR = this.colour;
+		this.isLocked = false;
+		this.trace = false;
+		this.tracePositions = [];
+		this.collides = true;
+		this.visible = true;
 	}
 	
 	update() {
 		this.previousState = [this.x,this.y];
-		this.ay = GRAVITY;
-		this.vx += this.ax;
-		this.vy += this.ay;
-		this.x += this.vx;
-		this.y += this.vy;
+		if (currentPreset == "Earth") {
+			this.ay = GRAVITY;
+		}
+		else if (currentPreset == "Space") {
+			this.calcUniversalGravitation();
+		}
+		if (this.trace) {
+			this.tracePositions.push([this.x,this.y]);
+			if (this.tracePositions.length > 1000) {
+				this.tracePositions.shift();
+			}
+		}
+		if (this.isLocked) {
+			this.vx = 0;
+			this.vy = 0;
+			this.ax = 0;
+			this.ay = 0;
+		} else {
+			this.vx += this.ax;
+			this.vy += this.ay;
+			this.x += this.vx;
+			this.y += this.vy;
+		}
+		
+		
 
-		if (this.y < 0) {
-			this.vy *= -1 * wall_particle_res;
-			this.y = this.radius;
+		if (this.y-this.radius < 0) {
+			if (wallsBounce) {
+				this.vy *= -1 * wall_particle_res;
+				this.y = this.radius;
+			} else {
+				this.y = canvas.height - this.radius;
+			}
 		} else if (this.y+this.radius > canvas.height) {
-			this.vy *= -1 * wall_particle_res;
-			this.y = canvas.height - this.radius;
+			if (wallsBounce) {
+				this.vy *= -1 * wall_particle_res;
+				this.y = canvas.height - this.radius;
+			} else {
+				this.y = this.radius;
+			}
 		}
 
-		if (this.x < 0) {
-			this.vx *= -1 * wall_particle_res;
-			this.x = this.radius;
+		if (this.x-this.radius < 0) {
+			if (wallsBounce) {
+				this.vx *= -1 * wall_particle_res;
+				this.x = this.radius;
+			} else {
+				this.x = canvas.width - this.radius;
+			}
 		} else if (this.x+this.radius > canvas.width) {
-			this.vx *= -1 * wall_particle_res;
-			this.x = canvas.width - this.radius;
+			if (wallsBounce) {
+				this.vx *= -1 * wall_particle_res;
+				this.x = canvas.width - this.radius;
+			} else {
+				this.x = this.radius;
+			}
 		}
-		this.collision();
-		this.draw();
+		if (this.collides) {
+			this.collision();
+		}
+		if (this.visible) {
+			this.draw();
+		}
+	}
+	
+	calcUniversalGravitation() {
+		let resultantForce = [0,0];
+		particles.forEach((particle) => {
+			if (particle != this) {
+				let direction = [this.x-particle.x,this.y-particle.y];
+				let force = (G*this.mass*particle.mass)/(magnitude(direction)**2);
+				resultantForce = add(resultantForce,multiply(normalize(direction),force*-1));
+			}
+		});
+		this.ax = resultantForce[0];
+		this.ay = resultantForce[1];
 	}
 
 	collision() { 
 		particles.forEach((particle) => {
-			if (particle != this) {
-				if (((particle.x-this.x)**2+(particle.y-this.y)**2)**0.5 < this.radius * 2) {
+			if (particle != this && particle.collides) {
+				if (((particle.x-this.x)**2+(particle.y-this.y)**2)**0.5 < this.radius + particle.radius) {
+					let vectorBetween = [particle.x-this.x,particle.y-this.y]
+					let overlap = multiply(normalize(vectorBetween),(this.radius+particle.radius-magnitude(vectorBetween))/2);
+					this.x -= overlap[0];
+					this.y -= overlap[1];
+					particle.x += overlap[0];
+					particle.y += overlap[1];
+
 					particle.colour = "red";
 					this.colour = "red";
 					setTimeout(() => {
@@ -86,6 +161,13 @@ class Particle {
 
 					let v1After = minus(v1,multiply(minus(x1,x2),(2*m2/(m1+m2))*dot(minus(v1,v2),minus(x1,x2))/magnitude(minus(x1,x2))**2));
 					let v2After = minus(v2,multiply(minus(x2,x1),(2*m1/(m1+m2))*dot(minus(v2,v1),minus(x2,x1))/magnitude(minus(x2,x1))**2));
+					
+					let e = 0.1;
+					let v1MagAfter = (m1*magnitude(v1)+m2*magnitude(v2)+m2*e*(magnitude(v2)-magnitude(v1)))/(m1+m2);
+					let v2MagAfter = (m1*magnitude(v1)+m2*magnitude(v2)+m1*e*(magnitude(v1)-magnitude(v2)))/(m1+m2);
+
+					v1After = multiply(normalize(v1After),v1MagAfter);
+					v2After = multiply(normalize(v2After),v2MagAfter);
 
 					this.vx = v1After[0];
 					this.vy = v1After[1];
@@ -106,6 +188,136 @@ class Particle {
 		ctx.fillStyle = this.colour;
 		ctx.arc(this.x,this.y,this.radius-1,0,Math.PI*2);
 		ctx.fill();
+
+		if (this.trace) {
+			for (const index in this.tracePositions) {
+				let position = this.tracePositions[index];
+				ctx.beginPath();
+				ctx.fillStyle = `rgb(100,00,00,${index/this.tracePositions.length})`
+				ctx.arc(position[0],position[1],0.5,0,Math.PI*2);
+				ctx.fill();
+			}
+		}
+	}
+}
+
+function setPreset(preset) {
+	if (preset == "Earth") {
+		currentPreset = "Earth"
+		preCalcGravity = -9.8
+		targetTPS = 60;
+		PX_PER_METER = 100;
+		GRAVITY = (preCalcGravity * PX_PER_METER) / (targetTPS ** 2);
+		particles = [];
+		wallsBounce = true;
+		for (let i = 0; i < 50; i++) {
+			let p = new Particle();
+			p.radius = ran(5,15);
+			particles.push(p);
+		}
+	} else if (preset == "Orbit1") {
+		currentPreset = "Space";
+		G = 0.25;
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 200;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 3;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 50;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0;
+		p.trace = true;
+		p.isLocked = true;
+		particles.push(p);
+	} else if (preset == "Orbit2") {
+		G = 0.25;
+		currentPreset = "Space";
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 250;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 5;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 50;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0;
+		p.trace = true;
+		p.isLocked = true;
+		particles.push(p);
+	} else if (preset == "Orbit3") {
+		G = 0.15;
+		currentPreset = "Space";
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 290;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 5;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 50;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0;
+		p.trace = true;
+		p.isLocked = true;
+		particles.push(p);
+	} else if (preset == "Binary system") {
+		wallsBounce = true;
+		G = 0.01;
+		currentPreset = "Space";
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 200;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0.5;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 5;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = -0.5;
+		p.trace = true;
+		particles.push(p);
+	} else if (preset == "Planets forming") {
+		particles = [];
+		currentPreset = "Space";
+		G = 0.0001;
+		for (let i = 0; i < 500; i++) {
+			let p = new Particle();
+			p.radius = 3;
+			let max = 1;
+			p.vx = ran(-max,max);
+			p.vy = ran(-max,max);
+			particles.push(p);
+		}
+	}
+	document.getElementById("targetTPS").value = targetTPS;
+	if (currentPreset == "Earth") {
+		document.getElementById("gravity").disabled = false;
+		document.getElementById("gravity").value = -9.8;
+	} else {
+		document.getElementById("gravity").disabled = true;
 	}
 }
 
@@ -114,6 +326,9 @@ var targetTPS = 60;
 var PX_PER_METER = 100;
 var GRAVITY = (preCalcGravity * PX_PER_METER) / (targetTPS ** 2);
 const wall_particle_res = 0.9;
+var G;
+var currentPreset = "Earth";
+var wallsBounce = false;
 
 document.getElementById("targetTPS").addEventListener("input",(e) => {
 	targetTPS = document.getElementById("targetTPS").value;
@@ -137,15 +352,41 @@ document.onkeypress = (e) => {
 	}
 };
 
+let mousedown = false;
+document.getElementById("mainCanvas").onmouseup = (e) => {
+	mousedown = false;
+	particles[0].isLocked = false;
+	particles[0].mass = particles[0].radius ** 2;
+};
+document.getElementById("mainCanvas").onmousedown = (e) => {
+	mousedown = true;
+	particles[0].mass = -100000;
+	particles[0].x = e.offsetX;
+	particles[0].y = canvas.height - e.offsetY;
+	particles[0].isLocked = true;
+};
+document.getElementById("mainCanvas").onmousemove = (e) => {
+	if (mousedown) {
+		particles[0].x = e.offsetX;
+		particles[0].y = canvas.height - e.offsetY;
+	}
+}
+
+document.getElementById("presetSelect").value = "Earth";
+document.getElementById("presetSelect").onchange = (e) => {
+	setPreset(e.target.value);
+}
+function reset() {
+	setPreset(document.getElementById("presetSelect").value);
+}
+
 const canvas = document.getElementById("mainCanvas");
 const ctx = canvas.getContext("2d");
 ctx.translate(0, canvas.height);
 ctx.scale(1, -1);
 
 var particles = [];
-for (let i = 0; i < 50; i++) {
-	particles.push(new Particle());
-}
+setPreset("Earth");
 
 update();
 function update() {
