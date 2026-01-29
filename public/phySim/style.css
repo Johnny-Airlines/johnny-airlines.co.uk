@@ -28,6 +28,11 @@ datalist {
   width: 200px;
 }
 
+input[type="range"]:disabled {
+	opacity: 0.5;
+	cursor: not-allowed;
+}
+
 input[type="range"] {
 	-webkit-appearance: none;
 	-moz-appearance: none;

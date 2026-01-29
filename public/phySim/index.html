@@ -20,6 +20,19 @@
 				<option value="9.8" label="+g"></option>
 				<option value="19.6" label="+2g"></option>
 			</datalist>
+			<select id="presetSelect" name="presetSelect">
+				<option value="Earth">Earth</option>
+				<option value="Orbit1">Orbit 1</option>
+				<option value="Orbit2">Orbit 2</option>
+				<option value="Orbit3">Orbit 3</option>
+				<option value="Binary system">Binary system</option>
+				<option value="Planets forming">Planets forming</option>
+			</select>
+			<button id="resetButton" onclick="reset()">Reset</button>
+			<p style="color: whitesmoke;">
+				Click and move to control a negative mass particle, it only has negative mass outside of Earth preset.
+				Press space to pause/unpause the simulation.
+			</p>
 		</div>
 		<canvas id="mainCanvas" width="700px" height="700px" class="mainCanvas"></canvas>
 	</div>
