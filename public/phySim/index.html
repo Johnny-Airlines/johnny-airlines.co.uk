@@ -1,0 +1,40 @@
+<link rel="stylesheet" href="./style.css"/>
+<body style="background-color:#6791bd">
+	<div class="container">
+		<div class="configPanel">
+			<h1>Basic particle simulation</h1>
+			<label for="targetTPS">Target TPS</label>
+			<input type="range" class="slider" id="targetTPS" name="targetTPS" list="tpsValues" min="30" max="120" step="30" value="60"/>
+			<datalist id="tpsValues">
+				<option value="30" label="30"></option>
+				<option value="60" label="60"></option>
+				<option value="90" label="90"></option>
+				<option value="120" label="120"></option>
+			</datalist>
+			<label for="gravity">Gravity</label>
+			<input type="range" class="slider" id="gravity" name="gravity" list="gravityValues" min="-19.6" max="19.6" step="9.8" value="-9.8"/>
+			<datalist id="gravityValues">
+				<option value="-19.6" label="-2g"></option>
+				<option value="-9.8" label="-g"></option>
+				<option value="0" label= "0g"></option>
+				<option value="9.8" label="+g"></option>
+				<option value="19.6" label="+2g"></option>
+			</datalist>
+			<select id="presetSelect" name="presetSelect">
+				<option value="Earth">Earth</option>
+				<option value="Orbit1">Orbit 1</option>
+				<option value="Orbit2">Orbit 2</option>
+				<option value="Orbit3">Orbit 3</option>
+				<option value="Binary system">Binary system</option>
+				<option value="Planets forming">Planets forming</option>
+			</select>
+			<button id="resetButton" onclick="reset()">Reset</button>
+			<p style="color: whitesmoke;">
+				Click and move to control a negative mass particle, it only has negative mass outside of Earth preset.
+				Press space to pause/unpause the simulation.
+			</p>
+		</div>
+		<canvas id="mainCanvas" width="700px" height="700px" class="mainCanvas"></canvas>
+	</div>
+	<script src="./app.js"></script>
+</body>

@@ -18,25 +18,11 @@ var blackKingCastle = false;
 var blackQueenCastle = false;
 var playingBot = true;
 var depth = 5;
+generateBoard(chessboardhtml);
+updateBoard()
+
 if (playingBot) {
-	stockfish({fen:fen(),depth:depth}).then((data)=>{
-		console.log(data.move)
-		conversionArray = ["a","b","c","d","e","f","g","h"]
-		x1 = conversionArray.indexOf(data.move.charAt(0));
-		y1 = 8-parseInt(data.move.charAt(1));
-		x2 = conversionArray.indexOf(data.move.charAt(2));
-		y2 = 8-parseInt(data.move.charAt(3));
-		board[y2][x2] = board[y1][x1];
-		board[y1][x1] = "";
-		updateBoard();
-		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
-	})
-	.catch((e)=> {
-		console.log(e)
-		alert("Stockfish broke for some reason, now its ur turn.");
-	});
-	turn = "B";
-	document.getElementById("turnTxt").innerHTML = "Black";
+	stockfishMove();
 }
 
 chessboardhtml.addEventListener("click", (evt) => {
@@ -77,29 +63,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 			}
 			document.getElementById("turnTxt").innerHTML = "White";
 			if (playingBot) {
-				stockfish({fen:fen(),depth:depth}).then((data)=>{
-					console.log(data)
-					console.log(data.move)
-					if (data.winChance == 100) {
-						alert("Stockfish won")
-					}
-					conversionArray = ["a","b","c","d","e","f","g","h"]
-					x1 = conversionArray.indexOf(data.move.charAt(0));
-					y1 = 8-parseInt(data.move.charAt(1));
-					x2 = conversionArray.indexOf(data.move.charAt(2));
-					y2 = 8-parseInt(data.move.charAt(3));
-					board[y2][x2] = board[y1][x1];
-					board[y1][x1] = "";
-					updateBoard();
-					console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2)
-					
-				})
-				.catch((e)=> {
-					console.log(e)
-					alert("Stockfish broke for some reason, now its ur turn.");
-				});
-				turn = "B";
-				document.getElementById("turnTxt").innerHTML = "Black";
+				stockfishMove();
 			}
 		}
 		updateBoard();
@@ -112,37 +76,41 @@ chessboardhtml.addEventListener("click", (evt) => {
 	}
 });
 
+function generateBoard(table) {
+	const tableBody = document.createElement("tbody");
+	tableBody.innerHTML = "<thead><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></thead>";
+	let colour = "dark";
+	let rank = 8;
+	for (var i = 0; i < 8; i++) {
+		const row = document.createElement("tr");
+		const rankIndicator = document.createElement("th")
+		const rankIndicatorText = document.createTextNode(rank)
+		rankIndicator.appendChild(rankIndicatorText)
+		row.appendChild(rankIndicator)
+		rank -= 1;
+		for (var j = 0; j < 8; j++) {
+			let id = "" + j + "" + i;
+			const cell = document.createElement("td");
+			cell.className = colour;
+			cell.innerHTML = `<img id=${id} class="piece" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>`
+			row.appendChild(cell);
+			colour = colour == "dark" ? "white" : "dark";
+		}
+		tableBody.appendChild(row);
+		colour = colour == "dark" ? "white" : "dark";
+	}
+	table.appendChild(tableBody);
+}
+
 function updateBoard() {
 	for (var i = 0; i < 8; i++ ) {
 		for (var j = 0; j < 8; j++ ) {
 			id = "" + j + "" + i;
-			//document.getElementById(id).innerHTML = board[j][i]
-			if (board[i][j] == "Br") {
-				document.getElementById(id).innerHTML = "♜";
-			} else if (board[i][j] == "Bn") {
-				document.getElementById(id).innerHTML = "♞";
-			} else if (board[i][j] == "Bb") {
-				document.getElementById(id).innerHTML = "♝";
-			} else if (board[i][j] == "Bk") {
-				document.getElementById(id).innerHTML = "♚";
-			} else if (board[i][j] == "Bq") {
-				document.getElementById(id).innerHTML = "♛";
-			} else if (board[i][j] == "Bp") {
-				document.getElementById(id).innerHTML = "♟";
-			} else if (board[i][j] == "Wr") {
-				document.getElementById(id).innerHTML = "♖";
-			} else if (board[i][j] == "Wn") {
-				document.getElementById(id).innerHTML = "♘";
-			} else if (board[i][j] == "Wb") {
-				document.getElementById(id).innerHTML = "♗";
-			} else if (board[i][j] == "Wk") {
-				document.getElementById(id).innerHTML = "♔";
-			} else if (board[i][j] == "Wq") {
-				document.getElementById(id).innerHTML = "♕";
-			} else if (board[i][j] == "Wp") {
-				document.getElementById(id).innerHTML = "♙";
-			} else if (board[i][j] == "") {
-				document.getElementById(id).innerHTML = "";
+			if (board[i][j] == "") {
+				document.getElementById(id).src = "data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="
+			}
+			else {
+				document.getElementById(id).src = `./chessPieces/${board[i][j]}.webp`
 			}
 		}
 	}
@@ -400,6 +368,11 @@ function isKingInCheck(king) {
 	return false;
 }
 
+function changeTurn() {
+	turn = turn=="W" ? "B" : "W";
+	document.getElementById("turnTxt").innerHTML = turn=="W" ? "White" : "Black";
+}
+
 function fen() {
 	fenString = "";
 	counter = 0;
@@ -443,8 +416,28 @@ async function stockfish(data = {}) {
         },
         body: JSON.stringify(data),
     });
-    return response.json();
+	return response.json();
 }
+
+function stockfishMove() {
+	stockfish({fen:fen(),depth:depth}).then((data)=>{
+		conversionArray = ["a","b","c","d","e","f","g","h"];
+		x1 = conversionArray.indexOf(data.move.charAt(0));
+		y1 = 8-parseInt(data.move.charAt(1));
+		x2 = conversionArray.indexOf(data.move.charAt(2));
+		y2 = 8-parseInt(data.move.charAt(3));
+		board[y2][x2] = board[y1][x1];
+		board[y1][x1] = "";
+		updateBoard();
+		console.log("X1: " + x1 + ", Y1: " + y1 + ", X2: " + x2 + ", Y2: " + y2);
+	})
+	.catch((e)=> {
+		console.log(e)
+		alert("Stockfish broke for some reason, now its ur turn.");
+	});
+	changeTurn();
+}
+
 function stockfishPlays() {
 	if (playingBot) {
 		stockfish({fen:fen(),depth:depth}).then((data)=>{
