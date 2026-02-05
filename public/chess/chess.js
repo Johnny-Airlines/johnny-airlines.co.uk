@@ -1,3 +1,22 @@
+let gameID;
+let socket = io('https://api.johnny-airlines.co.uk/',{forceNew:true});
+
+socket.on('connect', () => {
+	socket.emit('establish_username',{'username':prompt("Enter your username:")});
+	socket.emit('join_waiting_room')
+});
+socket.on('board_update', (data) => {
+	console.log(data)
+	board = data['board'];
+	updateBoard();
+	changeTurn();
+});
+socket.on('start_game', (data) => {
+	gameID = data['gameID'];
+	socket.emit('join_game',{'gameID':gameID});
+});
+
+
 const chessboardhtml = document.getElementById("chessboard");
 var board = [
 	["Br","Bn","Bb","Bq","Bk","Bb","Bn","Br"],
@@ -16,7 +35,7 @@ var whiteKingCastle = false;
 var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
-var playingBot = true;
+var playingBot = false;
 var depth = 5;
 generateBoard(chessboardhtml);
 updateBoard()
@@ -66,6 +85,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 				stockfishMove();
 			}
 		}
+		socket.emit("updateBoard",{'gameID':gameID,'board':board});
 		updateBoard();
 	}
 	else if (selectedPiece != false && !isValidMove(selectedPiece,selectedPieceLocation,id)) {
