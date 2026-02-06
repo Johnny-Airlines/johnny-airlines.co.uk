@@ -368,6 +368,13 @@ function validMoves(piece,origin) {
 		}
 		board = JSON.parse(JSON.stringify(oldBoard))
 	}
+	if (vMoves.length == 0) {
+		if (turn == "W") {
+			alert("Black wins by checkmate!")
+		} else {
+			alert("White wins by checkmate!")
+		}
+	}
 	return vMoves;
 }
 
