@@ -1207,6 +1207,12 @@ function interact() {
 		} else {
 			isPlayingFP = true;
 			dialogue("Lets play Flappy Plane!",false,0)
+			myPlayer.x = -2670
+			myPlayer.y = -1810
+			myPlayer.vx = 0
+			myPlayer.vy = 0
+			myPlayer.ax = 0
+			myPlayer.ay = 0
 			db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
 				db.ref(`users/${myPlayer.id}/`).update({
 					tickets: snapshot.val()-1
@@ -1220,11 +1226,11 @@ function interact() {
 				if (pipesSpawned == 4) {
 					clearInterval(pipeSpawner);
 				}
-			},256/60*1000);
+			},128/60*1000);
 		}
 	} else if (playerCollisionCheck(2200+310,2200+310+310,1756,1756+110)) {
 		if (isPlayingFP) {
-			FPspeed = 2.5;
+			FPspeed = 5;
 		} else {
 			dialogue("You need to start playing before using this button!",false,0);
 		}
@@ -1282,7 +1288,7 @@ function jerryCansDraw() {
 
 function ticketDraw() {
 	if (Math.abs(myPlayer.x+ticketX) <= 250 && Math.abs(myPlayer.y+ticketY) <= 140) {
-		dialogue("You got the ticket! Well done!",false,0)
+		dialogue("You got the ticket! Well done!",false,2000)
 		tickets = tickets + 1
 		db.ref(`users/${myPlayer.id}`).update({
 			tickets,
@@ -1556,24 +1562,24 @@ function flappyPlaneDraw() {
 	drawImageAtFixedPosition(FPImg,2200+96,1500+256-FPheight-17,36*2,17*2);
 	if (isPlayingFP) {
 		FPheight += FPspeed;
-		FPspeed -= 0.075;
+		FPspeed -= 0.2;
 	}
 	FPpipeLocations.forEach((pipeData,index) => {
 		pipeDraw(pipeData[0],pipeData[1],24);
 		if (isPlayingFP) {
-			FPpipeLocations[index][0] += 2;
+			FPpipeLocations[index][0] += 4;
 			if (pipeData[0] > (1024-11*2)) {
 				FPpipeLocations[index][0] -= (1024-11*4);
 				FPpipeLocations[index][1] = Math.floor(Math.random()*(256-16-24-16-24))+16+24
 				FPpoints += 1;
 			}
-			if (((Math.abs(pipeData[1]-FPheight) > 12+17*2) && (Math.abs((1024-96-36)-pipeData[0]) < 36+11*2)) || FPheight < 0 || FPheight > 256) {
+			if (((Math.abs(pipeData[1]-FPheight) > 12+17*2) && (Math.abs((1024-96-36)-pipeData[0]) < 36+11*2)) || FPheight < 0+30 || FPheight > 256) {
 				isPlayingFP = false;
 				FPpipeLocations = [];
 				FPheight = 128;
 				FPspeed = 0;
 				clearInterval(pipeSpawner);
-				let ticketsEarnt = Math.round(Math.pow(1.5,FPpoints/10)-1);
+				let ticketsEarnt = Math.round(Math.pow(1.05,FPpoints))+FPpoints-1;
 				dialogue(`You scored ${FPpoints}, you earnt ${ticketsEarnt}`,false,0);
 				tickets = tickets + ticketsEarnt
 				db.ref(`users/${myPlayer.id}`).update({
