@@ -2047,22 +2047,6 @@ function startGame(displayName, email, uid, plane) {
 			if (player.id != myPlayer.id) {
 				const playerInstance = new playerObject();
 				Object.assign(playerInstance, player);
-				db.ref(`/status/${player.id}`).once('value').then((snapshot) => {
-					if (snapshot.val().state == "offline") {
-						try {
-							bullets.forEach((bullet)=>{
-								if (bullet.player == player.id) {
-									db.ref(`bullets/${bullet.key}`).remove();
-								}
-							})
-						}
-						catch (e) {
-							console.log("huh")
-						}
-
-						db.ref(`players/${player.id}`).remove()
-					}
-				})
 			}
 		}
 	});
