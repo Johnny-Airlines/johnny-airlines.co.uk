@@ -404,6 +404,9 @@ var cFrame = 1;*/
 let running = true;
 let ctx;
 var myPlayer;
+var playerRadius = 50;
+var colliders = [{"type":"rect","x1":500,"y1":500,"x2":600,"y2":600}];
+var showColliders = debugMode;
 var isAdmin = true
 let players = [];
 let bombs = [];
@@ -701,6 +704,39 @@ class playerObject {
 			-this.x + myPlayer.x + gameArea.canvas.width / 2,
 			-this.y + myPlayer.y + gameArea.canvas.height / 2 - 25,
 		);
+	}
+
+	isColliding(collider) {
+		if (collider === undefined) {
+			throw Error("isColliding requires a collider")
+		}
+		if (collider.type === undefined) {
+			throw Error("Collider type must be defined")
+		}
+		//Rect is the only collider type for now.
+		if (collider.type == "rect") {
+			collider.width = collider.x2 - collider.x1;
+			collider.height = collider.y2 - collider.y1;
+			collider.x = collider.x1 - collider.width/2;
+			collider.y = collider.y1 - collider.height/2;
+			
+			let distX = Math.abs(myPlayer.x*-1 - collider.x);
+			let distY = Math.abs(myPlayer.y*-1 - collider.y);
+
+			if (distX > (collider.width / 2 + playerRadius)) { return false; }
+			if (distY > (collider.height / 2 + playerRadius)) { return false; }
+
+			if (distX <= (collider.width / 2)) { return true; }
+			if (distY <= (collider.height / 2)) { return true; }
+
+			let cornerDistance_sq = (distX - collider.width/2)**2+(distY - collider.height/2)**2;
+
+			return (cornerDistance_sq <= (playerRadius**2));
+			
+		}
+		else {
+			throw Error(`Invalid collider type: ${collider.type}`)
+		}
 	}
 }
 
@@ -1103,7 +1139,7 @@ function towers() {
 }
 
 function interact() {
-	if (playerCollisionCheck(12249, 13049, 3249, 4049)) {
+	if (isPlayerCenterInRect(12249, 13049, 3249, 4049)) {
 		db.ref("clicks").transaction((currentCount) => {
 			return (currentCount || 0) + 1;
 		});
@@ -1112,7 +1148,7 @@ function interact() {
 			btn.src = "bUnclicked.png";
 		}, 50);
 	} 
-	else if (playerCollisionCheck(10722+70, 10722+440, 3471+180, 3471+255) && diceRoll == null) {
+	else if (isPlayerCenterInRect(10722+70, 10722+440, 3471+180, 3471+255) && diceRoll == null) {
 		db.ref(`users/${myPlayer.id}/tickets`).once('value').then((snapshot) => {
 			db.ref(`users/${myPlayer.id}/`).update({
 				tickets: snapshot.val()-1
@@ -1148,14 +1184,14 @@ function interact() {
 			}
 			diceRoll = null;
 		},1000)
-	} else if (playerCollisionCheck(2116+16*4,2116+74*4,5129+22*4,5129+40*4)) {
+	} else if (isPlayerCenterInRect(2116+16*4,2116+74*4,5129+22*4,5129+40*4)) {
 		if (daysSinceEpoch() > lastJumbleSolve) {
 			dialogue("Guess:", true, 0);
 			dialoguePromptUse = "jumble";
 		} else {
 			dialogue("You can only try once per day! Come back tommorow!",false,10000)
 		}
-	} else if (playerCollisionCheck(4950,5260,5010,5120)) {
+	} else if (isPlayerCenterInRect(4950,5260,5010,5120)) {
 		if (isPlayingWAJ) {
 			dialogue("You are currently playing, go Whack James!",false,5000)
 		}
@@ -1184,12 +1220,12 @@ function interact() {
 				isPlayingWAJ = false;
 			},60000)
 		}
-	} else if (playerCollisionCheck(4460,4934.4,5010,5447.1)) {
+	} else if (isPlayerCenterInRect(4460,4934.4,5010,5447.1)) {
 		if (isPlayingWAJ) {
 			let attackedLocation = [0,0];
 			for (let i = 0; i < 3; i++) {
 				for (let j = 0; j < 3; j++) {
-					if (playerCollisionCheck(4460+i*159.8,4460+(i+1)*159.8,5010+j*145.7,5010+(j+1)*145.7)) {
+					if (isPlayerCenterInRect(4460+i*159.8,4460+(i+1)*159.8,5010+j*145.7,5010+(j+1)*145.7)) {
 						attackedLocation = [i,j];
 					}
 				}
@@ -1201,7 +1237,7 @@ function interact() {
 				whackAJamesLayout[Math.floor(Math.random()*3)][Math.floor(Math.random()*3)] = "jamesSadImg";
 			}
 		}
-	} else if (playerCollisionCheck(2200,2200+310,1756,1756+110)) {
+	} else if (isPlayerCenterInRect(2200,2200+310,1756,1756+110)) {
 		if (isPlayingFP) {
 			dialogue("You are already playing Flappy Plane",false,0);
 		} else {
@@ -1228,13 +1264,13 @@ function interact() {
 				}
 			},128/60*1000);
 		}
-	} else if (playerCollisionCheck(2200+310,2200+310+310,1756,1756+110)) {
+	} else if (isPlayerCenterInRect(2200+310,2200+310+310,1756,1756+110)) {
 		if (isPlayingFP) {
 			FPspeed = 5;
 		} else {
 			dialogue("You need to start playing before using this button!",false,0);
 		}
-	} else if (playerCollisionCheck(12300,12300+400,6100,6100+400)) {
+	} else if (isPlayerCenterInRect(12300,12300+400,6100,6100+400)) {
 		if ((Date.now() - lastBananaClick) > 1000) { 
 			bananaClickerData.bananas += 1;
 			db.ref(`bananaClicker/${myPlayer.id}`).update(bananaClickerData);
@@ -1252,7 +1288,7 @@ function interact() {
 	}
 }
 
-function playerCollisionCheck(a, b, c, d) {
+function isPlayerCenterInRect(a, b, c, d) {
 	return (
 		a + myPlayer.x + gameArea.canvas.width / 2 <
 		gameArea.canvas.width / 2 &&
@@ -1393,7 +1429,7 @@ function prison() {
 	ctx = gameArea.context
 	ctx.fillStyle = "#000000"
 	//center 2656, 13312
-	if (playerCollisionCheck(2400, 2912, 13056, 13088) || playerCollisionCheck(2400, 2432, 13056, 13568) || playerCollisionCheck(2880, 2912, 13056, 13568) || playerCollisionCheck(2400, 2912, 13536, 13568)) {
+	if (isPlayerCenterInRect(2400, 2912, 13056, 13088) || isPlayerCenterInRect(2400, 2432, 13056, 13568) || isPlayerCenterInRect(2880, 2912, 13056, 13568) || isPlayerCenterInRect(2400, 2912, 13536, 13568)) {
 		myPlayer.vx *= -0.5
 		myPlayer.vy *= -0.5
 		myPlayer.x = safeX
@@ -1619,6 +1655,25 @@ function cloudsDraw() {
 	}
 }
 
+function collidersDraw() {
+	if (showColliders) {
+		ctx = gameArea.context;
+		for (let collider of colliders) {
+			if (collider.type == "rect") {
+				if (myPlayer.isColliding(collider)) {
+					ctx.fillStyle = "rgba(255,0,0,0.5)" 
+				} else {
+					ctx.fillStyle = "rgba(0,255,0,0.5)";
+				}
+				ctx.fillRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x1-collider.x2,collider.y1-collider.y2)
+				ctx.beginPath();
+				ctx.arc(gameArea.canvas.width/2,gameArea.canvas.height/2,playerRadius,0,Math.PI*2);
+				ctx.fill();
+			}
+		}
+	}
+}
+
 
 document.getElementById("select-all").onclick = selectAll;
 function selectAll() {
@@ -1719,7 +1774,7 @@ window.updatePFP = updatePFP;
 /* Old PVP system
 function pvp() {
 	ctx = gameArea.context
-	let pvpOn = playerCollisionCheck(8336,15680,10048,15776)
+	let pvpOn = isPlayerCenterInRect(8336,15680,10048,15776)
 	if (pvpOn) {
 		ctx.beginPath();
 		ctx.arc(gameArea.canvas.width-130 , 300 , 75 , 0 , 2*Math.PI );
@@ -1794,12 +1849,12 @@ function pvp() {
 function christmasBoss() {
 	ctx = gameArea.context
 	//pvpOn - is player in pvp area, if so, show health and enable damage
-	let pvpOn = playerCollisionCheck(8336,15680,10048,15776);
+	let pvpOn = isPlayerCenterInRect(8336,15680,10048,15776);
 	let width = 100;
 	let height = 100;
 	if (debugMode && christmasBossData != undefined) {
 		drawImageAtFixedPosition(christmasBossImg,christmasBossData.x,christmasBossData.y,width,height);
-		if (!christmasBossData.active && playerCollisionCheck(christmasBossData.x,christmasBossData.x+width,christmasBossData.y,christmasBossData.y+height)) {
+		if (!christmasBossData.active && isPlayerCenterInRect(christmasBossData.x,christmasBossData.x+width,christmasBossData.y,christmasBossData.y+height)) {
 			christmasBossData.active = true
 			db.ref('boss').update(christmasBossData)
 		}
@@ -2173,6 +2228,8 @@ function updateGameArea(lastTimestamp) {
 	myPlayer.planeDraw();
 	boostbar();
 	miniMap();
+
+	collidersDraw();
 
 	if (isAdmin) {
 		updateAdminTable();
