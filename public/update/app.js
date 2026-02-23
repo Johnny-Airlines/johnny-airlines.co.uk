@@ -730,12 +730,16 @@ class playerObject {
 			let isTouchingCorner = cornerDistance_sq <= (playerRadius**2);
 			
 			let distances = {
-				"north": myPlayer.y*-1 - collider.y1 - playerRadius,
-				"south": collider.y2 - myPlayer.y*-1 - playerRadius,
-				"east": collider.x2 - myPlayer.x*-1 - playerRadius,
-				"west": myPlayer.x*-1 - collider.x1 - playerRadius
+				"north": myPlayer.y*-1 - collider.y1,
+				"south": collider.y2 - myPlayer.y*-1,
+				"east": collider.x2 - myPlayer.x*-1,
+				"west": myPlayer.x*-1 - collider.x1
 			}
 			let [closestFace] = Object.entries(distances).sort(([,v1],[,v2]) => v1 - v2);
+			Object.keys(distances).forEach(function(key, index) { 
+				distances[key] = distances[key] < 0;
+			});
+			console.table(distances)
 			if (isTouchingCorner) {
 				let cornerPositions = {
 					"NW": [collider.x1,collider.y1],
@@ -743,16 +747,25 @@ class playerObject {
 					"SW": [collider.x1,collider.y2],
 					"SE": [collider.x2,collider.y2]
 				}
-				distances = JSON.parse(JSON.stringify(cornerPositions));
-				Object.keys(distances).forEach(function(key,index) {
-					distances[key] = (myPlayer.x*-1 - distances[key][0])**2 + (myPlayer.y*-1 - distances[key][1])**2
-				});
-				let [closestCorner] = Object.entries(distances).sort(([,v1],[,v2]) => v1 - v2);
-				return {"type":"corner","corner":closestCorner[0],"position":cornerPositions[closestCorner[0]]};
-			} else if (closestFace[1] < 0) {
-				Object.keys(distances).forEach(function(key, index) { 
-					distances[key] = distances[key] < 0;
-				});
+				let corner = false
+				if (distances["north"]) {
+					if (distances["east"]) {
+						corner = "NE";
+					} else if (distances["west"]) {
+						corner = "NW";
+					}
+				} else if (distances["south"]) {
+					if (distances["east"]) {
+						corner = "SE";
+					} else if (distances["west"]) {
+						corner = "SW";
+					}
+				}
+				if (corner) {
+					return {"type":"corner","corner":corner,"position":cornerPositions[corner]};
+				}
+			}
+			if (closestFace[1] < 0) {
 				if ((distances["north"] || distances["south"]) && (distances["west"] || distances["east"])) {
 					return false;
 				}
@@ -763,11 +776,29 @@ class playerObject {
 				"east": collider.x2,
 				"west": collider.x1
 			}[closestFace[0]];
-			return {"type":"edge","face":closestFace[0],"position":facePos};
+			return {"type":"face","face":closestFace[0],"position":facePos};
 			
 		}
 		else {
 			throw Error(`Invalid collider type: ${collider.type}`)
+		}
+	}
+
+	unCollide(collision) {
+		if (collision.type == "face") {
+			if (collision.face == "north") {
+				myPlayer.y = (collision.position - playerRadius)*-1;
+				myPlayer.vy *= -0.8;
+			} else if (collision.face == "south") {
+				myPlayer.y = (collision.position + playerRadius)*-1;
+				myPlayer.vy *= -0.8
+			} else if (collision.face == "west") {
+				myPlayer.x = (collision.position - playerRadius)*-1;
+				myPlayer.vx *= -0.8
+			} else if (collision.face == "east") {
+				myPlayer.x = (collision.position + playerRadius)*-1;
+				myPlayer.vx *= -0.8
+			}
 		}
 	}
 }
@@ -1687,17 +1718,19 @@ function cloudsDraw() {
 	}
 }
 
-function collidersDraw() {
-	if (showColliders) {
-		ctx = gameArea.context;
-		for (let collider of colliders) {
-			if (collider.type == "rect") {
-				console.table(myPlayer.isColliding(collider));
-				if (myPlayer.isColliding(collider)) {
-					ctx.fillStyle = "rgba(255,0,0,0.5)" 
-				} else {
-					ctx.fillStyle = "rgba(0,255,0,0.5)";
-				}
+function doCollisions() {
+	ctx = gameArea.context;
+	for (let collider of colliders) {
+		if (collider.type == "rect") {
+			let collision = myPlayer.isColliding(collider);
+			if (collision) {
+				console.table(collision);
+				myPlayer.unCollide(collision);
+				ctx.fillStyle = "rgba(255,0,0,0.5)" 
+			} else {
+				ctx.fillStyle = "rgba(0,255,0,0.5)";
+			}
+			if (showColliders) {
 				ctx.fillRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x2-collider.x1,collider.y2-collider.y1)
 				ctx.beginPath();
 				ctx.arc(gameArea.canvas.width/2,gameArea.canvas.height/2,playerRadius,0,Math.PI*2);
@@ -2262,7 +2295,7 @@ function updateGameArea(lastTimestamp) {
 	boostbar();
 	miniMap();
 
-	collidersDraw();
+	doCollisions();
 
 	if (isAdmin) {
 		updateAdminTable();
