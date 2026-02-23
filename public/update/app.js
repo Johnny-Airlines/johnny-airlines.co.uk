@@ -405,7 +405,7 @@ let running = true;
 let ctx;
 var myPlayer;
 var playerRadius = 50;
-var colliders = [{"type":"rect","x1":500,"y1":500,"x2":600,"y2":600}];
+var colliders = [{"type":"rect","x1":8500,"y1":8500,"x2":8750,"y2":9250}];
 var showColliders = debugMode;
 var isAdmin = true
 let players = [];
@@ -717,21 +717,53 @@ class playerObject {
 		if (collider.type == "rect") {
 			collider.width = collider.x2 - collider.x1;
 			collider.height = collider.y2 - collider.y1;
-			collider.x = collider.x1 - collider.width/2;
-			collider.y = collider.y1 - collider.height/2;
+			collider.x = collider.x1 + collider.width/2;
+			collider.y = collider.y1 + collider.height/2;
 			
 			let distX = Math.abs(myPlayer.x*-1 - collider.x);
 			let distY = Math.abs(myPlayer.y*-1 - collider.y);
-
+			
 			if (distX > (collider.width / 2 + playerRadius)) { return false; }
 			if (distY > (collider.height / 2 + playerRadius)) { return false; }
-
-			if (distX <= (collider.width / 2)) { return true; }
-			if (distY <= (collider.height / 2)) { return true; }
-
+			
 			let cornerDistance_sq = (distX - collider.width/2)**2+(distY - collider.height/2)**2;
-
-			return (cornerDistance_sq <= (playerRadius**2));
+			let isTouchingCorner = cornerDistance_sq <= (playerRadius**2);
+			
+			let distances = {
+				"north": myPlayer.y*-1 - collider.y1 - playerRadius,
+				"south": collider.y2 - myPlayer.y*-1 - playerRadius,
+				"east": collider.x2 - myPlayer.x*-1 - playerRadius,
+				"west": myPlayer.x*-1 - collider.x1 - playerRadius
+			}
+			let [closestFace] = Object.entries(distances).sort(([,v1],[,v2]) => v1 - v2);
+			if (isTouchingCorner) {
+				let cornerPositions = {
+					"NW": [collider.x1,collider.y1],
+					"NE": [collider.x2,collider.y1],
+					"SW": [collider.x1,collider.y2],
+					"SE": [collider.x2,collider.y2]
+				}
+				distances = JSON.parse(JSON.stringify(cornerPositions));
+				Object.keys(distances).forEach(function(key,index) {
+					distances[key] = (myPlayer.x*-1 - distances[key][0])**2 + (myPlayer.y*-1 - distances[key][1])**2
+				});
+				let [closestCorner] = Object.entries(distances).sort(([,v1],[,v2]) => v1 - v2);
+				return {"type":"corner","corner":closestCorner[0],"position":cornerPositions[closestCorner[0]]};
+			} else if (closestFace[1] < 0) {
+				Object.keys(distances).forEach(function(key, index) { 
+					distances[key] = distances[key] < 0;
+				});
+				if ((distances["north"] || distances["south"]) && (distances["west"] || distances["east"])) {
+					return false;
+				}
+			}
+			let facePos = {
+				"north": collider.y1,
+				"south": collider.y2,
+				"east": collider.x2,
+				"west": collider.x1
+			}[closestFace[0]];
+			return {"type":"edge","face":closestFace[0],"position":facePos};
 			
 		}
 		else {
@@ -1660,12 +1692,13 @@ function collidersDraw() {
 		ctx = gameArea.context;
 		for (let collider of colliders) {
 			if (collider.type == "rect") {
+				console.table(myPlayer.isColliding(collider));
 				if (myPlayer.isColliding(collider)) {
 					ctx.fillStyle = "rgba(255,0,0,0.5)" 
 				} else {
 					ctx.fillStyle = "rgba(0,255,0,0.5)";
 				}
-				ctx.fillRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x1-collider.x2,collider.y1-collider.y2)
+				ctx.fillRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x2-collider.x1,collider.y2-collider.y1)
 				ctx.beginPath();
 				ctx.arc(gameArea.canvas.width/2,gameArea.canvas.height/2,playerRadius,0,Math.PI*2);
 				ctx.fill();
