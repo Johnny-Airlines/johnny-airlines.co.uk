@@ -404,7 +404,7 @@ var cFrame = 1;*/
 let running = true;
 let ctx;
 var myPlayer;
-var playerRadius = 50;
+const playerRadius = 30;
 var colliders = [{"type":"rect","x1":8500,"y1":8500,"x2":8750,"y2":9250}];
 var showColliders = debugMode;
 var isAdmin = true
