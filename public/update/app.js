@@ -398,6 +398,7 @@ const christmasTreeFrame2 = new Image();
 christmasTreeFrame2.src = "../christmasTreeFrames/2.png";
 var cFrame = 1;*/
 
+//if (isPlayerCenterInRect(2400, 2912, 13056, 13088) || isPlayerCenterInRect(2400, 2432, 13056, 13568) || isPlayerCenterInRect(2880, 2912, 13056, 13568) || isPlayerCenterInRect(2400, 2912, 13536, 13568)) {
 
 
 //Other Variables
@@ -405,7 +406,7 @@ let running = true;
 let ctx;
 var myPlayer;
 const playerRadius = 30;
-var colliders = [{"type":"rect","x1":8500,"y1":8500,"x2":8750,"y2":9250}];
+var colliders = [{"type":"rect","x1":2400,"y1":13056,"x2":2912,"y2":13088},{"type":"rect","x1":2400,"y1":13056,"x2":2432,"y2":13568},{"type":"rect","x1":2880,"y1":13056,"x2":2912,"y2":13568},{"type":"rect","x1":2400,"y1":13536,"x2":2912,"y2":13568}];
 var showColliders = debugMode;
 var isAdmin = true
 let players = [];
@@ -415,8 +416,6 @@ let tickets;
 var jerryCans = [[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0],[0,0]];
 var ticketX = 0;
 var ticketY = 0;
-var safeX;
-var safeY;
 var prisonCmdId = "N/A";
 var lastShot = Date.now();
 var lastBomb = Date.now();
@@ -1503,22 +1502,6 @@ function executeCommand(data) {
 	}
 }
 
-function prison() {
-	ctx = gameArea.context
-	ctx.fillStyle = "#000000"
-	//center 2656, 13312
-	if (isPlayerCenterInRect(2400, 2912, 13056, 13088) || isPlayerCenterInRect(2400, 2432, 13056, 13568) || isPlayerCenterInRect(2880, 2912, 13056, 13568) || isPlayerCenterInRect(2400, 2912, 13536, 13568)) {
-		myPlayer.vx *= -0.5
-		myPlayer.vy *= -0.5
-		myPlayer.x = safeX
-		myPlayer.y = safeY
-	}
-	else {
-		safeX = myPlayer.x
-		safeY = myPlayer.y
-	}
-}
-
 function gambling() {
 	ctx = gameArea.context;
 	ctx.fillStyle = "#000000";
@@ -2293,7 +2276,6 @@ function updateGameArea(lastTimestamp) {
 	ticketDraw();
 	jerryCansDraw();
 	towers();
-	prison();
 	frame();
 	//pvp();
 	christmasBoss();
