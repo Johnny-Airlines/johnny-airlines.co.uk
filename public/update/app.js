@@ -611,6 +611,26 @@ var frame = function () {
 	});
 };
 
+//Utility functions
+function magnitude(vector) {
+	return (vector.x**2+vector.y**2)**0.5
+}
+function scale(vector,length) {
+	if (magnitude(vector) == 0) { return {"x":0,"y":0} }
+	let unitVector = {"x":vector.x/magnitude(vector), "y": vector.y/magnitude(vector)}
+	vector = {"x":unitVector.x*length,"y":unitVector.y*length}
+	return vector
+}
+function subtract(vector1,vector2) {
+	return {"x":vector1.x-vector2.x,"y":vector1.y-vector2.y}
+}
+function dot(vector1,vector2) {
+	return vector1.x*vector2.x + vector1.y*vector2.y
+}
+function multiply(vector,value) {
+	return {"x":vector.x*value,"y":vector.y*value};
+}
+
 //Player constructor
 class playerObject {
 	constructor() {
@@ -720,8 +740,8 @@ class playerObject {
 			collider.x = collider.x1 + collider.width/2;
 			collider.y = collider.y1 + collider.height/2;
 			
-			let distX = Math.abs(myPlayer.x*-1 - collider.x);
-			let distY = Math.abs(myPlayer.y*-1 - collider.y);
+			let distX = Math.abs(this.x*-1 - collider.x);
+			let distY = Math.abs(this.y*-1 - collider.y);
 			
 			if (distX > (collider.width / 2 + playerRadius)) { return false; }
 			if (distY > (collider.height / 2 + playerRadius)) { return false; }
@@ -730,22 +750,21 @@ class playerObject {
 			let isTouchingCorner = cornerDistance_sq <= (playerRadius**2);
 			
 			let distances = {
-				"north": myPlayer.y*-1 - collider.y1,
-				"south": collider.y2 - myPlayer.y*-1,
-				"east": collider.x2 - myPlayer.x*-1,
-				"west": myPlayer.x*-1 - collider.x1
+				"north": this.y*-1 - collider.y1,
+				"south": collider.y2 - this.y*-1,
+				"east": collider.x2 - this.x*-1,
+				"west": this.x*-1 - collider.x1
 			}
 			let [closestFace] = Object.entries(distances).sort(([,v1],[,v2]) => v1 - v2);
 			Object.keys(distances).forEach(function(key, index) { 
 				distances[key] = distances[key] < 0;
 			});
-			console.table(distances)
 			if (isTouchingCorner) {
 				let cornerPositions = {
-					"NW": [collider.x1,collider.y1],
-					"NE": [collider.x2,collider.y1],
-					"SW": [collider.x1,collider.y2],
-					"SE": [collider.x2,collider.y2]
+					"NW": {"x":collider.x1,"y":collider.y1},
+					"NE": {"x":collider.x2,"y":collider.y1},
+					"SW": {"x":collider.x1,"y":collider.y2},
+					"SE": {"x":collider.x2,"y":collider.y2}
 				}
 				let corner = false
 				if (distances["north"]) {
@@ -762,7 +781,7 @@ class playerObject {
 					}
 				}
 				if (corner) {
-					return {"type":"corner","corner":corner,"position":cornerPositions[corner]};
+					return cornerPositions[corner];
 				}
 			}
 			if (closestFace[1] < 0) {
@@ -770,13 +789,13 @@ class playerObject {
 					return false;
 				}
 			}
-			let facePos = {
-				"north": collider.y1,
-				"south": collider.y2,
-				"east": collider.x2,
-				"west": collider.x1
+			let collisionPos = {
+				"north": {"x":this.x*-1,"y":collider.y1},
+				"south": {"x":this.x*-1,"y":collider.y2},
+				"east": {"x":collider.x2,"y":this.y*-1},
+				"west": {"x":collider.x1,"y":this.y*-1}
 			}[closestFace[0]];
-			return {"type":"face","face":closestFace[0],"position":facePos};
+			return collisionPos;
 			
 		}
 		else {
@@ -784,22 +803,18 @@ class playerObject {
 		}
 	}
 
-	unCollide(collision) {
-		if (collision.type == "face") {
-			if (collision.face == "north") {
-				myPlayer.y = (collision.position - playerRadius)*-1;
-				myPlayer.vy *= -0.8;
-			} else if (collision.face == "south") {
-				myPlayer.y = (collision.position + playerRadius)*-1;
-				myPlayer.vy *= -0.8
-			} else if (collision.face == "west") {
-				myPlayer.x = (collision.position - playerRadius)*-1;
-				myPlayer.vx *= -0.8
-			} else if (collision.face == "east") {
-				myPlayer.x = (collision.position + playerRadius)*-1;
-				myPlayer.vx *= -0.8
-			}
-		}
+	unCollide(collision,collider) {
+		let between = {"x":this.x*-1-collision.x,"y":this.y*-1-collision.y}
+		between = scale(between,playerRadius)
+		this.x = (collision.x + between.x)*-1
+		this.y = (collision.y + between.y)*-1
+		let vBefore = {"x":this.vx*-1,"y":this.vy*-1}
+		let vAfter = subtract(vBefore,multiply(between,(dot(vBefore,between)*2/(magnitude(between)**2))))
+		vAfter = multiply(vAfter,0.8)
+		this.vx = vAfter.x*-1
+		this.vy = vAfter.y*-1
+		this.x += this.vx
+		this.y += this.vy
 	}
 }
 
@@ -1724,8 +1739,7 @@ function doCollisions() {
 		if (collider.type == "rect") {
 			let collision = myPlayer.isColliding(collider);
 			if (collision) {
-				console.table(collision);
-				myPlayer.unCollide(collision);
+				myPlayer.unCollide(collision,collider);
 				ctx.fillStyle = "rgba(255,0,0,0.5)" 
 			} else {
 				ctx.fillStyle = "rgba(0,255,0,0.5)";
