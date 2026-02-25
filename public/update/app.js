@@ -377,6 +377,8 @@ const bananaImg = new Image();
 bananaImg.src = "../banana/banana.png";
 const ticketImage = new Image();
 ticketImage.src = "../Ticket.png"
+const redbullring = new Image();
+redbullring.src = "../redbullring.png";
 
 const rocketImg = new Image();
 rocketImg.src = "../rocket.png"
@@ -406,7 +408,22 @@ let running = true;
 let ctx;
 var myPlayer;
 const playerRadius = 30;
-var colliders = [{"type":"rect","x1":2400,"y1":13056,"x2":2912,"y2":13088},{"type":"rect","x1":2400,"y1":13056,"x2":2432,"y2":13568},{"type":"rect","x1":2880,"y1":13056,"x2":2912,"y2":13568},{"type":"rect","x1":2400,"y1":13536,"x2":2912,"y2":13568}];
+var colliders = [
+	{"type":"rect","x1":2400,"y1":13056,"x2":2912,"y2":13088,"isSolid":true}, //Prison walls
+	{"type":"rect","x1":2400,"y1":13056,"x2":2432,"y2":13568,"isSolid":true},
+	{"type":"rect","x1":2880,"y1":13056,"x2":2912,"y2":13568,"isSolid":true},
+	{"type":"rect","x1":2400,"y1":13536,"x2":2912,"y2":13568,"isSolid":true},
+	{"type":"rect","x1":3710,"y1":4400,"x2":4700,"y2":4430,"isSolid":false}, // Race walls and main track and checkpoints
+	{"type":"rect","x1":3710,"y1":4350,"x2":4700,"y2":4400,"isSolid":true},
+	{"type":"rect","x1":3050,"y1":4520,"x2":4800,"y2":4550,"isSolid":false},
+	{"type":"rect","x1":2970,"y1":4550,"x2":4800,"y2":4600,"isSolid":true},
+	{"type":"rect","x1":3020,"y1":3130,"x2":3050,"y2":4550,"isSolid":false},
+	{"type":"rect","x1":2970,"y1":3130,"x2":3020,"y2":4550,"isSolid":true},
+	{"type":"sector","x":3020,"y":4550,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":450,"isSolid":true},
+	{"type":"sector","x":3020,"y":4550,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":500,"isSolid":false},
+	{"type":"sector","x":3020,"y":4250,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":320,"isSolid":true},
+	{"type":"sector","x":3020,"y":4250,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":370,"isSolid":false}
+];
 var showColliders = debugMode;
 var isAdmin = true
 let players = [];
@@ -620,6 +637,9 @@ function scale(vector,length) {
 	vector = {"x":unitVector.x*length,"y":unitVector.y*length}
 	return vector
 }
+function add(vector1,vector2) {
+	return {"x": vector1.x+vector2.x,"y":vector1.y+vector2.y}
+}
 function subtract(vector1,vector2) {
 	return {"x":vector1.x-vector2.x,"y":vector1.y-vector2.y}
 }
@@ -796,13 +816,24 @@ class playerObject {
 			}[closestFace[0]];
 			return collisionPos;
 			
+		} else if (collider.type == "sector") {
+			let between = {"x":collider.x-this.x*-1,"y":collider.y-this.y*-1};
+			let relativeAngle = Math.atan2(between.y,between.x) - Math.PI
+			if (relativeAngle < 0) { relativeAngle += Math.PI*2 }
+			let distance_sq = (between.x)**2+(between.y)**2
+			if (relativeAngle >= collider.theta1 && relativeAngle <= collider.theta2 && distance_sq < (collider.radius+playerRadius)**2) {
+				between = scale(between, collider.radius)
+				let collisionPos = subtract(collider,between);
+				return collisionPos;
+			}
+			return false
 		}
 		else {
 			throw Error(`Invalid collider type: ${collider.type}`)
 		}
 	}
 
-	unCollide(collision,collider) {
+	unCollide(collision) {
 		let between = {"x":this.x*-1-collision.x,"y":this.y*-1-collision.y}
 		between = scale(between,playerRadius)
 		this.x = (collision.x + between.x)*-1
@@ -1718,22 +1749,54 @@ function cloudsDraw() {
 
 function doCollisions() {
 	ctx = gameArea.context;
+	drawImageAtFixedPosition(redbullring,3000,3000,1280*1.5,1035*1.5)
+	let isPlayerColliding = false
 	for (let collider of colliders) {
 		if (collider.type == "rect") {
 			let collision = myPlayer.isColliding(collider);
+			ctx.fillStyle = "rgba(0,255,0,0.5)";
 			if (collision) {
-				myPlayer.unCollide(collision,collider);
-				ctx.fillStyle = "rgba(255,0,0,0.5)" 
-			} else {
-				ctx.fillStyle = "rgba(0,255,0,0.5)";
-			}
+				if (collider.isSolid) { myPlayer.unCollide(collision); }
+				isPlayerColliding = true
+				ctx.fillStyle = "rgba(255,0,0,0.5)";
+			}			
 			if (showColliders) {
 				ctx.fillRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x2-collider.x1,collider.y2-collider.y1)
+				ctx.strokeStyle = "rgba(0,0,0,1)";
+				ctx.lineWidth = 5;
+				ctx.strokeRect(collider.x1+myPlayer.x+gameArea.canvas.width/2,collider.y1+myPlayer.y+gameArea.canvas.height/2,collider.x2-collider.x1,collider.y2-collider.y1);
+			}
+		} else if (collider.type == "sector") {
+			let collision = myPlayer.isColliding(collider);
+			ctx.fillStyle = "rgba(0,255,0,0.5)";
+			if (collision) {
+				if (collider.isSolid) { myPlayer.unCollide(collision); }
+				ctx.fillStyle = "rgba(255,0,0,0.5)";
+				isPlayerColliding = true;
+			}
+			if (showColliders) {
+				ctx.strokeStyle = "rgba(0,0,0,1)";
+				ctx.lineWidth = 5;
 				ctx.beginPath();
-				ctx.arc(gameArea.canvas.width/2,gameArea.canvas.height/2,playerRadius,0,Math.PI*2);
+				ctx.moveTo(collider.x+myPlayer.x+gameArea.canvas.width/2,collider.y+myPlayer.y+gameArea.canvas.height/2);
+				ctx.arc(collider.x+myPlayer.x+gameArea.canvas.width/2,collider.y+myPlayer.y+gameArea.canvas.height/2,collider.radius,collider.theta1,collider.theta2);
+				ctx.lineTo(collider.x+myPlayer.x+gameArea.canvas.width/2,collider.y+myPlayer.y+gameArea.canvas.height/2);
 				ctx.fill();
+				ctx.beginPath();
+				ctx.arc(collider.x+myPlayer.x+gameArea.canvas.width/2,collider.y+myPlayer.y+gameArea.canvas.height/2,collider.radius,collider.theta1,collider.theta2);
+				ctx.stroke();
 			}
 		}
+	}
+	if (showColliders) {
+		if (isPlayerColliding) {
+			ctx.fillStyle = "rgba(255,0,0,0.5)";
+		} else {
+			ctx.fillStyle = "rgba(0,255,0,0.5)";
+		}
+		ctx.beginPath();
+		ctx.arc(gameArea.canvas.width/2,gameArea.canvas.height/2,playerRadius,0,Math.PI*2);
+		ctx.fill();
 	}
 }
 
@@ -2007,6 +2070,10 @@ function startGame(displayName, email, uid, plane) {
 	myPlayer.id = uid;
 	myPlayer.x = -8000;
 	myPlayer.y = -8000;
+	if (debugMode) {
+		myPlayer.x = -4282; // Instantly tping to race track makes the slow development quicker
+		myPlayer.y = -4478;
+	}
 
 	if (!["johnnyairlinesceo","frazeldazel","hmmmm"].includes(myPlayer.username)) {
 		document.getElementById("Admin-tablink").remove()
