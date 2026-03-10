@@ -412,7 +412,9 @@ var colliders = [
 	{"type":"rect","x1":2400,"y1":13056,"x2":2912,"y2":13088,"isSolid":true}, //Prison walls
 	{"type":"rect","x1":2400,"y1":13056,"x2":2432,"y2":13568,"isSolid":true},
 	{"type":"rect","x1":2880,"y1":13056,"x2":2912,"y2":13568,"isSolid":true},
-	{"type":"rect","x1":2400,"y1":13536,"x2":2912,"y2":13568,"isSolid":true},
+	{"type":"rect","x1":2400,"y1":13536,"x2":2912,"y2":13568,"isSolid":true}]
+if (debugMode) {
+	colliders = colliders.concat([
 	{"type":"rect","x1":3710,"y1":4400,"x2":4700,"y2":4430,"isSolid":false}, // Race walls and main track and checkpoints
 	{"type":"rect","x1":3710,"y1":4350,"x2":4700,"y2":4400,"isSolid":true},
 	{"type":"rect","x1":3050,"y1":4520,"x2":4800,"y2":4550,"isSolid":false},
@@ -423,7 +425,8 @@ var colliders = [
 	{"type":"sector","x":3020,"y":4550,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":500,"isSolid":false},
 	{"type":"sector","x":3020,"y":4250,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":320,"isSolid":true},
 	{"type":"sector","x":3020,"y":4250,"theta1":Math.PI*3/2,"theta2":Math.PI*2,"radius":370,"isSolid":false}
-];
+	]);
+}
 var showColliders = debugMode;
 var isAdmin = true
 let players = [];
