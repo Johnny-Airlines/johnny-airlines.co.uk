@@ -1,0 +1,16 @@
+<link rel="stylesheet" href="./style.css"/>
+<title>Mandelbrot Set</title>
+<body style="background-color:#6791bd">
+	<div class="container">
+		<div class="configPanel">
+			<h1>Mandelbrot Set</h1>
+			<label for="upperBound">Iteration limit</label>
+			<input type="text" class="input" id="upperBound" name="upperBound" value="50"/>
+			<button id="zoomTool" onclick="zoomTool()">Zoom Tool</button>
+			<button id="reset" onclick="reset()">Reset</button>
+			<button id="render" onclick="render()">Render</button>
+		</div>
+		<canvas id="mainCanvas" width="600px" height="400px" class="mainCanvas"></canvas>
+	</div>
+	<script src="./app.js"></script>
+</body>

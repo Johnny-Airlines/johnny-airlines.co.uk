@@ -1,0 +1,45 @@
+.mainCanvas {
+	border: 2px solid black;
+	background-color: white;
+	image-rendering: pixelated;
+}
+
+.container {
+	position: absolute;
+	top: 50%;
+	left: 50%;
+	transform: translate(-50%,-50%);
+	display: flex;
+	align-items: stretch;
+}
+
+.configPanel {
+	background-color: #222;
+	border: 3px solid black;
+}
+
+h1, label, datalist { 
+	color: whitesmoke;
+}
+
+/* From Uiverse.io by boryanakrasteva */ 
+.input-container {
+	width: 220px;
+	position: relative;
+}
+
+.input {
+	width: 70%;
+	height: 40px;
+	padding: 10px;
+	transition: .2s linear;
+	border: 2.5px solid black;
+	font-size: 14px;
+	text-transform: uppercase;
+	letter-spacing: 2px;
+	margin: 10px;
+}
+
+.input:focus {
+	outline: none;
+}
