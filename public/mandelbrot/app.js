@@ -36,20 +36,22 @@ function lerp( a, b, alpha ) {
 }
 
 function test(c) {
-	let z = new Complex(0,0)
-	let iterations = 0
-	let values = []
+	let z = new Complex(0,0);
+	let iterations = 0;
+	let values = [];
 	while (iterations < upperBound) {
 		iterations ++;
-		z.square()
-		z.add(c)
-		values.push(z)
+		z.square();
+		z.add(c);
+		if (values.some((val)=>{return val.real==z.real&&val.imaginary==z.imaginary})) {
+			return false;
+		}
+		values.push(new Complex(z.real, z.imaginary));
 		if (z.magnitudeSQ() > 4) {
 			return iterations;
 		}
 	}
 	return false
-
 }
 
 function clean(el, def) {
@@ -84,7 +86,7 @@ const upperBoundInput = document.getElementById("upperBound");
 upperBoundInput.value = "50"
 upperBoundInput.addEventListener("change",(e) => {
 	upperBound = clean(upperBoundInput,50);	
-	render();
+	fullRender();
 });
 
 function reset() {
@@ -94,7 +96,7 @@ function reset() {
 	upperBoundY = 1;
 	upperBoundInput.value = 50;
 	upperBound = 50;
-	render();
+	fullRender();
 }
 
 var setData;
@@ -141,16 +143,17 @@ function zoomTool() {
 			lowerBoundY = ly;
 			upperBoundX = ux;
 			upperBoundY = uy;
-			render();
+			fullRender();
 		},{"once":true});
 	},{"once":true});
 	
 }
 
 var i = lowerBoundX;
-render();
+fullRender();
+//iterativeRender();
 
-function render() {
+function fullRender() {
 	i = lowerBoundX;
 	height = upperBoundY - lowerBoundY;
 	width = upperBoundX - lowerBoundX;
@@ -166,11 +169,25 @@ function render() {
 			window.clearInterval(i);
 		}
 	}, 0);
-
-	loop();
+	/*	
+	for (let i = lowerBoundX; i < upperBoundX; i+= resolutionX) {
+		//line(i);
+		//setTimeout(()=>{line(i)},1);
+		//setTimeout(()=>{line(i)},Math.floor(Math.random()*1000))
+		setTimeout(()=>{requestAnimationFrame(()=>{line(i)})},1)
+	}*/
+	render();
 }
 
-function loop() {
+function iterativeRender() {
+	upperBound = 1
+	while (upperBound < 500) {
+		fullRender();
+		upperBound += 50;
+	}
+}
+
+function line() {
 	for (let j = lowerBoundY; j < upperBoundY;j += resolutionY) {
 		let c = new Complex(i,j)
 		let res = test(c);
@@ -181,9 +198,17 @@ function loop() {
 		}
 		ctx.fillRect((i-lowerBoundX)/width * canvas.width,(j-lowerBoundY)/height * canvas.height,Math.ceil(resolutionX/width * canvas.width),Math.ceil(resolutionY/height* canvas.width))
 	}
-	i += resolutionX
-	if (i < upperBoundX) {
-		setTimeout(loop,1);
-	}
+}
 
+function render() {
+	for (let a = 0; a < 10; a += 1) {
+		line();
+		i += resolutionX
+	}
+	
+	if (i < upperBoundX) {
+		//requestIdleCallback(render);
+		requestAnimationFrame(render);
+		//render();
+	}
 }
