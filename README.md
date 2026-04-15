@@ -37,6 +37,8 @@ This project consists of static web content (HTML, CSS, JavaScript) primarily lo
     ```
     Then open your browser to `http://localhost:8000` (or the port specified by your server).
 
+*	Compiling WASM: To compile the WASM, emcc is required. A script is provided for compiling the wasm files and moving them to the appropiate place. Currently this script only handles the appropiate files for the Mandelbrot Set generator. The script is wasm.sh.
+
 *   **Deployment:** The live version of this website is deployed using Firebase Hosting. The configuration files for Firebase are:
     *   `firebase.json`: Defines hosting settings, rules for Firebase Realtime Database, etc.
     *   `database.rules.json`: Security rules for the Firebase Realtime Database.
@@ -44,7 +46,7 @@ This project consists of static web content (HTML, CSS, JavaScript) primarily lo
 
 ## Technologies Used
 
-*   **Frontend:** HTML, CSS, JavaScript
+*   **Frontend:** HTML, CSS, JavaScript, WASM
 *   **Hosting & Backend Services:** Firebase (Hosting, Realtime Database, Authentication)
 *   **Version Control & CI/CD:** Git, GitHub, GitHub Actions
 
