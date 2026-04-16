@@ -34,6 +34,8 @@ async function loadJSON() {
 }
 
 var question;
+var results = document.getElementById("results");
+console.log(results)
 function loadQuiz() {
     loadJSON().then((data) => {
         questions = data;
@@ -42,7 +44,18 @@ function loadQuiz() {
 }
 function nextQuestion() {
     question = questions[Math.floor(Math.random() * questions.length)];
-    document.getElementById("question").innerText = question.Question;
+	question = questions[9];
+	let delay = 0;
+	for (const word of question.Question.split(" ")) {
+		setTimeout(()=>{
+			document.getElementById("question").innerText = word;
+		},delay);
+		delay += 1000;
+	}
+}
+
+function bonus() {
+	
 }
 
 function buzz() {
@@ -51,20 +64,41 @@ function buzz() {
 
 function submit() {
     document.getElementById("answerDialog").close();
-    document.getElementById("resultsDialog").showModal();
-    const answer = document.getElementById("answer").value;
-    if (answer.toLowerCase() === question.Answer.toLowerCase()) {
-        document.getElementById("results").innerText = "Correct!";
-        setTimeout(() => {
-            bonus();
-        },1000);
-    } else {
-        document.getElementById("results").innerText = "Incorrect! The correct answer was: " + question.Answer;
-        setTimeout(() => {
-            nextQuestion();
-        },1000);
-    }
+	document.getElementById("resultsDialog").showModal();
     setTimeout(() => {
         document.getElementById("resultsDialog").close();
     },1000);
+	const answer = document.getElementById("answer").value;
+	if (question.Type == "Regular") {
+		if (answer.toLowerCase() === question.Answer.toLowerCase()) {
+			results.innerText = "Correct!";
+			setTimeout(() => {
+				bonus();
+			},1000);
+			return;
+		} else {
+			results.innerText = `Incorrect! The correct answer was: ${question.Answer}`;
+			setTimeout(() => {
+				nextQuestion();
+			},1000);
+			return;
+		}
+	}
+	if (question.Type == "ANY") {
+		for (const option of question.Answer) {
+			if (option.toLowerCase() == answer.toLowerCase()) {
+				results.innerText = "Correct!";
+				setTimeout(() => {
+					bonus();
+				},1000);
+				return;
+			}
+		}
+		results.innerText = "Incorrect! The acceptable answers were: "
+		for (const option of question.Answer) {
+			results.innerText += `${option}, `
+		}
+		results.innerText = results.innerText.substr(0,results.innerText.length-1)
+		return;
+	}
 }
