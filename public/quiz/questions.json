@@ -1,0 +1,931 @@
+[
+    {
+        "Question": "Which word can come before \u2018knot\u2019 and after \u2018Great Barrier\u2019?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Which knot is most commonly used when putting on a tie?",
+                "Type": "ANY",
+                "Answer": [
+                    "Windsor Knot",
+                    "Half-Windsor Knot",
+                    "Windsor",
+                    "Half-Windsor",
+                    "Half Windsor Knot",
+                    "Half Windsor"
+                ]
+            },
+            {
+                "Question": "Which complex knot was cut open by Alexander the Great?",
+                "Type": "ANY",
+                "Answer": [
+                    "Gordian knot",
+                    "The Gordian knot"
+                ]
+            },
+            {
+                "Question": "50 knots is equivalent to what speed in miles per hour?",
+                "Type": "Regular",
+                "Answer": "58"
+            }
+        ],
+        "Answer": "Reef"
+    },
+    {
+        "Question": "Superbowl LIX this year was between the Kansas City Chiefs and which other team?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Which city played host to the match on this occasion?",
+                "Type": "Regular",
+                "Answer": "New Orleans"
+            },
+            {
+                "Question": "Kansas City failed in their bid to become the first team to win three Superbowls in a row - seven other teams have won two Superbowls in a row. For 10 points each, name two of them?",
+                "Type": 2,
+                "Answer": [
+                    "Green Bay Packers",
+                    "Miami Dolphins",
+                    "Pittsburgh Steelers",
+                    "San Francisco 49ers",
+                    "Dallas Cowboys",
+                    "New England Patriots",
+                    "Denver Broncos"
+                ]
+            }
+        ],
+        "Answer": "Philadelphia Eagles"
+    },
+    {
+        "Question": "Greater Horseshoe, Grey Long-eared and Pipistrelle are species of which British mammal?",
+        "Type": "Regular",
+        "BonusQ": "hich UK locations starting with \u2018B\u2019 are described as follows:",
+        "Bonuses": [
+            {
+                "Question": "A small Georgian city in the West Country?",
+                "Type": "Regular",
+                "Answer": "Bath"
+            },
+            {
+                "Question": "A small Norman town in East Sussex?",
+                "Type": "Regular",
+                "Answer": "Battle"
+            },
+            {
+                "Question": "A small town in Wales whose name derives from the Hebrew meaning \u2018house of mercy\u2019 ?",
+                "Type": "Regular",
+                "Answer": "Bethesda"
+            }
+        ],
+        "Answer": "Bat"
+    },
+    {
+        "Question": "Opus 314, a waltz, composed by Johann Strauss II in 1866 is better known to us by what title?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What was the nickname given to Strauss during his lifetime?",
+                "Type": "Regular",
+                "Answer": "The Waltz King"
+            },
+            {
+                "Question": "Strauss wrote the \u2018tritsch-tratsch\u2019 polka celebrating the Viennese love of gossip. What does \u2018tritsch-tratsch\u2019 mean?",
+                "Type": "Regular",
+                "Answer": "Chit-Chat, chit chat"
+            },
+            {
+                "Question": "Strauss also wrote the operetta \u2018Die Fledermaus\u2019 - what does the title mean in English?",
+                "Type": "Regular",
+                "Answer": "The Bat"
+            }
+        ],
+        "Answer": "The Blue Danube"
+    },
+    {
+        "Question": "In 1451, the explorer and navigator, Christopher Colombus was born in which Italian city?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each name Colombus\u2019 three ships that made up his fleet?",
+                "Type": 3,
+                "Answer": [
+                    "Nina",
+                    "Pinta",
+                    "Santa Maria"
+                ]
+            }
+        ],
+        "Answer": "Genoa"
+    },
+    {
+        "Question": "Celebrations, the collection of miniature chocolate bars is made by which confectionery company?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Apart from Mars bars, there are 7 other mini bars in a box of Celebrations for 10 points per pair name six of them?",
+                "Type": 6,
+                "Answer": [
+                    "Snickers",
+                    "Twix",
+                    "Bounty",
+                    "Galaxy",
+                    "Maltesers",
+                    "Milky Way",
+                    "Galaxy Caramel"
+                ]
+            }
+        ],
+        "Answer": "Mars"
+    },
+    {
+        "Question": "At 5,895 metres above sea level, what is the highest peak in Africa?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What is the highest mountain in Europe?",
+                "Type": "Regular",
+                "Answer": "Elbrus"
+            },
+            {
+                "Question": "What is the highest mountain in North America?",
+                "Type": "Regular",
+                "Answer": "Mount McKinley/Denali"
+            },
+            {
+                "Question": "What is the highest mountain in Scotland?",
+                "Type": "Regular",
+                "Answer": "Ben Nevis"
+            }
+        ],
+        "Answer": "Mount Kilimanjaro"
+    },
+    {
+        "Question": "Princess Beatrice has recently given birth to a daughter she has been named after which Ancient Greek goddess?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What is Princess Beatrice\u2019s younger sister called?",
+                "Type": "Regular",
+                "Answer": "Eugenie"
+            },
+            {
+                "Question": "Eugenie has a son named after a month of the year which one?",
+                "Type": "Regular",
+                "Answer": "August"
+            },
+            {
+                "Question": "At birth, Eugenie, was 6th in line to the throne where is she now in the line of succession?",
+                "Type": "Regular",
+                "Answer": "12th"
+            }
+        ],
+        "Answer": "Athena"
+    },
+    {
+        "Question": "The Panama canal links which two oceans?",
+        "Type": 2,
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each, name the three countries that controlled the territory surrounding the canal when it was being constructed in the late 19\" century?",
+                "Type": 3,
+                "Answer": [
+                    "Colombia",
+                    "France",
+                    "United States"
+                ]
+            }
+        ],
+        "Answer": [
+            "Pacific",
+            "Atlantic"
+        ]
+    },
+    {
+        "Question": "The 27th January 2025 marked the 80th anniversary of the liberation of which Nazi concentration camp?",
+        "Type": "ANY",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "By what name is the day known that marks this anniversary each year internationally?",
+                "Type": "Regular",
+                "Answer": "Holocaust Memorial Day "
+            },
+            {
+                "Question": "In which country is Auschwitz?",
+                "Type": "Regular",
+                "Answer": "Poland "
+            },
+            {
+                "Question": "The sign above the entrance at Auschwitz read \u2018arbeit macht frei\u2019 - what does this mean?",
+                "Type": "Regular",
+                "Answer": "Work sets you free"
+            }
+        ],
+        "Answer": [
+            "Auschwitz",
+            "Auschwitz-Birkenau"
+        ]
+    },
+    {
+        "Question": "What name do we give to the fibrous tissues that connect bones to bones in the human body?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What does the abbreviation ACL stand for?",
+                "Type": "Regular",
+                "Answer": "Anterior Cruciate Ligament"
+            },
+            {
+                "Question": "The ulnar collateral ligament is in which part of the human body?",
+                "Type": "Regular",
+                "Answer": "Hand"
+            },
+            {
+                "Question": "Where in the body would you find the plantar fascia ligament?",
+                "Type": "Regular",
+                "Answer": "Foot"
+            }
+        ],
+        "Answer": "Ligaments"
+    },
+    {
+        "Question": "Eve\u2019s pudding is a traditional British pudding combining a Victoria sponge cake mix and which fruit?",
+        "Type": "Regular",
+        "BonusQ": "hree more questions on traditional cookery:",
+        "Bonuses": [
+            {
+                "Question": "Which nuts are involved in the making of a Bakewell Tart?",
+                "Type": "Regular",
+                "Answer": "Almonds"
+            },
+            {
+                "Question": "Which fruit is central to a Banoffee Pie?",
+                "Type": "Regular",
+                "Answer": "Bananas"
+            },
+            {
+                "Question": "Which dried fruit provide the spots for a \u2018spotted dick\u2019?",
+                "Type": "Regular",
+                "Answer": "Currants"
+            }
+        ],
+        "Answer": "Apples"
+    },
+    {
+        "Question": "Which puzzle video game, which challenges players to complete lines with geometric shapes that descend onto the field, is celebrating its 400th birthday this year?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What is 40 in Roman numerals?",
+                "Type": "Regular",
+                "Answer": "XL"
+            },
+            {
+                "Question": "Which member of the Royal family was 40 in September last year?",
+                "Type": "Regular",
+                "Answer": "Prince Harry"
+            },
+            {
+                "Question": "The Founder and CEO of Facebook turned 40 in May 2024 - name him?",
+                "Type": "Regular",
+                "Answer": "Mark Zuckerberg"
+            }
+        ],
+        "Answer": "Tetris"
+    },
+    {
+        "Question": "Which BBC football highlights show was first broadcast in 1964?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Gary Lineker is stepping down as the main host of the programme at the end of this season. For 10 points each, name the three main presenters who will replace him on the show?",
+                "Type": 3,
+                "Answer": [
+                    "Kelly Cates",
+                    "Mark Chapman",
+                    "Gabby Logan"
+                ]
+            }
+        ],
+        "Answer": "Match of the Day"
+    },
+    {
+        "Question": "Which well-known singing star sings in the most recent \u2018Felix\u201d cat food adverts?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Robbie was originally part of which group?",
+                "Type": "Regular",
+                "Answer": "Take That"
+            },
+            {
+                "Question": "Robbie recently paid \u00a320,000 for the glasses and pipe of which famous comedian in an auction of his memorabilia?",
+                "Type": "Regular",
+                "Answer": "Eric Morecambe"
+            },
+            {
+                "Question": "On the song, \u2018Kids\u2019, Robbie sang with which Australian singer and actress?",
+                "Type": "Regular",
+                "Answer": "Kylie Minogue"
+            }
+        ],
+        "Answer": "Robbie Williams"
+    },
+    {
+        "Question": "Which country\u2019s flag has a coat of arms on it which depicts an eagle with a snake in its beak, perched on a cactus?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each, name three more countries that have flags with eagles on them?",
+                "Type": 3,
+                "Answer": [
+                    "Kazakhstan",
+                    "Albania",
+                    "Egypt",
+                    "Moldova",
+                    "Russia",
+                    "Serbia",
+                    "Monternegro",
+                    "American Samoa",
+                    "United States Virgin Islands",
+                    "Zambia"
+                ]
+            }
+        ],
+        "Answer": "Mexico "
+    },
+    {
+        "Question": "Washington D.C. is located on which river?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For ten points each, name the three longest rivers in America?",
+                "Type": 3,
+                "Answer": [
+                    "Missouri",
+                    "Mississippi",
+                    "Yukon"
+                ]
+            }
+        ],
+        "Answer": "Potomac"
+    },
+    {
+        "Question": "What is the name given to the round-shaped flute that has up to twelve finger holes and is named after the Italian word for a \u2018little goose\u2019?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What is the name for a baby goose?",
+                "Type": "Regular",
+                "Answer": "Gosling"
+            },
+            {
+                "Question": "What is the name for a baby giraffe?",
+                "Type": "Regular",
+                "Answer": "Calf"
+            },
+            {
+                "Question": "What is the name for a baby hedgehog?",
+                "Type": "Regular",
+                "Answer": "Hoglet"
+            }
+        ],
+        "Answer": "Ocarina"
+    },
+    {
+        "Question": "Which Scottish golf course, known as the home of golf, will host the British Open once again in 2027?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each, name the three other men\u2019s major golf tournaments that take place each year?",
+                "Type": 3,
+                "Answer": [
+                    "US Masters",
+                    "US PGA",
+                    "US Open"
+                ]
+            }
+        ],
+        "Answer": "St Andrews"
+    },
+    {
+        "Question": "A piece of fossilised animal vomit, thought to be 66 million years old, was discovered in which European country in January 2025?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "What is the capital of Denmark?",
+                "Type": "Regular",
+                "Answer": "Copenhagen"
+            },
+            {
+                "Question": "Which two colours make up the Danish flag?",
+                "Type": "Regular",
+                "Answer": "ALL2, Red, White"
+            },
+            {
+                "Question": "Which Danish goalkeeper currently plays for Celtic in the SPL?",
+                "Type": "Regular",
+                "Answer": "Kasper Schmeichel"
+            }
+        ],
+        "Answer": "Denmark"
+    },
+    {
+        "Question": "Which baked food made from flour, fat and sugar is known as \u2018bisgedi\u2019 in Welsh?",
+        "Type": "Regular",
+        "BonusQ": "hich biscuits are hidden in these anagrams: ",
+        "Bonuses": [
+            {
+                "Question": "Crude Rat Scam",
+                "Type": "Regular",
+                "Answer": "Custard Cream"
+            },
+            {
+                "Question": "Kill Mad Met",
+                "Type": "Regular",
+                "Answer": "Malted Milk"
+            },
+            {
+                "Question": "Aged to Choicest Evil",
+                "Type": "Regular",
+                "Answer": "Chocolate Digestive"
+            }
+        ],
+        "Answer": "Biscuit"
+    },
+    {
+        "Question": "Which French cathedral city was the traditional location for the coronation of the French kings?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "The building of Reims cathedral began in which century?",
+                "Type": "Regular",
+                "Answer": "13th century"
+            },
+            {
+                "Question": "Reims is the most populous city in which French department?",
+                "Type": "Regular",
+                "Answer": "Marne"
+            },
+            {
+                "Question": "In which year was the first Battle of the Marne in World War 1?",
+                "Type": "Regular",
+                "Answer": "1914"
+            }
+        ],
+        "Answer": "Reims"
+    },
+    {
+        "Question": "The England Women\u2019s Cricket team was recently defeated by Australia by a score of 16-0 in their multi-format series. For which prize were they competing?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Who currently is the captain of the Australian Women\u2019s Test Cricket team?",
+                "Type": "Regular",
+                "Answer": "Alyssa Healy"
+            },
+            {
+                "Question": "Who is Healy\u2019s cricketing husband?",
+                "Type": "Regular",
+                "Answer": "Mitchell Starc"
+            },
+            {
+                "Question": "Who is currently Australia\u2019s Men\u2019s Test cricket captain?",
+                "Type": "Regular",
+                "Answer": "Pat Cummins"
+            }
+        ],
+        "Answer": "The Ashes"
+    },
+    {
+        "Question": "In a standard set of dominoes, what is the maximum number of dots found on one domino?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each, name the three largest pizza chains in the UK?",
+                "Type": 3,
+                "Answer": [
+                    "Dominos",
+                    "Pizza Hut",
+                    "Pizza Express"
+                ]
+            }
+        ],
+        "Answer": "Twelve"
+    },
+    {
+        "Question": "Who was the first woman to fly solo from London to Australia?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Which French aviator was the first to fly across the Mediterranean sea in 1913?",
+                "Type": "Regular",
+                "Answer": "Roland Garros"
+            },
+            {
+                "Question": "Which sport is today played at Roland Garros in Paris?",
+                "Type": "Regular",
+                "Answer": "Tennis"
+            },
+            {
+                "Question": "Which 14 time French Open chiampion retired from tennis in 2024?",
+                "Type": "Regular",
+                "Answer": "Rafa Nadal"
+            }
+        ],
+        "Answer": "Amy Johnson"
+    },
+    {
+        "Question": "Which planet has 95 moons, the largest of which is called Io?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Name the next three biggest moons after Io?",
+                "Type": 3,
+                "Answer": [
+                    "Europa",
+                    "Ganymede",
+                    "Callisto"
+                ]
+            }
+        ],
+        "Answer": "Jupiter"
+    },
+    {
+        "Question": "Which organ in the human body filters blood and controls blood cell levels?",
+        "Type": "Regular",
+        "BonusQ": "hich human organs perform the following functions:",
+        "Bonuses": [
+            {
+                "Question": "Where the digestion and absorption of food happens?",
+                "Type": "Regular",
+                "Answer": "Small Intestine"
+            },
+            {
+                "Question": "Secretes the hormone insulin?",
+                "Type": "Regular",
+                "Answer": "Pancreas"
+            },
+            {
+                "Question": "Metabolizes drugs into forms that are easier to use?",
+                "Type": "Regular",
+                "Answer": "Liver"
+            }
+        ],
+        "Answer": "Spleen"
+    },
+    {
+        "Question": "SPELL SILHOUETTE?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "SPELL RESEMBLANCE?",
+                "Type": "Regular",
+                "Answer": "SPELL CONCEPTUALIZATION?"
+            }
+        ],
+        "Answer": "SPELL DELINEATION?"
+    },
+    {
+        "Question": "\u201cThe fault, dear Brutus, is not in our stars, but in ourselves.\u201d From",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Julius Caesar",
+                "Type": "Regular",
+                "Answer": "FOLLOWINGName the Shakespeare plays from which the following quotes come:"
+            },
+            {
+                "Question": "\u2018Don\u2019t waste your love on somebody, who doesn\u2019t value it.\u201d",
+                "Type": "ANY",
+                "Answer": [
+                    "Romeo & Juliet",
+                    "Romeo and Juliet"
+                ]
+            },
+            {
+                "Question": "\u201cAll the world\u2019s a stage and all the men and women merely players;",
+                "Type": "Regular",
+                "Answer": "As You Like It"
+            },
+            {
+                "Question": "\u2018Some are born great, some achieve greatness, and others have greatness thrust upon them.\u2019",
+                "Type": "Regular",
+                "Answer": "Twelfth Night"
+            }
+        ],
+        "Answer": "Which Shakespeare play does this quote come?"
+    },
+    {
+        "Question": "Which unit of weight is abbreviated to \u2018lb\u2019?",
+        "Type": "Regular",
+        "BonusQ": "or 10 points each, what do these abbreviations for weights and measurements stand for?",
+        "Bonuses": [
+            {
+                "Question": "hg",
+                "Type": "Regular",
+                "Answer": "Hectogram"
+            },
+            {
+                "Question": "ml",
+                "Type": "Regular",
+                "Answer": "Millilitre"
+            },
+            {
+                "Question": "m\u00b2",
+                "Type": "ANY",
+                "Answer": [
+                    "Square Metre",
+                    "Metres Squared"
+                ]
+            }
+        ],
+        "Answer": "Pound"
+    },
+    {
+        "Question": "What name is given gastronomically to the eggs of a sturgeon?",
+        "Type": "Regular",
+        "BonusQ": "or ten points each, name the following egg dishes:",
+        "Bonuses": [
+            {
+                "Question": "All mixed together with a little milk and butter?",
+                "Type": "Regular",
+                "Answer": "Scrambled"
+            },
+            {
+                "Question": "Baked eggs that puff or inflate?",
+                "Type": "Regular",
+                "Answer": "Souffl\u00e9 "
+            },
+            {
+                "Question": "Wrapped in sausage meat and breadcrumbs?",
+                "Type": "Regular",
+                "Answer": "Scotch Eggs"
+            }
+        ],
+        "Answer": "Caviar "
+    },
+    {
+        "Question": "Which homophone can be a market or something very strange?",
+        "Type": "ANY",
+        "BonusQ": "or ten points each, name the following homophone pairs beginning with the letter B:",
+        "Bonuses": [
+            {
+                "Question": "A colour & something you do with a whistle?",
+                "Type": "ANY",
+                "Answer": [
+                    "Blue",
+                    "Blew"
+                ]
+            },
+            {
+                "Question": "A wild pig & someone tedious?",
+                "Type": "ANY",
+                "Answer": [
+                    "Boar",
+                    "Bore"
+                ]
+            },
+            {
+                "Question": "A group of musicians & something that is not allowed?",
+                "Type": "ANY",
+                "Answer": [
+                    "Band",
+                    "Banned"
+                ]
+            }
+        ],
+        "Answer": [
+            "Bazaar",
+            "Bizarre"
+        ]
+    },
+    {
+        "Question": "Which letter is at the end of the top row of letters on a standard keyboard?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For ten points each, what are the letters at the beginning of each row on a standard keyboard?",
+                "Type": 3,
+                "Answer": [
+                    "Q",
+                    "A",
+                    "Z"
+                ]
+            }
+        ],
+        "Answer": "P"
+    },
+    {
+        "Question": "What is the main defence of an octopus or squid against an attacker?",
+        "Type": "ANY",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Approximately, How many species of squid are there?",
+                "Type": "Regular",
+                "Answer": "300"
+            },
+            {
+                "Question": "What is the internal shell of a squid called?",
+                "Type": "ANY",
+                "Answer": [
+                    "Gladius",
+                    "Pen"
+                ]
+            },
+            {
+                "Question": "The giant squid inspired which legend?",
+                "Type": "Regular",
+                "Answer": "The Kraken"
+            }
+        ],
+        "Answer": [
+            "Emitting a cloud of black ink",
+            "Releasing ink"
+        ]
+    },
+    {
+        "Question": "What measures 210mm x 297mm?",
+        "Type": "Regular",
+        "BonusQ": "or ten points each, name the paper quantities from the following descriptions:",
+        "Bonuses": [
+            {
+                "Question": "500 sheets?",
+                "Type": "Regular",
+                "Answer": "Ream"
+            },
+            {
+                "Question": "1,000 sheets?",
+                "Type": "Regular",
+                "Answer": "Bundle"
+            },
+            {
+                "Question": "5,000 sheets?",
+                "Type": "Regular",
+                "Answer": "Bale"
+            }
+        ],
+        "Answer": "A4 Paper"
+    },
+    {
+        "Question": "Which of the ancient wonders of the world would you have seen at Alexandria?",
+        "Type": "ANY",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "For 10 points each, name three of the other ancient wonders of the world:",
+                "Type": 3,
+                "Answer": [
+                    "The Great Pyramids at Giza",
+                    "The Hanging Gardens of Babylon",
+                    "The Statue of Zeus at Olympia",
+                    "The Temple of Artemis at Ephesus",
+                    "The Mausoleum of Halicarnassus",
+                    "The Colossus of Rhodes",
+                    "The Great Pyramids of Giza",
+                    "The Colossus"
+                ]
+            }
+        ],
+        "Answer": [
+            "The Pharos",
+            "Lighthouse",
+            "Alexandria's Lighthouse"
+        ]
+    },
+    {
+        "Question": "Three Presidents of the United States have had last names beginning with the letter \u2018R\u2019 can you name one of them?",
+        "Type": "ANY",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "In 2025, Presidents\u2019 Day will was celebrated in the USA on which date?",
+                "Type": "ANY",
+                "Answer": [
+                    "17th Feb 2025",
+                    "17th Feb",
+                    "17th February",
+                    "17th February 2025"
+                ]
+            },
+            {
+                "Question": "Which US president is commemorated on 12th February in some states of America?",
+                "Type": "Regular",
+                "Answer": "Abraham Lincoln"
+            },
+            {
+                "Question": "Which presidential event takes place every four years on the 20th January?",
+                "Type": "Regular",
+                "Answer": "Inauguration Day"
+            }
+        ],
+        "Answer": [
+            "Theodore Roosevelt",
+            "Franklin D. Roosevelt",
+            "Ronald Reagan"
+        ]
+    },
+    {
+        "Question": "Musically, which Italian term is used to mean \u2018smoothly\u2019?",
+        "Type": "Regular",
+        "BonusQ": "or 10 points each, what do the following musical terms mean?",
+        "Bonuses": [
+            {
+                "Question": "Barcarolle",
+                "Type": "Regular",
+                "Answer": "A Venetian boating song sung by gondoliers"
+            },
+            {
+                "Question": "Crescendo",
+                "Type": "ANY",
+                "Answer": [
+                    "Become gradually louder",
+                    "Growing",
+                    "Italian for growing"
+                ]
+            },
+            {
+                "Question": "Sonata",
+                "Type": "ANY",
+                "Answer": [
+                    "A composition for a soloist",
+                    "Italian for to sound",
+                    "to sound"
+                ]
+            }
+        ],
+        "Answer": "Legato"
+    },
+    {
+        "Question": "In which men\u2019s Olympic sport is the net set at 2.43 metres or 7 foot 11 inches?",
+        "Type": "Regular",
+        "BonusQ": false,
+        "Bonuses": [
+            {
+                "Question": "Which country won the Gold medal in the Women\u2019s Volleyball at the 2024 Paris Olympics?",
+                "Type": "Regular",
+                "Answer": "Italy"
+            },
+            {
+                "Question": "Who was the most valuable player (MVP) in the Italian 2024 Olympic women\u2019s volleyball team?",
+                "Type": "Regular",
+                "Answer": "Paola Egonu"
+            },
+            {
+                "Question": "What was Volleyball originally called?",
+                "Type": "Regular",
+                "Answer": "Mintonette"
+            }
+        ],
+        "Answer": "Volleyball"
+    },
+    {
+        "Question": "What is the name given to the process of signalling with two flags?",
+        "Type": "Regular",
+        "BonusQ": "or 10 points each, name these other types of maritime signals or signalling from the following descriptions:",
+        "Bonuses": [
+            {
+                "Question": "A red flare, orange smoke or a square flag?",
+                "Type": "Regular",
+                "Answer": "Distress signal"
+            },
+            {
+                "Question": "An arrangement of dots, dashes and spaces using either sound or light?",
+                "Type": "Regular",
+                "Answer": "Morse Code"
+            },
+            {
+                "Question": "Used to represent general code, points of the compass or standard time?",
+                "Type": "Regular",
+                "Answer": "Three flag signal"
+            }
+        ],
+        "Answer": "Semaphore"
+    }
+]
