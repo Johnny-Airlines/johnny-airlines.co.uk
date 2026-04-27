@@ -61,7 +61,7 @@
     {
         "Question": "Greater Horseshoe, Grey Long-eared and Pipistrelle are species of which British mammal?",
         "Type": "Regular",
-        "BonusQ": "hich UK locations starting with \u2018B\u2019 are described as follows:",
+        "BonusQ": "Which UK locations starting with \u2018B\u2019 are described as follows:",
         "Bonuses": [
             {
                 "Question": "A small Georgian city in the West Country?",
@@ -128,9 +128,7 @@
         "Bonuses": [
             {
                 "Question": "Apart from Mars bars, there are 7 other mini bars in a box of Celebrations for 10 points per pair name six of them?",
-                "Type": 
-                
-                6,
+                "Type": 6,
                 "Answer": [
                     "Snickers",
                     "Twix",
@@ -262,7 +260,7 @@
     {
         "Question": "Eve\u2019s pudding is a traditional British pudding combining a Victoria sponge cake mix and which fruit?",
         "Type": "Regular",
-        "BonusQ": "hree more questions on traditional cookery:",
+        "BonusQ": "Three more questions on traditional cookery:",
         "Bonuses": [
             {
                 "Question": "Which nuts are involved in the making of a Bakewell Tart?",
@@ -367,7 +365,7 @@
                 ]
             }
         ],
-        "Answer": "Mexico "
+        "Answer": "Mexico"
     },
     {
         "Question": "Washington D.C. is located on which river?",
@@ -452,7 +450,7 @@
     {
         "Question": "Which baked food made from flour, fat and sugar is known as \u2018bisgedi\u2019 in Welsh?",
         "Type": "Regular",
-        "BonusQ": "hich biscuits are hidden in these anagrams: ",
+        "BonusQ": "Which biscuits are hidden in these anagrams: ",
         "Bonuses": [
             {
                 "Question": "Crude Rat Scam",
@@ -578,7 +576,7 @@
     {
         "Question": "Which organ in the human body filters blood and controls blood cell levels?",
         "Type": "Regular",
-        "BonusQ": "hich human organs perform the following functions:",
+        "BonusQ": "Which human organs perform the following functions:",
         "Bonuses": [
             {
                 "Question": "Where the digestion and absorption of food happens?",
@@ -612,15 +610,10 @@
         "Answer": "SPELL DELINEATION?"
     },
     {
-        "Question": "\u201cThe fault, dear Brutus, is not in our stars, but in ourselves.\u201d From",
+        "Question": "\u201cThe fault, dear Brutus, is not in our stars, but in ourselves.\u201d From which Shakespeare play does this quote come?",
         "Type": "Regular",
-        "BonusQ": false,
+        "BonusQ": "Name the Shakespeare plays from which the following quotes come:",
         "Bonuses": [
-            {
-                "Question": "Julius Caesar",
-                "Type": "Regular",
-                "Answer": "FOLLOWINGName the Shakespeare plays from which the following quotes come:"
-            },
             {
                 "Question": "\u2018Don\u2019t waste your love on somebody, who doesn\u2019t value it.\u201d",
                 "Type": "ANY",
@@ -640,12 +633,12 @@
                 "Answer": "Twelfth Night"
             }
         ],
-        "Answer": "Which Shakespeare play does this quote come?"
+        "Answer": "Julius Caesar"
     },
     {
         "Question": "Which unit of weight is abbreviated to \u2018lb\u2019?",
         "Type": "Regular",
-        "BonusQ": "or 10 points each, what do these abbreviations for weights and measurements stand for?",
+        "BonusQ": "For 10 points each, what do these abbreviations for weights and measurements stand for?",
         "Bonuses": [
             {
                 "Question": "hg",
@@ -671,7 +664,7 @@
     {
         "Question": "What name is given gastronomically to the eggs of a sturgeon?",
         "Type": "Regular",
-        "BonusQ": "or ten points each, name the following egg dishes:",
+        "BonusQ": "For ten points each, name the following egg dishes:",
         "Bonuses": [
             {
                 "Question": "All mixed together with a little milk and butter?",
@@ -689,12 +682,12 @@
                 "Answer": "Scotch Eggs"
             }
         ],
-        "Answer": "Caviar"
+        "Answer": "Caviar "
     },
     {
         "Question": "Which homophone can be a market or something very strange?",
         "Type": "ANY",
-        "BonusQ": "or ten points each, name the following homophone pairs beginning with the letter B:",
+        "BonusQ": "For ten points each, name the following homophone pairs beginning with the letter B:",
         "Bonuses": [
             {
                 "Question": "A colour & something you do with a whistle?",
@@ -775,7 +768,7 @@
     {
         "Question": "What measures 210mm x 297mm?",
         "Type": "Regular",
-        "BonusQ": "or ten points each, name the paper quantities from the following descriptions:",
+        "BonusQ": "For ten points each, name the paper quantities from the following descriptions:",
         "Bonuses": [
             {
                 "Question": "500 sheets?",
@@ -856,7 +849,7 @@
     {
         "Question": "Musically, which Italian term is used to mean \u2018smoothly\u2019?",
         "Type": "Regular",
-        "BonusQ": "or 10 points each, what do the following musical terms mean?",
+        "BonusQ": "For 10 points each, what do the following musical terms mean?",
         "Bonuses": [
             {
                 "Question": "Barcarolle",
@@ -910,7 +903,7 @@
     {
         "Question": "What is the name given to the process of signalling with two flags?",
         "Type": "Regular",
-        "BonusQ": "or 10 points each, name these other types of maritime signals or signalling from the following descriptions:",
+        "BonusQ": "For 10 points each, name these other types of maritime signals or signalling from the following descriptions:",
         "Bonuses": [
             {
                 "Question": "A red flare, orange smoke or a square flag?",

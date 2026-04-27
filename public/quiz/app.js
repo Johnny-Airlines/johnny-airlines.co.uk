@@ -54,7 +54,7 @@ function loadQuiz() {
 function nextQuestion() {
 	if (!isBonus) {
 		questionSet = questions[Math.floor(Math.random() * questions.length)];
-		questionSet = questions[4];
+		//questionSet = questions[4];
 		question = questionSet;
 	} else if (bonusIndex == questionSet.Bonuses.length) {
 		bonusIndex = 0;
