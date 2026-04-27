@@ -41,6 +41,7 @@ var results = document.getElementById("results");
 var isBonus = false;
 var bonusIndex = 0;
 var remainingOptions = [];
+var numOfSubmissionsRemaining = 0;
 
 function loadQuiz() {
     loadJSON().then((data) => {
@@ -55,6 +56,11 @@ function nextQuestion() {
 		questionSet = questions[Math.floor(Math.random() * questions.length)];
 		questionSet = questions[4];
 		question = questionSet;
+	} else if (bonusIndex == questionSet.Bonuses.length) {
+		bonusIndex = 0;
+		isBonus = false;
+		nextQuestion();
+		return;
 	} else {
 		question = questionSet.Bonuses[bonusIndex];
 		bonusIndex++;
@@ -80,6 +86,8 @@ function buzz() {
 	document.getElementById("question").innerText = "You Buzzed!";
 	if (typeof question.Type == "number") {
 		document.getElementById("help").innerText = "Since you need to submit more than one answer hit submit each answer individually.";
+		remainingOptions = structuredClone(question.Answer);
+		numOfSubmissionsRemaining = question.Type;
 	}
 }
 
@@ -127,26 +135,40 @@ function submit() {
 		for (const option of question.Answer) {
 			results.innerText += `${option}, `
 		}
-		results.innerText = results.innerText.substring(0,results.innerText.length)
+		results.innerText = results.innerText.substring(0,results.innerText.length-1)
 		return;
 	}
 	if (typeof question.Type == "number") {
-		for (const option of question.Answer) {
+		let isCorrect = false;
+		for (const [index, option] of Object.entries(remainingOptions)) {
 			if (option.toLowerCase() == answer.toLowerCase()) {
-				results.innerText = "Correct!";
-
-				setTimeout(() => {
-					document.getElementById("resultsDialog").close();
-					document.getElementById("answerDialog").showModal();
-				},1000);
-				return;
+				remainingOptions.splice(index,1);
+				isCorrect = true;
+				break;
 			}
 		}
-		results.innerText = "Incorrect! Any of the following are acceptable: "
-		for (const option of question.Answer) {
-			results.innerText += `${option}, `
+		if (isCorrect) {
+			results.innerText = "Correct!";
+		} else {
+			results.innerText = "Incorrect!";
 		}
-		results.innerText = results.innerText.substring(0,results.innerText.length)
+		numOfSubmissionsRemaining -= 1;
+		if (numOfSubmissionsRemaining >= 1) {
+			setTimeout(() => {
+				document.getElementById("answerDialog").showModal();
+			},1000);
+		} else {
+			if (remainingOptions.length != 0) {
+				results.innerText += " The other remaining options are: "
+				for (const option of remainingOptions) {
+					results.innerText += `${option}, `
+				}
+				results.innerText = results.innerText.substring(0,results.innerText.length-1)
+			}
+			setTimeout(() => {
+				nextQuestion();
+			},1000);
+		}
 		return;
 	}
 }
