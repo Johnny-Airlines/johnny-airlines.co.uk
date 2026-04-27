@@ -128,7 +128,9 @@
         "Bonuses": [
             {
                 "Question": "Apart from Mars bars, there are 7 other mini bars in a box of Celebrations for 10 points per pair name six of them?",
-                "Type": 6,
+                "Type": 
+                
+                6,
                 "Answer": [
                     "Snickers",
                     "Twix",
@@ -687,7 +689,7 @@
                 "Answer": "Scotch Eggs"
             }
         ],
-        "Answer": "Caviar "
+        "Answer": "Caviar"
     },
     {
         "Question": "Which homophone can be a market or something very strange?",
