@@ -299,6 +299,65 @@ function setPreset(preset) {
 		p.vy = -0.5;
 		p.trace = true;
 		particles.push(p);
+	} else if (preset == "2 planets") {
+		wallsBounce = true;
+		G = 0.01;
+		currentPreset = "Space";
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 200;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0.75;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 50;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0;
+		p.trace = true;
+		p.isLocked = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 5;
+		p.x = 500;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = -0.75;
+		p.trace = true;
+		particles.push(p);
+	}  else if (preset == "Three body problem") {
+		wallsBounce = true;
+		G = 0.01;
+		currentPreset = "Space";
+		particles = [];
+		let p = new Particle();
+		p.radius = 5;
+		p.x = 200;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 1;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 50;
+		p.x = 350;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = 0;
+		p.trace = true;
+		particles.push(p);
+		p = new Particle();
+		p.radius = 5;
+		p.x = 500;
+		p.y = 350;
+		p.vx = 0;
+		p.vy = -1;
+		p.trace = true;
+		particles.push(p);
 	} else if (preset == "Planets forming") {
 		particles = [];
 		currentPreset = "Space";
@@ -390,7 +449,11 @@ setPreset("Earth");
 
 update();
 function update() {
-	ctx.fillStyle = "rgba(255,255,255,0.3)";
+	if (document.getElementById("trailToggle").checked) {
+		ctx.fillStyle = "rgba(255,255,255,0.3)";
+	} else {
+		ctx.fillStyle = "rgba(255,255,255,1)";
+	}
 	//ctx.fillStyle = "white";
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 	particles.forEach((particle) => {
