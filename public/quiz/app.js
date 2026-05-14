@@ -42,6 +42,12 @@ var isBonus = false;
 var bonusIndex = 0;
 var remainingOptions = [];
 var numOfSubmissionsRemaining = 0;
+var score = 0; 
+
+function incrementScore(val) {
+    score += val;
+	document.getElementById("score").innerText = `Score: ${score}`;
+}
 
 function loadQuiz() {
     loadJSON().then((data) => {
@@ -52,6 +58,7 @@ function loadQuiz() {
 }
 
 function nextQuestion() {
+	focus(document)
 	if (!isBonus) {
 		questionSet = questions[Math.floor(Math.random() * questions.length)];
 		//questionSet = questions[4];
@@ -79,13 +86,14 @@ function nextQuestion() {
 
 function buzz() {
     document.getElementById("answerDialog").showModal();
+	setTimeout(()=>{document.getElementById("answer").value = ""},100);
 	let id = setTimeout(function() {}, 0);
 	while (id--) {
 		clearTimeout(id);
 	}
 	document.getElementById("question").innerText = "You Buzzed!";
 	if (typeof question.Type == "number") {
-		document.getElementById("help").innerText = "Since you need to submit more than one answer hit submit each answer individually.";
+		document.getElementById("help").innerText = "Submit answers one at a time.";
 		remainingOptions = structuredClone(question.Answer);
 		numOfSubmissionsRemaining = question.Type;
 	}
@@ -94,30 +102,34 @@ function buzz() {
 function start() {
 	document.getElementById("container").showModal();
 	document.getElementById("start").style.display = "none";
+	document.addEventListener("keydown", (event) => {
+		if (event.code == "Space") {
+			buzz();
+		}
+	});
+	nextQuestion();
+}
+
+function dismissPopup() {
+	document.getElementById("dismissPopup").disabled = true;
+	document.getElementById("dispute").disabled = true;
+	document.getElementById("resultsDialog").close();
 	nextQuestion();
 }
 
 function submit() {
     document.getElementById("answerDialog").close();
 	document.getElementById("resultsDialog").showModal();
-    setTimeout(() => {
-        document.getElementById("resultsDialog").close();
-    },1000);
-	const answer = document.getElementById("answer").value;
+	const answer = document.getElementById("answer").value.trim();
 	document.getElementById("answer").value = "";
 	if (question.Type == "Regular") {
 		if (answer.toLowerCase() === question.Answer.toLowerCase()) {
 			results.innerText = "Correct!";
-			setTimeout(() => {
-				isBonus = true;
-				nextQuestion();
-			},1000);
+			isBonus = true;
+			incrementScore(10);
 			return;
 		} else {
 			results.innerText = `Incorrect! The correct answer was: ${question.Answer}`;
-			setTimeout(() => {
-				nextQuestion();
-			},1000);
 			return;
 		}
 	}
@@ -125,9 +137,7 @@ function submit() {
 		for (const option of question.Answer) {
 			if (option.toLowerCase() == answer.toLowerCase()) {
 				results.innerText = "Correct!";
-				setTimeout(() => {
-					bonus();
-				},1000);
+				incrementScore(10);
 				return;
 			}
 		}
@@ -148,6 +158,7 @@ function submit() {
 			}
 		}
 		if (isCorrect) {
+			incrementScore(10);
 			results.innerText = "Correct!";
 		} else {
 			results.innerText = "Incorrect!";
@@ -165,10 +176,18 @@ function submit() {
 				}
 				results.innerText = results.innerText.substring(0,results.innerText.length-1)
 			}
-			setTimeout(() => {
-				nextQuestion();
-			},1000);
 		}
 		return;
 	}
 }
+
+document.getElementById("answer").addEventListener("keydown", (event) => {
+	if (event.code == "Enter") {
+		setTimeout(() => {
+			document.getElementById("dismissPopup").disabled = false;
+			document.getElementById("dismissPopup").focus();
+			document.getElementById("dispute").disabled = false;
+		}, 1000);
+		submit();
+	}
+});
