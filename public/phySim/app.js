@@ -390,7 +390,11 @@ setPreset("Earth");
 
 update();
 function update() {
-	ctx.fillStyle = "rgba(255,255,255,0.3)";
+	if (document.getElementById("trailToggle").checked) {
+		ctx.fillStyle = "rgba(255,255,255,0.3)";
+	} else {
+		ctx.fillStyle = "rgba(255,255,255,1)";
+	}
 	//ctx.fillStyle = "white";
 	ctx.fillRect(0,0,canvas.width,canvas.height);
 	particles.forEach((particle) => {
