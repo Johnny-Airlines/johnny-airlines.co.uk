@@ -61,7 +61,7 @@ function nextQuestion() {
 	focus(document)
 	if (!isBonus) {
 		questionSet = questions[Math.floor(Math.random() * questions.length)];
-		//questionSet = questions[4];
+		//questionSet = questions[2];
 		question = questionSet;
 	} else if (bonusIndex == questionSet.Bonuses.length) {
 		bonusIndex = 0;
@@ -70,6 +70,9 @@ function nextQuestion() {
 		return;
 	} else {
 		question = questionSet.Bonuses[bonusIndex];
+		if (questionSet.BonusQ != false && bonusIndex == 0) {
+			question.Question = questionSet.BonusQ + " " + question.Question;
+		}
 		bonusIndex++;
 	}
 	let delay = 0;
