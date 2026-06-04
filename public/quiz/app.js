@@ -61,11 +61,11 @@ function nextQuestion() {
 	focus(document)
 	if (!isBonus) {
 		questionSet = questions[Math.floor(Math.random() * questions.length)];
-		//questionSet = questions[4];
+		questionSet = questions[4];
 		question = questionSet;
 	} else if (bonusIndex == questionSet.Bonuses.length) {
 		bonusIndex = 0;
-		isBonus = false;
+		isBonus = false; 
 		nextQuestion();
 		return;
 	} else {
@@ -77,7 +77,7 @@ function nextQuestion() {
 		setTimeout(()=>{
 			document.getElementById("question").innerText = word;
 		},delay);
-		delay += 1000;
+		delay += word.length*100 + 300;
 	}
 	setTimeout(()=>{
 		document.getElementById("question").innerText = "";
@@ -96,6 +96,8 @@ function buzz() {
 		document.getElementById("help").innerText = "Submit answers one at a time.";
 		remainingOptions = structuredClone(question.Answer);
 		numOfSubmissionsRemaining = question.Type;
+	} else {
+		numOfSubmissionsRemaining = 1;
 	}
 }
 
@@ -103,7 +105,7 @@ function start() {
 	document.getElementById("container").showModal();
 	document.getElementById("start").style.display = "none";
 	document.addEventListener("keydown", (event) => {
-		if (event.code == "Space") {
+		if (event.code == "Space" && !document.getElementById("answerDialog").open && !document.getElementById("resultsDialog").open) {
 			buzz();
 		}
 	});
@@ -118,8 +120,15 @@ function dismissPopup() {
 }
 
 function submit() {
-    document.getElementById("answerDialog").close();
-	document.getElementById("resultsDialog").showModal();
+	if (numOfSubmissionsRemaining == 1) {
+		setTimeout(() => {
+			document.getElementById("dismissPopup").disabled = false;
+			document.getElementById("dismissPopup").focus();
+			document.getElementById("dispute").disabled = false;
+		}, 1000);
+		document.getElementById("answerDialog").close();
+		document.getElementById("resultsDialog").showModal();
+	}
 	const answer = document.getElementById("answer").value.trim();
 	document.getElementById("answer").value = "";
 	if (question.Type == "Regular") {
@@ -164,10 +173,8 @@ function submit() {
 			results.innerText = "Incorrect!";
 		}
 		numOfSubmissionsRemaining -= 1;
-		if (numOfSubmissionsRemaining >= 1) {
-			setTimeout(() => {
-				document.getElementById("answerDialog").showModal();
-			},1000);
+		if (numOfSubmissionsRemaining > 1) {
+			pass
 		} else {
 			if (remainingOptions.length != 0) {
 				results.innerText += " The other remaining options are: "
@@ -183,11 +190,6 @@ function submit() {
 
 document.getElementById("answer").addEventListener("keydown", (event) => {
 	if (event.code == "Enter") {
-		setTimeout(() => {
-			document.getElementById("dismissPopup").disabled = false;
-			document.getElementById("dismissPopup").focus();
-			document.getElementById("dispute").disabled = false;
-		}, 1000);
 		submit();
 	}
 });
