@@ -77,8 +77,6 @@
         	<label type="text" class="form-control" for="signIn">Sign in</label>
         	<input type="radio" id="signUp" name="authMethod" value="signUp"/>
 			<label type="text" class="form-control" for="signUp">Sign up</label>
-        	<input type="radio" id="anon" name="authMethod" value="anon"/>
-			<label type="text" class="form-control" for="anon">Anonymous</label>
         </div>
         <br>
         <input type="text" id="eMail" name="eMail" autocomplete="username"><br>
@@ -131,10 +129,6 @@
             });
     }
 
-	function anonymousSign(eMail) {
-
-	}
-
     let loginForm = document.getElementById("loginForm");
     loginForm.addEventListener("submit", (e) => {
         e.preventDefault();
@@ -143,15 +137,12 @@
         let password = document.getElementById("password").value;
         let sin = document.getElementById("signIn").checked;
         let sup = document.getElementById("signUp").checked;
-		let anon = document.getElementById("anon").checked;
 
         if (sin) {
             signIn(eMail, password);
         }
         else if (sup) {
             signUp(eMail, password);
-		} else if (anon) {
-			anonymousSign(eMail)
 		}
     });
     </script>
