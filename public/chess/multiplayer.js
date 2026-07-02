@@ -1,3 +1,22 @@
+let gameID;
+let socket = io('https://api.johnny-airlines.co.uk/',{forceNew:true});
+
+socket.on('connect', () => {
+	socket.emit('establish_username',{'username':prompt("Enter your username:")});
+	socket.emit('join_waiting_room')
+});
+socket.on('board_update', (data) => {
+	console.log(data)
+	board = data['board'];
+	updateBoard();
+	changeTurn();
+});
+socket.on('start_game', (data) => {
+	gameID = data['gameID'];
+	socket.emit('join_game',{'gameID':gameID});
+});
+
+
 const chessboardhtml = document.getElementById("chessboard");
 var board = [
 	["Br","Bn","Bb","Bq","Bk","Bb","Bn","Br"],
@@ -16,10 +35,14 @@ var whiteKingCastle = false;
 var whiteQueenCastle = false;
 var blackKingCastle = false;
 var blackQueenCastle = false;
-var playingBot = prompt("Play bot(b) or local(l)?") == "b";
+var playingBot = false;
 var depth = 5;
 generateBoard(chessboardhtml);
 updateBoard()
+
+if (playingBot) {
+	stockfishMove();
+}
 
 chessboardhtml.addEventListener("click", (evt) => {
 	console.log("Id: " + evt.target.id + " Piece: " + board[parseInt(evt.target.id.charAt(1))][parseInt(evt.target.id.charAt(0))])
@@ -45,9 +68,25 @@ chessboardhtml.addEventListener("click", (evt) => {
 		board[parseInt(selectedPieceLocation.charAt(1))][parseInt(selectedPieceLocation.charAt(0))] = "";	
 		document.getElementById(id).style = "";
 		selectedPiece = false;
-		changeTurn();
+		if (turn == "W") {
+			turn = "B";
+			if (isKingInCheck("B")) {
+				console.log("BLACK CHECK")
+			}
+			document.getElementById("turnTxt").innerHTML = "Black";
+		}
+		else {
+			turn = "W";
+			if (isKingInCheck("W")) {
+				console.log("WHITE CHECK")
+			}
+			document.getElementById("turnTxt").innerHTML = "White";
+			if (playingBot) {
+				stockfishMove();
+			}
+		}
+		socket.emit("updateBoard",{'gameID':gameID,'board':board});
 		updateBoard();
-		
 	}
 	else if (selectedPiece != false && !isValidMove(selectedPiece,selectedPieceLocation,id)) {
 		for (const move of validMoves(selectedPiece,selectedPieceLocation)) {
@@ -329,20 +368,14 @@ function validMoves(piece,origin) {
 		}
 		board = JSON.parse(JSON.stringify(oldBoard))
 	}
-	return vMoves;
-}
-
-function isCheckmate(king) {
-	let otherColour = king == "W" ? "B" : "W";
-	for (let i = 0; i < 8; i++) {
-		for (let j = 0; j < 8; j++) {
-			if (board[j][i].charAt(0) == king) {
-				let v = validMoves(board[j][i],`${i}${j}`);
-				if (v.length != 0) return false;
-			}
+	if (vMoves.length == 0) {
+		if (turn == "W") {
+			alert("Black wins by checkmate!")
+		} else {
+			alert("White wins by checkmate!")
 		}
 	}
-	return true;
+	return vMoves;
 }
 
 function isKingInCheck(king) {
@@ -363,29 +396,8 @@ function isKingInCheck(king) {
 }
 
 function changeTurn() {
-	if (turn == "W") {
-		turn = "B";
-		document.getElementById("turnTxt").innerHTML = "Black";
-		if (isCheckmate("B")) {
-			document.getElementById("turnTxt").innerHTML += " is checkmated. White wins!"
-		}
-		else if (isKingInCheck("B")) {
-			document.getElementById("turnTxt").innerHTML += " is in check!";
-		}
-		if (playingBot) {
-			stockfishMove();
-		}
-	}
-	else {
-		turn = "W";
-		document.getElementById("turnTxt").innerHTML = "White";
-		if (isCheckmate("W")) {
-			document.getElementById("turnTxt").innerHTML += " is checkmated. Black wins!"
-		}
-		else if (isKingInCheck("W")) {
-			document.getElementById("turnTxt").innerHTML += " is in check!";
-		}	
-	}
+	turn = turn=="W" ? "B" : "W";
+	document.getElementById("turnTxt").innerHTML = turn=="W" ? "White" : "Black";
 }
 
 function fen() {
