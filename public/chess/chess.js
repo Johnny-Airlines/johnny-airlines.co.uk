@@ -60,7 +60,7 @@ chessboardhtml.addEventListener("click", (evt) => {
 function generateBoard(table) {
 	const tableBody = document.createElement("tbody");
 	tableBody.innerHTML = "<thead><tr><th></th><th>a</th><th>b</th><th>c</th><th>d</th><th>e</th><th>f</th><th>g</th><th>h</th></thead>";
-	let colour = "dark";
+	let colour = "light";
 	let rank = 8;
 	for (var i = 0; i < 8; i++) {
 		const row = document.createElement("tr");
@@ -75,10 +75,10 @@ function generateBoard(table) {
 			cell.className = colour;
 			cell.innerHTML = `<img id=${id} class="piece" src="data:image/gif;base64,R0lGODlhAQABAAD/ACwAAAAAAQABAAACADs="/>`
 			row.appendChild(cell);
-			colour = colour == "dark" ? "white" : "dark";
+			colour = colour == "dark" ? "light" : "dark";
 		}
 		tableBody.appendChild(row);
-		colour = colour == "dark" ? "white" : "dark";
+		colour = colour == "dark" ? "light" : "dark";
 	}
 	table.appendChild(tableBody);
 }

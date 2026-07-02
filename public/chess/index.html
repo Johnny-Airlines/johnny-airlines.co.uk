@@ -4,19 +4,7 @@
 		<title>Chess</title>
 		<meta charset="UTF-8">
 		<script src="https://cdn.socket.io/4.7.2/socket.io.min.js"></script>
-		<style>
-			.chess-board { border-spacing: 0; border-collapse: collapse; }
-			.chess-board th { padding: .5em; width:75px; height:75px; }
-			.chess-board th + th { border-bottom: 1px solid #000; }
-			.chess-board th:first-child,
-			.chess-board td:last-child { border-right: 1px solid #000; }
-			.chess-board tr:last-child td { border-bottom: 1px solid; }
-			.chess-board th:empty { border: none; }
-			.chess-board td { width: 1.5em; height: 1.5em; text-align: center; font-size: 60px; line-height: 0;}
-			.chess-board .light { background: #eee; }
-			.chess-board .dark { background: #aaa; }
-			.piece { --size: 75%; width: var(--size); height: var(--size); padding: calc((100% - var(--size)) / 2);}
-		</style>
+		<link rel="stylesheet" href="style.css">
 	</head>
 	<body>
 		<table class="chess-board" id="chessboard">
