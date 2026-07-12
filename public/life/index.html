@@ -1,0 +1,28 @@
+<html lang="en">
+<head>
+	<title>Conway's Game of Life</title>
+	<link rel="stylesheet" href="./style.css"/>
+	<meta name="viewport" content="width=device-width, initial-scale=1">
+</head>
+<body style="background-color:#6791bd">
+	<div class="container">
+		<div class="configPanel">
+			<h1>Conway's Game of Life</h1>
+			<label for="gps" id="gpsLabel">Target Generations per second: 5</label>
+			<input type="range" class="slider" id="gps" name="targetTPS" list="gpsValues" min="1" max="100" value="5"/>
+			<datalist id="gpsValues">
+				<option value="1" label="1"></option>
+				<option value="25" label="25"></option>
+				<option value="50" label="50"></option>
+				<option value="75" label="75"></option>
+				<option value="100" label="100"></option>
+			</datalist>
+			<p style="color: whitesmoke;">
+				How it works.
+			</p>
+		</div>
+		<canvas id="mainCanvas" width="900px" height="900px" class="mainCanvas"></canvas>
+	</div>
+	<script src="./app.js"></script>
+</body>
+</html>
