@@ -11,6 +11,21 @@ gpsSlider.addEventListener("change",(e) => {
 	gps = gpsSlider.valueAsNumber;
 });
 
+var playing = false;
+function togglePlaying() {
+	playing = ! playing;
+	if (playing) {
+		generation();
+	} else {
+	}
+}
+
+addEventListener("keypress", (e) => {
+	if (e.code == "Space") {
+		togglePlaying();
+	}
+});
+
 var life = new Set();
 life.add("2,0");
 life.add("0,1");
@@ -58,14 +73,14 @@ function step() {
 			newLife.add(cString);
 		}
 	});
-	
+
 	life = structuredClone(newLife);
 }
 
 function generation() {
 	render();
 	step();
-	setTimeout(generation, 1000/gps);
+	if (playing) {setTimeout(generation, 1000/gps)};
 }
 
 generation();
