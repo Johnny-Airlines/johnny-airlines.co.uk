@@ -22,6 +22,14 @@
 	border: none;
 }
 
+.stepButton {
+	background-color: #ffffff;
+	border: 2px solid black;
+	border-radius: 2px;
+	font-size: 20px;
+	vertical-align: middle;
+}
+
 h1, label, datalist { 
 	color: whitesmoke;
 }
