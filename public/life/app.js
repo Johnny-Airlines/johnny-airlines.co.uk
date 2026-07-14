@@ -12,11 +12,17 @@ gpsSlider.addEventListener("change",(e) => {
 });
 
 var playing = false;
+const playSVG = document.getElementById("playSVG");
+const pauseSVG = document.getElementById("pauseSVG");
 function togglePlaying() {
 	playing = ! playing;
 	if (playing) {
+		pauseSVG.style.display = "";
+		playSVG.style.display = "none";
 		generation();
 	} else {
+		playSVG.style.display = "";
+		pauseSVG.style.display = "none";
 	}
 }
 
