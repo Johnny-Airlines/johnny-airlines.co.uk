@@ -57,9 +57,20 @@ life.add("2,1");
 life.add("1,2");
 life.add("2,2");
 
-var offsetX = 0;
-var offsetY = 0;
-addEventListener("mousemove", (event) => { })
+var offsetX = 5;
+var offsetY = 5;
+
+var isMouseDown = false;
+addEventListener("mousedown", (e) => {isMouseDown = true;});
+addEventListener("mouseup", (e) => {isMouseDown = false;});
+
+canvas.addEventListener("mousemove", (e) => {
+	if (isMouseDown) {
+		offsetX += e.movementX * 1;
+		offsetY += e.movementY * 1;
+	}
+	render();
+});
 
 function render() {
 	ctx.fillStyle = "#ffffff";
@@ -68,14 +79,14 @@ function render() {
 	life.forEach((cell) => {
 		cell = cell.split(",");
 		cell = cell.map((item) => parseInt(item));
-		ctx.fillRect(cell[0]*cellWidth,cell[1]*cellWidth,cellWidth,cellWidth);
+		ctx.fillRect(offsetX+cell[0]*cellWidth,offsetY+cell[1]*cellWidth,cellWidth,cellWidth);
 	});
 
-	for (let i = 0; i < canvas.width/cellWidth; i++) {
+	for (let i = (offsetX % cellWidth)/cellWidth; i < canvas.width/cellWidth; i++) {
 		ctx.fillRect(i * cellWidth, 0, gridLinesWidth, canvas.height);
 	}
 
-	for (let i = 0; i < canvas.height/cellWidth; i++) {
+	for (let i = (offsetY % cellWidth)/cellWidth; i < canvas.height/cellWidth; i++) {
 		ctx.fillRect(0, i * cellWidth, canvas.width, gridLinesWidth);
 	}
 }
