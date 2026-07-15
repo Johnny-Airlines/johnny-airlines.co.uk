@@ -61,13 +61,30 @@ var offsetX = 5;
 var offsetY = 5;
 
 var isMouseDown = false;
-addEventListener("mousedown", (e) => {isMouseDown = true;});
-addEventListener("mouseup", (e) => {isMouseDown = false;});
+var didDrag = false;
+canvas.addEventListener("mousedown", (e) => {isMouseDown = true;});
+canvas.addEventListener("mouseup", (e) => {
+	isMouseDown = false;
+	if (!didDrag) {
+		let cellX = Math.floor((-offsetX + e.offsetX) / cellWidth);
+		let cellY = Math.floor((-offsetY + e.offsetY) / cellWidth);
+		if (life.has(`${cellX},${cellY}`)) {
+			life.delete(`${cellX},${cellY}`);
+		} else {
+			life.add(`${cellX},${cellY}`);
+		}
+	}
+	didDrag = false;
+	render();
+});
 
 canvas.addEventListener("mousemove", (e) => {
 	if (isMouseDown) {
 		offsetX += e.movementX * 1;
 		offsetY += e.movementY * 1;
+		if ((e.movementX**2+e.movementY**2)**0.5 > 5) {
+			didDrag = true;
+		}
 	}
 	render();
 });
@@ -125,9 +142,10 @@ function step() {
 }
 
 function generation() {
+	let startTime = performance.now()
 	render();
 	step();
-	if (playing) {setTimeout(generation, 1000/gps)};
+	if (playing) {setTimeout(generation, (1000/gps) - (performance.now()-startTime))};
 }
 
 render();
