@@ -11,6 +11,15 @@ gpsSlider.addEventListener("change",(e) => {
 	gps = gpsSlider.valueAsNumber;
 });
 
+const zoomSlider = document.getElementById("zoom");
+const zoomLabel = document.getElementById("zoomLabel");
+var cellWidth = 50;
+zoomSlider.addEventListener("change",(e) => {
+	zoomLabel.innerText = `Zoom level: ${zoomSlider.value}`; 
+	cellWidth = 50 / zoomSlider.valueAsNumber;
+	render();
+});
+
 var playing = false;
 const playSVG = document.getElementById("playSVG");
 const pauseSVG = document.getElementById("pauseSVG");
@@ -39,6 +48,10 @@ life.add("2,1");
 life.add("1,2");
 life.add("2,2");
 
+var offsetX = 0;
+var offsetY = 0;
+addEventListener("mousemove", (event) => { })
+
 function render() {
 	ctx.fillStyle = "#ffffff";
 	ctx.fillRect(0,0,900,900);
@@ -46,7 +59,7 @@ function render() {
 	life.forEach((cell) => {
 		cell = cell.split(",");
 		cell = cell.map((item) => parseInt(item));
-		ctx.fillRect(cell[0]*50,cell[1]*50,50,50);
+		ctx.fillRect(cell[0]*cellWidth,cell[1]*cellWidth,cellWidth,cellWidth);
 	});
 }
 
