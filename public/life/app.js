@@ -3,6 +3,8 @@
 const canvas = document.getElementById("mainCanvas");
 const ctx = canvas.getContext("2d");
 
+const gridLinesWidth = 0.1;
+
 const gpsSlider = document.getElementById("gps");
 const gpsLabel = document.getElementById("gpsLabel");
 var gps = 5;
@@ -54,13 +56,21 @@ addEventListener("mousemove", (event) => { })
 
 function render() {
 	ctx.fillStyle = "#ffffff";
-	ctx.fillRect(0,0,900,900);
+	ctx.fillRect(0,0,canvas.width,canvas.height);
 	ctx.fillStyle = "#000000";
 	life.forEach((cell) => {
 		cell = cell.split(",");
 		cell = cell.map((item) => parseInt(item));
 		ctx.fillRect(cell[0]*cellWidth,cell[1]*cellWidth,cellWidth,cellWidth);
 	});
+
+	for (let i = 0; i < canvas.width/cellWidth; i++) {
+		ctx.fillRect(i * cellWidth, 0, gridLinesWidth, canvas.height);
+	}
+
+	for (let i = 0; i < canvas.height/cellWidth; i++) {
+		ctx.fillRect(0, i * cellWidth, canvas.width, gridLinesWidth);
+	}
 }
 
 function step() {
