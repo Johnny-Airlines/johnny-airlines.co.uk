@@ -1,0 +1,64 @@
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Conway's Game of Life</title>
+		<link rel="stylesheet" href="./style.css"/>
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+	</head>
+	<body style="background-color:#6791bd">
+		<div class="container">
+			<div class="configPanel" style="width:300px">
+				<h1>Conway's Game of Life</h1>
+				<p style="color: whitesmoke;">
+					Conway's Game of Life is a grid of cells, these cells are either alive or dead.<br>
+					A cell stays or becomes alive if it has exactly 3 neighbours.<br>
+					A live cell stays alive if it has exactly 2 neighbours.<br>
+					Otherwise the cell must die or remain dead.<br><br>
+
+					What makes GoL interesting is that complex behavior emerges from these simple rules.
+					Play about to explore it for yourself.
+				</p>
+			</div>
+			<canvas id="mainCanvas" width="900px" height="900px" class="mainCanvas"></canvas>
+			<div class="configPanel">
+				<h1>Config</h1>
+				<div style="vertical-align: middle;">
+					<hr>
+					<button class="playButton" onclick="togglePlaying()">
+						<svg id="playSVG" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect x="0" y="0" width="32" height="32" rx="5" ry="5" fill="#ffffff" />
+							<path d="M23.5 16.866C24.1667 16.4811 24.1667 15.5189 23.5 15.134L11.5 8.20577C10.8333 7.82087 10 8.302 10 9.0718L10 22.9282C10 23.698 10.8333 24.1791 11.5 23.7942L23.5 16.866Z" fill="#212121"/>
+							<path d="M6 1C3.23858 1 1 3.23858 1 6V26C1 28.7614 3.23858 31 6 31H26C28.7614 31 31 28.7614 31 26V6C31 3.23858 28.7614 1 26 1H6ZM3 6C3 4.34315 4.34315 3 6 3H26C27.6569 3 29 4.34315 29 6V26C29 27.6569 27.6569 29 26 29H6C4.34315 29 3 27.6569 3 26V6Z" fill="#212121"/>
+						</svg>
+						<svg id="pauseSVG" style="display:none;" width="32" height="32" viewBox="0 0 32 32" fill="none" xmlns="http://www.w3.org/2000/svg">
+							<rect x="0" y="0" width="32" height="32" rx="5" ry="5" fill="#ffffff" />
+							<path d="M11 10C11 9.44772 11.4477 9 12 9H14C14.5523 9 15 9.44772 15 10V22C15 22.5523 14.5523 23 14 23H12C11.4477 23 11 22.5523 11 22V10Z" fill="#212121"/>
+							<path d="M18 9C17.4477 9 17 9.44772 17 10V22C17 22.5523 17.4477 23 18 23H20C20.5523 23 21 22.5523 21 22V10C21 9.44772 20.5523 9 20 9H18Z" fill="#212121"/>
+							<path d="M1 6C1 3.23858 3.23858 1 6 1H26C28.7614 1 31 3.23858 31 6V26C31 28.7614 28.7614 31 26 31H6C3.23858 31 1 28.7614 1 26V6ZM6 3C4.34315 3 3 4.34315 3 6V26C3 27.6569 4.34315 29 6 29H26C27.6569 29 29 27.6569 29 26V6C29 4.34315 27.6569 3 26 3H6Z" fill="#212121"/>
+						</svg>
+					</button>
+					<button class="stepButton" onclick="(()=>{step();render();})()">Step</button>
+					<hr/>
+				</div>
+				<p style="color: whitesmoke;">
+					Scroll to zoom in/out.<br>
+					Drag, click and hold CTRL to pan about.<br>
+					Click to toggle a cells state.<br>
+					Drag and click to bring many cells to life. Drag, click and SHIFT to kill many cells..<br>
+					Space will toggle playing.
+				</p>
+				<hr>
+				<label for="gps" id="gpsLabel">Target Generations per second: 5</label><br>
+				<input type="range" class="slider" id="gps" name="targetTPS" list="gpsValues" min="1" max="100" value="5"/>
+				<datalist id="gpsValues">
+					<option value="1" label="1"></option>
+					<option value="25" label="25"></option>
+					<option value="50" label="50"></option>
+					<option value="75" label="75"></option>
+					<option value="100" label="100"></option>
+				</datalist>
+			</div>
+		</div>
+		<script src="./app.js"></script>
+	</body>
+</html>
