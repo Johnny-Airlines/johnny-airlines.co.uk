@@ -30,15 +30,24 @@
 	vertical-align: middle;
 }
 
+hr {
+	border: none;
+	border-top: 3px double #ffffff;
+	color: #333333;
+	overflow: visible;
+	text-align: center;
+	height: 5px;
+}
+
 h1, label, datalist { 
 	color: whitesmoke;
 }
 
 datalist {
-  display: flex;
-  flex-direction: row;
-  justify-content: space-between;
-  width: 200px;
+	display: flex;
+	flex-direction: row;
+	justify-content: space-between;
+	width: 200px;
 }
 
 input[type="range"]:disabled {

@@ -16,9 +16,16 @@ gpsSlider.addEventListener("change",(e) => {
 const zoomSlider = document.getElementById("zoom");
 const zoomLabel = document.getElementById("zoomLabel");
 var cellWidth = 50;
-zoomSlider.addEventListener("change",(e) => {
-	zoomLabel.innerText = `Zoom level: ${zoomSlider.value}`; 
-	cellWidth = 50 / zoomSlider.valueAsNumber;
+var zoom = 1;
+
+canvas.addEventListener("wheel", (e) => {
+	if (e.deltaY < 0) {
+		zoom *= 1.1
+	} else {
+		zoom /= 1.1
+	}
+	zoom = Math.max(0.001, Math.min(zoom, Math.min(canvas.width, canvas.height) / (2 * 50)));
+	cellWidth = 50 * zoom;
 	render();
 });
 
@@ -112,4 +119,4 @@ function generation() {
 	if (playing) {setTimeout(generation, 1000/gps)};
 }
 
-generation();
+render();

@@ -7,8 +7,21 @@
 	</head>
 	<body style="background-color:#6791bd">
 		<div class="container">
-			<div class="configPanel">
+			<div class="configPanel" style="width:300px">
 				<h1>Conway's Game of Life</h1>
+				<p style="color: whitesmoke;">
+					Conway's Game of Life is a grid of cells, these cells are either alive or dead.<br>
+					A cell stays or becomes alive if it has exactly 3 neighbours.<br>
+					A live cell stays alive if it has exactly 2 neighbours.<br>
+					Otherwise the cell must die or remain dead.<br><br>
+
+					What makes GoL interesting is that complex behavior emerges from these simple rules.
+					Play about with the some of the presets and to explore it for yourself.
+				</p>
+			</div>
+			<canvas id="mainCanvas" width="900px" height="900px" class="mainCanvas"></canvas>
+			<div class="configPanel">
+				<h1>Config</h1>
 				<div style="vertical-align: middle;">
 					<hr>
 					<button class="playButton" onclick="togglePlaying()">
@@ -25,9 +38,16 @@
 						</svg>
 					</button>
 					<button class="stepButton" onclick="(()=>{step();render();})()">Step</button>
-					<hr>
+					<hr/>
 				</div>
-				<label for="gps" id="gpsLabel">Target Generations per second: 5</label>
+				<p style="color: whitesmoke;">
+					Scroll to zoom in/out.<br>
+					Drag and click to pan about.<br>
+					Click on a cell to toggle it's state.<br>
+					Space will toggle playing.
+				</p>
+				<hr>
+				<label for="gps" id="gpsLabel">Target Generations per second: 5</label><br>
 				<input type="range" class="slider" id="gps" name="targetTPS" list="gpsValues" min="1" max="100" value="5"/>
 				<datalist id="gpsValues">
 					<option value="1" label="1"></option>
@@ -36,19 +56,7 @@
 					<option value="75" label="75"></option>
 					<option value="100" label="100"></option>
 				</datalist>
-				<label for="zoom" id="zoomLabel">Zoom</label>
-				<input type="range" class="slider" id="zoom" name="zoom" list="zoomValues" min="0.1" max="25" value="1"/>
-				<datalist id="zoomValues">
-					<option value="0.1" label="0.1"></option>
-					<option value="1" label="1"></option>
-					<option value="10" label="10"></option>
-					<option value="25" label="25"></option>
-				</datalist>
-				<p style="color: whitesmoke;">
-					How it works.
-				</p>
 			</div>
-			<canvas id="mainCanvas" width="900px" height="900px" class="mainCanvas"></canvas>
 		</div>
 		<script src="./app.js"></script>
 	</body>
