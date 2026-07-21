@@ -143,11 +143,11 @@ function render() {
 	});
 
 	for (let i = (offsetX % cellWidth) / cellWidth; i < canvas.width / cellWidth; i++) {
-		ctx.fillRect(i * cellWidth, 0, gridLinesWidth, canvas.height);
+		ctx.fillRect(i * cellWidth, 0, gridLinesWidth * zoom, canvas.height);
 	}
 
 	for (let i = (offsetY % cellWidth) / cellWidth; i < canvas.height / cellWidth; i++) {
-		ctx.fillRect(0, i * cellWidth, canvas.width, gridLinesWidth);
+		ctx.fillRect(0, i * cellWidth, canvas.width, gridLinesWidth * zoom);
 	}
 }
 
