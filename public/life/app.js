@@ -19,15 +19,20 @@ var cellWidth = 50;
 var zoom = 1;
 
 canvas.addEventListener("wheel", (e) => {
+	let newZoom = zoom;
 	if (e.deltaY < 0) {
-		zoom *= 1.1
+		newZoom *= 1.1;
 	} else {
-		zoom /= 1.1
+		newZoom /= 1.1;
 	}
-	zoom = Math.max(0.001, Math.min(zoom, Math.min(canvas.width, canvas.height) / (2 * 50)));
+	newZoom = Math.max(0.001, Math.min(newZoom, Math.min(canvas.width, canvas.height) / (2 * 50)));
+	offsetX = e.offsetX - (e.offsetX - offsetX) * (newZoom / zoom);
+	offsetY = e.offsetY - (e.offsetY - offsetY) * (newZoom / zoom);
+	zoom = newZoom;
 	cellWidth = 50 * zoom;
 	render();
 });
+
 
 var playing = false;
 const playSVG = document.getElementById("playSVG");
