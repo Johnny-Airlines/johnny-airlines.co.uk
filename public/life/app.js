@@ -8,8 +8,8 @@ const gridLinesWidth = 0.1;
 const gpsSlider = document.getElementById("gps");
 const gpsLabel = document.getElementById("gpsLabel");
 var gps = 5;
-gpsSlider.addEventListener("change",(e) => {
-	gpsLabel.innerText = `Target Generations per second: ${gpsSlider.value}`; 
+gpsSlider.addEventListener("change", (e) => {
+	gpsLabel.innerText = `Target Generations per second: ${gpsSlider.value}`;
 	gps = gpsSlider.valueAsNumber;
 });
 
@@ -33,7 +33,7 @@ var playing = false;
 const playSVG = document.getElementById("playSVG");
 const pauseSVG = document.getElementById("pauseSVG");
 function togglePlaying() {
-	playing = ! playing;
+	playing = !playing;
 	if (playing) {
 		pauseSVG.style.display = "";
 		playSVG.style.display = "none";
@@ -129,19 +129,19 @@ canvas.addEventListener("mousemove", (e) => {
 
 function render() {
 	ctx.fillStyle = "#ffffff";
-	ctx.fillRect(0,0,canvas.width,canvas.height);
+	ctx.fillRect(0, 0, canvas.width, canvas.height);
 	ctx.fillStyle = "#000000";
 	life.forEach((cell) => {
 		cell = cell.split(",");
 		cell = cell.map((item) => parseInt(item));
-		ctx.fillRect(offsetX+cell[0]*cellWidth,offsetY+cell[1]*cellWidth,cellWidth,cellWidth);
+		ctx.fillRect(offsetX + cell[0] * cellWidth, offsetY + cell[1] * cellWidth, cellWidth, cellWidth);
 	});
 
-	for (let i = (offsetX % cellWidth)/cellWidth; i < canvas.width/cellWidth; i++) {
+	for (let i = (offsetX % cellWidth) / cellWidth; i < canvas.width / cellWidth; i++) {
 		ctx.fillRect(i * cellWidth, 0, gridLinesWidth, canvas.height);
 	}
 
-	for (let i = (offsetY % cellWidth)/cellWidth; i < canvas.height/cellWidth; i++) {
+	for (let i = (offsetY % cellWidth) / cellWidth; i < canvas.height / cellWidth; i++) {
 		ctx.fillRect(0, i * cellWidth, canvas.width, gridLinesWidth);
 	}
 }
@@ -154,7 +154,7 @@ function step() {
 		cell = cell.map((item) => parseInt(item));
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				cellsToConsider.add(`${cell[0]+i},${cell[1]+j}`);
+				cellsToConsider.add(`${cell[0] + i},${cell[1] + j}`);
 			}
 		}
 	});
@@ -167,7 +167,7 @@ function step() {
 		cell = cell.map((item) => parseInt(item));
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				count += life.has(`${cell[0]+i},${cell[1]+j}`) ? 1 : 0;
+				count += life.has(`${cell[0] + i},${cell[1] + j}`) ? 1 : 0;
 			}
 		}
 		count -= life.has(cString) ? 1 : 0;
@@ -183,7 +183,7 @@ function generation() {
 	let startTime = performance.now()
 	render();
 	step();
-	if (playing) {setTimeout(generation, (1000/gps) - (performance.now()-startTime))};
+	if (playing) { setTimeout(generation, (1000 / gps) - (performance.now() - startTime)) };
 }
 
 render();
