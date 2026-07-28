@@ -9,12 +9,14 @@
 	left: 50%;
 	transform: translate(-50%,-50%);
 	display: flex;
-	align-items: stretch;
 }
 
 .configPanel {
 	background-color: #222;
 	border: 3px solid black;
+	height: 900px;
+	display: flex;
+	flex-direction: column;
 }
 
 .playButton {
@@ -22,12 +24,12 @@
 	border: none;
 }
 
-.stepButton {
+.otherButton {
 	background-color: #ffffff;
 	border: 2px solid black;
 	border-radius: 2px;
 	font-size: 20px;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 hr {
@@ -37,6 +39,7 @@ hr {
 	overflow: visible;
 	text-align: center;
 	height: 5px;
+	margin: 2px;
 }
 
 h1, label, datalist { 
@@ -52,4 +55,38 @@ datalist {
 .slider {
 	width: stretch;
 	width: -webkit-fill-available;
+}
+
+p {
+	margin: 0px;
+}
+
+:root {
+	--pattern-border: 2px solid aquamarine;
+}
+
+.patternsContainer {
+	display: grid;
+	grid-template-columns: 50% 50%;
+	overflow: scroll;
+	border-left: var(--pattern-border);
+	border-bottom: var(--pattern-border);
+}
+
+.patternColumn {
+	border-right: var(--pattern-border);
+}
+
+.patternContainer {
+	text-align: center;
+	border-top: var(--pattern-border);
+	padding: 3px;
+}
+
+.patternImg {
+	width: 100%;
+}
+
+.patternCaption {
+	color: whitesmoke;
 }
