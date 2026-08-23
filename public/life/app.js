@@ -49,7 +49,7 @@ function togglePlaying() {
 	} else {
 		playSVG.style.display = "";
 		pauseSVG.style.display = "none";
-		let id = window.setTimeout(()=>{},0);
+		let id = window.setTimeout(() => { }, 0);
 		while (id--) {
 			window.clearTimeout(id);
 		}
@@ -103,7 +103,7 @@ canvas.addEventListener("mousedown", (e) => {
 	if (!isDragKeyDown) {
 		let cellX = Math.floor((-offsetX + e.offsetX) / cellWidth);
 		let cellY = Math.floor((-offsetY + e.offsetY) / cellWidth);
-		let targetCell = cellArrToString([cellX,cellY]);
+		let targetCell = cellArrToString([cellX, cellY]);
 		if (life.has(targetCell)) {
 			life.delete(targetCell);
 		} else {
@@ -130,7 +130,7 @@ canvas.addEventListener("mousemove", (e) => {
 		} else {
 			let cellX = Math.floor((-offsetX + e.offsetX) / cellWidth);
 			let cellY = Math.floor((-offsetY + e.offsetY) / cellWidth);
-			let cell = cellArrToString([cellX,cellY]);
+			let cell = cellArrToString([cellX, cellY]);
 			if (isDeleteKeyDown) {
 				life.delete(cell);
 			} else {
@@ -161,18 +161,17 @@ function render(showInfo = true) {
 	}
 	if (showInfo) {
 		ctx.font = "30px serif";
-		ctx.fillText(`Population: ${life.size}, GpS: ${Math.round(realGps)}`,0,canvas.height);
+		ctx.fillText(`Population: ${life.size}, GpS: ${Math.round(realGps)}`, 0, canvas.height);
 	}
 }
 
 function step() {
-	let neighbourCounts = {};
 	let cellsToConsider = new Set();
 	life.forEach(cell => {
 		cell = cellStringToArr(cell);
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				let neighbour = [cell[0]+i,cell[1]+j];
+				let neighbour = [cell[0] + i, cell[1] + j];
 				cellsToConsider.add(cellArrToString(neighbour));
 			}
 		}
@@ -185,7 +184,7 @@ function step() {
 		cell = cellStringToArr(cell);
 		for (let i = -1; i <= 1; i++) {
 			for (let j = -1; j <= 1; j++) {
-				let neighbour = [cell[0]+i,cell[1]+j];
+				let neighbour = [cell[0] + i, cell[1] + j];
 				count += life.has(cellArrToString(neighbour)) ? 1 : 0;
 			}
 		}
@@ -203,7 +202,7 @@ function generation() {
 	step();
 	render();
 	if (playing) {
-		realGps = (1000 / (performance.now() - startTime)) > gps ? gps: (1000 / (performance.now() - startTime));
+		realGps = (1000 / (performance.now() - startTime)) > gps ? gps : (1000 / (performance.now() - startTime));
 		setTimeout(generation, (1000 / gps) - (performance.now() - startTime));
 	}
 }
@@ -230,7 +229,7 @@ function importPattern(patternString) {
 	return patternSet;
 }
 
-function translatePattern(patternSet,x,y) {
+function translatePattern(patternSet, x, y) {
 	var newPattern = new Set();
 	patternSet.forEach((cell) => {
 		cell = cellStringToArr(cell);
@@ -242,17 +241,17 @@ function translatePattern(patternSet,x,y) {
 	return newPattern;
 }
 
-function extractPattern(board,topLeftCell,bottomRightCell) {
+function extractPattern(board, topLeftCell, bottomRightCell) {
 	let pattern = new Set();
 	topLeftCell = cellStringToArr(topLeftCell);
 	bottomRightCell = cellStringToArr(bottomRightCell);
 	let trueTopLeft = structuredClone(bottomRightCell);
 	for (let i = topLeftCell[0]; i < bottomRightCell[0]; i++) {
 		for (let j = topLeftCell[1]; j < bottomRightCell[1]; j++) {
-			let cell = cellArrToString([i,j]);
+			let cell = cellArrToString([i, j]);
 			if (board.has(cell)) {
 				pattern.add(cell);
-				cell = [i,j];
+				cell = [i, j];
 				if (i < trueTopLeft[0]) {
 					trueTopLeft[0] = i;
 				}
@@ -262,13 +261,13 @@ function extractPattern(board,topLeftCell,bottomRightCell) {
 			}
 		}
 	}
-	pattern = translatePattern(pattern,-trueTopLeft[0],-trueTopLeft[1])
+	pattern = translatePattern(pattern, -trueTopLeft[0], -trueTopLeft[1])
 	return exportPattern(pattern);
 }
 
-function photoPattern(patternString,caption) {
+function photoPattern(patternString, caption) {
 	let pattern = importPattern(patternString);
-	let bottomRightCell = [-Infinity,-Infinity];
+	let bottomRightCell = [-Infinity, -Infinity];
 	pattern.forEach((cell) => {
 		cell = cellStringToArr(cell);
 		bottomRightCell[0] = cell[0] > bottomRightCell[0] ? cell[0] : bottomRightCell[0];
@@ -285,9 +284,9 @@ function photoPattern(patternString,caption) {
 	offsetX = 2;
 	offsetY = 2;
 	let largestSideWidth = bottomRightCell[0] > bottomRightCell[1] ? bottomRightCell[0] : bottomRightCell[1];
-	cellWidth = 500/(largestSideWidth+1);
-	canvas.width = (bottomRightCell[0] + 1)*cellWidth+4;
-	canvas.height = (bottomRightCell[1] + 1)*cellWidth+4;
+	cellWidth = 500 / (largestSideWidth + 1);
+	canvas.width = (bottomRightCell[0] + 1) * cellWidth + 4;
+	canvas.height = (bottomRightCell[1] + 1) * cellWidth + 4;
 	life = structuredClone(pattern);
 
 	render(false);
@@ -303,7 +302,7 @@ function photoPattern(patternString,caption) {
 
 	let patternContainer = document.createElement("div");
 	patternContainer.className = "patternContainer";
-	patternContainer.onclick = () => {insertPattern(patternString)};	
+	patternContainer.onclick = () => { insertPattern(patternString) };
 	let patternImg = document.createElement("img");
 	patternImg.className = "patternImg";
 	patternImg.src = imgUrl;
@@ -333,10 +332,10 @@ const premadePatterns = {
 	"2 block layers": "AwGmG4EY3AmGDMMAsMCsMBsMDsMCcMkoEk0p8pSpepAHEYRLNs7XA80+AiT+T0o9UEBBlGse7BJyA===",
 }
 setTimeout(() => {
-	for (const [caption,patternString] of Object.entries(premadePatterns)) {
-		photoPattern(patternString,caption)
+	for (const [caption, patternString] of Object.entries(premadePatterns)) {
+		photoPattern(patternString, caption)
 	}
-	setTimeout(()=>{render()},50);
-},500);
+	setTimeout(() => { render() }, 50);
+}, 500);
 
 render();
