@@ -9,12 +9,14 @@
 	left: 50%;
 	transform: translate(-50%,-50%);
 	display: flex;
-	align-items: stretch;
 }
 
 .configPanel {
 	background-color: #222;
 	border: 3px solid black;
+	height: 900px;
+	display: flex;
+	flex-direction: column;
 }
 
 .playButton {
@@ -22,12 +24,12 @@
 	border: none;
 }
 
-.stepButton {
+.otherButton {
 	background-color: #ffffff;
 	border: 2px solid black;
 	border-radius: 2px;
 	font-size: 20px;
-	vertical-align: middle;
+	vertical-align: top;
 }
 
 hr {
@@ -37,6 +39,7 @@ hr {
 	overflow: visible;
 	text-align: center;
 	height: 5px;
+	margin: 2px;
 }
 
 h1, label, datalist { 
@@ -47,164 +50,43 @@ datalist {
 	display: flex;
 	flex-direction: row;
 	justify-content: space-between;
-	width: 200px;
 }
 
-input[type="range"]:disabled {
-	opacity: 0.5;
-	cursor: not-allowed;
+.slider {
+	width: stretch;
+	width: -webkit-fill-available;
 }
 
-input[type="range"] {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	width: 200px;
-	background-color: transparent;
-
-	&:focus {
-		outline-color: #f8b195;
-	}
+p {
+	margin: 0px;
 }
 
-input[type="range"]::-webkit-slider-runnable-track {
-	-webkit-appearance: none;
-	appearance: none;
-	height: 3px;
-	background: rgb(246, 114, 128);
-	background: -webkit-linear-gradient(
-	left,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	background: linear-gradient(
-	to right,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	filter: progid:DXImageTransform.Microsoft.gradient(
-	startColorstr="#f67280",
-	endColorstr="#355c7d",
-	GradientType=1
-	);
+:root {
+	--pattern-border: 2px solid aquamarine;
 }
 
-input[type="range"]::-moz-range-track {
-	-moz-appearance: none;
-	appearance: none;
-	height: 3px;
-	background: rgb(246, 114, 128);
-	background: -moz-linear-gradient(
-	left,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	background: linear-gradient(
-	to right,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	filter: progid:DXImageTransform.Microsoft.gradient(
-	startColorstr="#f67280",
-	endColorstr="#355c7d",
-	GradientType=1
-	);
-	padding: 0 10px;
+.patternsContainer {
+	display: grid;
+	grid-template-columns: 50% 50%;
+	overflow: scroll;
+	border-left: var(--pattern-border);
+	border-bottom: var(--pattern-border);
 }
 
-input[type="range"]::-ms-track {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	height: 3px;
-	background: rgb(246, 114, 128);
-	background: -moz-linear-gradient(
-	left,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	background: -webkit-linear-gradient(
-	left,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	background: linear-gradient(
-	to right,
-	rgba(246, 114, 128, 1) 0%,
-	rgba(192, 108, 132, 1) 50%,
-	rgba(53, 92, 125, 1) 100%
-	);
-	filter: progid:DXImageTransform.Microsoft.gradient(
-	startColorstr="#f67280",
-	endColorstr="#355c7d",
-	GradientType=1
-	);
+.patternColumn {
+	border-right: var(--pattern-border);
 }
 
-input[type="range"]::-webkit-slider-thumb {
-	-webkit-appearance: none;
-	appearance: none;
-	border: 2px solid #f8b195;
-	border-radius: 50%;
-	height: 20px;
-	width: 20px;
-	position: relative;
-	bottom: 8px;
-	background: #222
-	center no-repeat;
-	background-size: 50%;
-	box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.4);
-	cursor: grab;
-
-	&:active {
-		cursor: grabbing;
-	}
+.patternContainer {
+	text-align: center;
+	border-top: var(--pattern-border);
+	padding: 3px;
 }
 
-
-input[type="range"]::-moz-range-thumb {
-	-moz-appearance: none;
-	appearance: none;
-	border: 2px solid #f8b195;
-	border-radius: 50%;
-	height: 20px;
-	width: 20px;
-	position: relative;
-	bottom: 8px;
-	background: #222
-	center no-repeat;
-	background-size: 50%;
-	box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.4);
-	cursor: grab;
-
-	&:active {
-		cursor: grabbing;
-	}
+.patternImg {
+	width: 100%;
 }
 
-input[type="range"]::-ms-thumb {
-	-webkit-appearance: none;
-	-moz-appearance: none;
-	appearance: none;
-	border: 2px solid #f8b195;
-	border-radius: 50%;
-	height: 20px;
-	width: 20px;
-	position: relative;
-	bottom: 8px;
-	background: #222
-	center no-repeat;
-	background-size: 50%;
-	box-shadow: 0px 3px 5px 0px rgba(0, 0, 0, 0.4);
-	cursor: grab;
-
-	&:active {
-		cursor: grabbing;
-	}
+.patternCaption {
+	color: whitesmoke;
 }
